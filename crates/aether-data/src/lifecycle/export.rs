@@ -1,5 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
+use futures_util::TryStreamExt;
 use serde_json::Value;
 use sqlx::{Column, Row, TypeInfo, ValueRef};
 
@@ -30,8 +31,6 @@ pub enum ExportDomain {
     Wallets,
     Usage,
     Billing,
-    Stats,
-    Auxiliary,
 }
 
 impl ExportDomain {
@@ -54,8 +53,6 @@ impl ExportDomain {
             Self::Wallets => "wallets",
             Self::Usage => "usage",
             Self::Billing => "billing",
-            Self::Stats => "stats",
-            Self::Auxiliary => "auxiliary",
         }
     }
 }
@@ -140,6 +137,36 @@ pub struct DataCopyOptions {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+struct SqliteCopyColumn {
+    name: String,
+    declared_type: String,
+    not_null: bool,
+    has_default: bool,
+    primary_key_position: i64,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum SqliteCopyAffinity {
+    Integer,
+    Real,
+    Text,
+    Blob,
+    Numeric,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct SchemaCopyColumn {
+    sqlite: SqliteCopyColumn,
+    postgres: PostgresImportColumn,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct SchemaCopyTable {
+    table_name: String,
+    columns: Vec<SchemaCopyColumn>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct PostgresImportColumn {
     data_type: String,
     udt_name: String,
@@ -149,20 +176,6 @@ struct PostgresImportColumn {
 
 type PostgresImportColumns = BTreeMap<String, PostgresImportColumn>;
 type ImportColumnNames = BTreeSet<String>;
-
-#[derive(Debug, Clone, Copy)]
-struct StatsTableSpec {
-    table_name: &'static str,
-    id_column: &'static str,
-    timestamp_columns: &'static [&'static str],
-}
-
-#[derive(Debug, Clone, Copy)]
-struct AuxiliaryTableSpec {
-    table_name: &'static str,
-    id_columns: &'static [&'static str],
-    timestamp_columns: &'static [&'static str],
-}
 
 const USAGE_REQUEST_BODY_DETAIL_COLUMNS: &[&str] = &[
     "request_body",
@@ -175,164 +188,8 @@ const USAGE_REQUEST_BODY_DETAIL_COLUMNS: &[&str] = &[
     "client_response_body_compressed",
 ];
 
-const STATS_DATE_TIMESTAMPS: &[&str] = &["date", "created_at", "updated_at"];
-const STATS_HOUR_TIMESTAMPS: &[&str] = &["hour_utc", "created_at", "updated_at"];
-const STATS_ROLLUP_TIMESTAMPS: &[&str] = &["date", "aggregated_at", "created_at", "updated_at"];
-const STATS_HOURLY_ROLLUP_TIMESTAMPS: &[&str] =
-    &["hour_utc", "aggregated_at", "created_at", "updated_at"];
-const STATS_SUMMARY_TIMESTAMPS: &[&str] = &["cutoff_date", "created_at", "updated_at"];
-const STATS_USER_SUMMARY_TIMESTAMPS: &[&str] = &[
-    "cutoff_date",
-    "first_active_date",
-    "last_active_date",
-    "created_at",
-    "updated_at",
-];
-const ID_COLUMNS: &[&str] = &["id"];
-const REQUEST_ID_COLUMNS: &[&str] = &["request_id"];
-const PROXY_NODE_METRIC_COLUMNS: &[&str] = &["node_id", "bucket_start_unix_secs"];
-const AUDIT_TIMESTAMPS: &[&str] = &["created_at"];
-const ANNOUNCEMENT_TIMESTAMPS: &[&str] = &["start_time", "end_time", "created_at", "updated_at"];
-const ANNOUNCEMENT_READ_TIMESTAMPS: &[&str] = &["read_at"];
-const MANAGEMENT_TOKEN_TIMESTAMPS: &[&str] =
-    &["expires_at", "last_used_at", "created_at", "updated_at"];
-const USER_SESSION_TIMESTAMPS: &[&str] = &[
-    "rotated_at",
-    "last_seen_at",
-    "expires_at",
-    "revoked_at",
-    "created_at",
-    "updated_at",
-];
-const CONFIG_TIMESTAMPS: &[&str] = &["created_at", "updated_at"];
-const GEMINI_FILE_TIMESTAMPS: &[&str] = &["created_at", "expires_at"];
-const PROVIDER_USAGE_TIMESTAMPS: &[&str] =
-    &["window_start", "window_end", "created_at", "updated_at"];
-const REQUEST_CANDIDATE_TIMESTAMPS: &[&str] = &["created_at", "started_at", "finished_at"];
-const VIDEO_TASK_TIMESTAMPS: &[&str] = &[
-    "next_poll_at",
-    "created_at",
-    "submitted_at",
-    "completed_at",
-    "updated_at",
-];
-const ROUTING_SNAPSHOT_TIMESTAMPS: &[&str] = &["created_at", "updated_at"];
-
-const SQLITE_STATS_TABLES: &[StatsTableSpec] = &[
-    stats_table("stats_hourly", STATS_HOURLY_ROLLUP_TIMESTAMPS),
-    stats_table("stats_summary", STATS_SUMMARY_TIMESTAMPS),
-    stats_table("stats_hourly_user", STATS_HOUR_TIMESTAMPS),
-    stats_table("stats_hourly_user_model", STATS_HOUR_TIMESTAMPS),
-    stats_table("user_model_usage_counts", &["created_at", "updated_at"]),
-    stats_table("stats_hourly_model", STATS_HOUR_TIMESTAMPS),
-    stats_table("stats_hourly_provider", STATS_HOUR_TIMESTAMPS),
-    stats_table("stats_daily", STATS_ROLLUP_TIMESTAMPS),
-    stats_table("stats_daily_model", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_provider", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_api_key", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_error", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_user_daily", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_user_summary", STATS_USER_SUMMARY_TIMESTAMPS),
-    stats_table("stats_user_daily_model", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_user_daily_provider", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_user_daily_api_format", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_model_provider", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_user_daily_model_provider", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_cost_savings", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_cost_savings_provider", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_cost_savings_model", STATS_DATE_TIMESTAMPS),
-    stats_table(
-        "stats_daily_cost_savings_model_provider",
-        STATS_DATE_TIMESTAMPS,
-    ),
-    stats_table("stats_user_daily_cost_savings", STATS_DATE_TIMESTAMPS),
-    stats_table(
-        "stats_user_daily_cost_savings_provider",
-        STATS_DATE_TIMESTAMPS,
-    ),
-    stats_table("stats_user_daily_cost_savings_model", STATS_DATE_TIMESTAMPS),
-    stats_table(
-        "stats_user_daily_cost_savings_model_provider",
-        STATS_DATE_TIMESTAMPS,
-    ),
-];
-
-const MYSQL_STATS_TABLES: &[StatsTableSpec] = &[
-    stats_table("stats_hourly", STATS_HOURLY_ROLLUP_TIMESTAMPS),
-    stats_table("stats_summary", STATS_SUMMARY_TIMESTAMPS),
-    stats_table("stats_hourly_user", STATS_HOUR_TIMESTAMPS),
-    stats_table("stats_hourly_user_model", STATS_HOUR_TIMESTAMPS),
-    stats_table("user_model_usage_counts", &["created_at", "updated_at"]),
-    stats_table("stats_hourly_model", STATS_HOUR_TIMESTAMPS),
-    stats_table("stats_hourly_provider", STATS_HOUR_TIMESTAMPS),
-    stats_table("stats_daily", STATS_ROLLUP_TIMESTAMPS),
-    stats_table("stats_daily_model", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_provider", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_api_key", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_daily_error", STATS_DATE_TIMESTAMPS),
-    stats_table("stats_user_daily", STATS_DATE_TIMESTAMPS),
-];
-
-const AUXILIARY_TABLES: &[AuxiliaryTableSpec] = &[
-    aux_table("audit_logs", ID_COLUMNS, AUDIT_TIMESTAMPS),
-    aux_table("announcements", ID_COLUMNS, ANNOUNCEMENT_TIMESTAMPS),
-    aux_table(
-        "announcement_reads",
-        ID_COLUMNS,
-        ANNOUNCEMENT_READ_TIMESTAMPS,
-    ),
-    aux_table("management_tokens", ID_COLUMNS, MANAGEMENT_TOKEN_TIMESTAMPS),
-    aux_table("user_preferences", ID_COLUMNS, CONFIG_TIMESTAMPS),
-    aux_table("user_sessions", ID_COLUMNS, USER_SESSION_TIMESTAMPS),
-    aux_table("ldap_configs", ID_COLUMNS, CONFIG_TIMESTAMPS),
-    aux_table("api_key_provider_mappings", ID_COLUMNS, CONFIG_TIMESTAMPS),
-    aux_table("gemini_file_mappings", ID_COLUMNS, GEMINI_FILE_TIMESTAMPS),
-    aux_table(
-        "provider_usage_tracking",
-        ID_COLUMNS,
-        PROVIDER_USAGE_TIMESTAMPS,
-    ),
-    aux_table("pool_member_scores", ID_COLUMNS, &[]),
-    aux_table("proxy_node_events", ID_COLUMNS, AUDIT_TIMESTAMPS),
-    aux_table(
-        "request_candidates",
-        ID_COLUMNS,
-        REQUEST_CANDIDATE_TIMESTAMPS,
-    ),
-    aux_table("video_tasks", ID_COLUMNS, VIDEO_TASK_TIMESTAMPS),
-    aux_table(
-        "usage_routing_snapshots",
-        REQUEST_ID_COLUMNS,
-        ROUTING_SNAPSHOT_TIMESTAMPS,
-    ),
-    aux_table("background_task_runs", ID_COLUMNS, &[]),
-    aux_table("background_task_events", ID_COLUMNS, &[]),
-    aux_table("proxy_node_metrics_1m", PROXY_NODE_METRIC_COLUMNS, &[]),
-    aux_table("proxy_node_metrics_1h", PROXY_NODE_METRIC_COLUMNS, &[]),
-];
-
-const fn stats_table(
-    table_name: &'static str,
-    timestamp_columns: &'static [&'static str],
-) -> StatsTableSpec {
-    StatsTableSpec {
-        table_name,
-        id_column: "id",
-        timestamp_columns,
-    }
-}
-
-const fn aux_table(
-    table_name: &'static str,
-    id_columns: &'static [&'static str],
-    timestamp_columns: &'static [&'static str],
-) -> AuxiliaryTableSpec {
-    AuxiliaryTableSpec {
-        table_name,
-        id_columns,
-        timestamp_columns,
-    }
-}
+const REQUEST_BODY_DETAIL_TABLES: &[&str] = &["usage_body_blobs", "usage_http_audits"];
+const LIFECYCLE_TABLES: &[&str] = &["_sqlx_migrations", "schema_backfills"];
 
 pub fn encode_jsonl(records: &[DataExportRecord]) -> Result<String, DataLayerError> {
     validate_export_records(records)?;
@@ -367,16 +224,9 @@ pub fn decode_jsonl(input: &str) -> Result<Vec<DataExportRecord>, DataLayerError
 
 pub fn build_import_plan(input: &str) -> Result<DataImportPlan, DataLayerError> {
     let records = decode_jsonl(input)?;
-    build_import_plan_from_records(records)
-}
-
-pub fn build_import_plan_from_records(
-    records: Vec<DataExportRecord>,
-) -> Result<DataImportPlan, DataLayerError> {
-    validate_export_records(&records)?;
     let manifest = match records.first() {
         Some(DataExportRecord::Manifest { manifest }) => manifest.clone(),
-        _ => unreachable!("validate_export_records validates the manifest record"),
+        _ => unreachable!("decode_jsonl validates the manifest record"),
     };
     let mut rows_by_domain = BTreeMap::<ExportDomain, Vec<ExportRow>>::new();
     for record in records.into_iter().skip(1) {
@@ -476,8 +326,6 @@ pub fn sqlite_core_export_domains() -> Vec<ExportDomain> {
         ExportDomain::Wallets,
         ExportDomain::Usage,
         ExportDomain::Billing,
-        ExportDomain::Stats,
-        ExportDomain::Auxiliary,
     ]
 }
 
@@ -489,26 +337,26 @@ pub fn postgres_core_export_domains() -> Vec<ExportDomain> {
     sqlite_core_export_domains()
 }
 
-pub async fn export_database_records(
+pub async fn export_database_jsonl(
     database: SqlDatabaseConfig,
     domains: Vec<ExportDomain>,
     created_at_unix_secs: u64,
-) -> Result<Vec<DataExportRecord>, DataLayerError> {
+) -> Result<String, DataLayerError> {
     match database.driver {
         DatabaseDriver::Sqlite => {
             let pool = crate::driver::sqlite::SqlitePoolFactory::new(database)?.connect_lazy()?;
             if domains.is_empty() {
-                export_sqlite_core_records(&pool, created_at_unix_secs).await
+                export_sqlite_core_jsonl(&pool, created_at_unix_secs).await
             } else {
-                export_sqlite_records(&pool, domains, created_at_unix_secs).await
+                export_sqlite_jsonl(&pool, domains, created_at_unix_secs).await
             }
         }
         DatabaseDriver::Mysql => {
             let pool = crate::driver::mysql::MysqlPoolFactory::new(database)?.connect_lazy()?;
             if domains.is_empty() {
-                export_mysql_core_records(&pool, created_at_unix_secs).await
+                export_mysql_core_jsonl(&pool, created_at_unix_secs).await
             } else {
-                export_mysql_records(&pool, domains, created_at_unix_secs).await
+                export_mysql_jsonl(&pool, domains, created_at_unix_secs).await
             }
         }
         DatabaseDriver::Postgres => {
@@ -516,21 +364,12 @@ pub async fn export_database_records(
                 crate::driver::postgres::PostgresPoolFactory::new(database.to_postgres_config()?)?
                     .connect_lazy()?;
             if domains.is_empty() {
-                export_postgres_core_records(&pool, created_at_unix_secs).await
+                export_postgres_core_jsonl(&pool, created_at_unix_secs).await
             } else {
-                export_postgres_records(&pool, domains, created_at_unix_secs).await
+                export_postgres_jsonl(&pool, domains, created_at_unix_secs).await
             }
         }
     }
-}
-
-pub async fn export_database_jsonl(
-    database: SqlDatabaseConfig,
-    domains: Vec<ExportDomain>,
-    created_at_unix_secs: u64,
-) -> Result<String, DataLayerError> {
-    let records = export_database_records(database, domains, created_at_unix_secs).await?;
-    encode_jsonl(&records)
 }
 
 pub async fn import_database_jsonl(
@@ -555,28 +394,6 @@ pub async fn import_database_jsonl(
     }
 }
 
-pub async fn import_database_plan(
-    database: SqlDatabaseConfig,
-    plan: &DataImportPlan,
-) -> Result<usize, DataLayerError> {
-    match database.driver {
-        DatabaseDriver::Sqlite => {
-            let pool = crate::driver::sqlite::SqlitePoolFactory::new(database)?.connect_lazy()?;
-            import_sqlite_plan(&pool, plan).await
-        }
-        DatabaseDriver::Mysql => {
-            let pool = crate::driver::mysql::MysqlPoolFactory::new(database)?.connect_lazy()?;
-            import_mysql_plan(&pool, plan).await
-        }
-        DatabaseDriver::Postgres => {
-            let pool =
-                crate::driver::postgres::PostgresPoolFactory::new(database.to_postgres_config()?)?
-                    .connect_lazy()?;
-            import_postgres_plan(&pool, plan).await
-        }
-    }
-}
-
 pub async fn copy_database_records(
     source: SqlDatabaseConfig,
     target: SqlDatabaseConfig,
@@ -584,25 +401,19 @@ pub async fn copy_database_records(
     created_at_unix_secs: u64,
     options: DataCopyOptions,
 ) -> Result<usize, DataLayerError> {
-    let source_driver = source.driver;
-    let target_driver = target.driver;
+    if domains.is_empty()
+        && source.driver == DatabaseDriver::Postgres
+        && target.driver == DatabaseDriver::Sqlite
+    {
+        return copy_postgres_to_sqlite_from_target_schema(source, target, options).await;
+    }
+
     let mut records =
-        export_database_records(source.clone(), domains, created_at_unix_secs).await?;
+        decode_jsonl(&export_database_jsonl(source, domains, created_at_unix_secs).await?)?;
     if options.omit_request_body_details {
         omit_request_body_details_from_records(&mut records);
     }
-    let plan = build_import_plan_from_records(records)?;
-    let mut imported = import_database_plan(target.clone(), &plan).await?;
-
-    if !options.omit_request_body_details
-        && source_driver == DatabaseDriver::Postgres
-        && target_driver == DatabaseDriver::Sqlite
-    {
-        imported =
-            imported.saturating_add(copy_postgres_sqlite_usage_body_details(source, target).await?);
-    }
-
-    Ok(imported)
+    import_database_jsonl(target, &encode_jsonl(&records)?).await
 }
 
 fn omit_request_body_details_from_records(records: &mut [DataExportRecord]) {
@@ -624,262 +435,566 @@ fn omit_request_body_details_from_records(records: &mut [DataExportRecord]) {
     }
 }
 
-async fn copy_postgres_sqlite_usage_body_details(
+async fn copy_postgres_to_sqlite_from_target_schema(
     source: SqlDatabaseConfig,
-    target: SqlDatabaseConfig,
+    mut target: SqlDatabaseConfig,
+    options: DataCopyOptions,
 ) -> Result<usize, DataLayerError> {
+    target.pool.min_connections = 1;
+    target.pool.max_connections = 1;
+
     let postgres_pool =
         crate::driver::postgres::PostgresPoolFactory::new(source.to_postgres_config()?)?
             .connect_lazy()?;
     let sqlite_pool = crate::driver::sqlite::SqlitePoolFactory::new(target)?.connect_lazy()?;
 
-    ensure_sqlite_usage_body_detail_tables(&sqlite_pool).await?;
+    let source_tables = load_postgres_public_table_names(&postgres_pool).await?;
+    let target_tables = load_sqlite_copy_table_names(&sqlite_pool).await?;
+
+    ensure_no_nonempty_source_tables_outside_target_schema(
+        &postgres_pool,
+        &source_tables,
+        &target_tables,
+        options,
+    )
+    .await?;
 
     let mut imported = 0usize;
-    if postgres_table_exists(&postgres_pool, "public.usage_body_blobs").await? {
+    sqlx::raw_sql("PRAGMA foreign_keys = OFF")
+        .execute(&sqlite_pool)
+        .await
+        .map_sql_err()?;
+
+    for table_name in target_tables {
+        if copy_table_is_lifecycle(&table_name)
+            || copy_table_is_sqlite_internal(&table_name)
+            || !source_tables.contains(&table_name)
+            || (options.omit_request_body_details && copy_table_is_request_body_detail(&table_name))
+        {
+            continue;
+        }
+
+        let table_plan = build_postgres_sqlite_copy_table_plan(
+            &postgres_pool,
+            &sqlite_pool,
+            &table_name,
+            options,
+        )
+        .await?;
+        if table_plan.columns.is_empty() {
+            continue;
+        }
         imported = imported.saturating_add(
-            copy_postgres_usage_body_blobs_to_sqlite(&postgres_pool, &sqlite_pool).await?,
+            copy_postgres_sqlite_table(&postgres_pool, &sqlite_pool, &table_plan).await?,
         );
     }
-    if postgres_table_exists(&postgres_pool, "public.usage_http_audits").await? {
-        imported = imported.saturating_add(
-            copy_postgres_usage_http_audits_to_sqlite(&postgres_pool, &sqlite_pool).await?,
-        );
-    }
+
+    sqlx::raw_sql("PRAGMA foreign_keys = ON")
+        .execute(&sqlite_pool)
+        .await
+        .map_sql_err()?;
+    ensure_sqlite_foreign_key_check_passes(&sqlite_pool).await?;
     Ok(imported)
 }
 
-async fn postgres_table_exists(
-    pool: &crate::driver::postgres::PostgresPool,
-    table_name: &str,
-) -> Result<bool, DataLayerError> {
-    sqlx::query_scalar::<_, bool>("SELECT to_regclass($1) IS NOT NULL")
-        .bind(table_name)
-        .fetch_one(pool)
-        .await
-        .map_sql_err()
-}
-
-async fn ensure_sqlite_usage_body_detail_tables(
-    pool: &crate::driver::sqlite::SqlitePool,
+async fn ensure_no_nonempty_source_tables_outside_target_schema(
+    postgres_pool: &crate::driver::postgres::PostgresPool,
+    source_tables: &BTreeSet<String>,
+    target_tables: &BTreeSet<String>,
+    options: DataCopyOptions,
 ) -> Result<(), DataLayerError> {
-    sqlx::raw_sql(
-        r#"
-CREATE TABLE IF NOT EXISTS usage_body_blobs (
-    body_ref TEXT PRIMARY KEY NOT NULL,
-    request_id TEXT NOT NULL,
-    body_field TEXT NOT NULL,
-    payload_gzip BLOB NOT NULL,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (request_id, body_field),
-    FOREIGN KEY (request_id) REFERENCES "usage"(request_id) ON DELETE CASCADE
-);
-CREATE INDEX IF NOT EXISTS usage_body_blobs_request_id_idx
-    ON usage_body_blobs (request_id);
+    let mut missing = Vec::new();
+    for table_name in source_tables {
+        if copy_table_is_lifecycle(table_name)
+            || (options.omit_request_body_details && copy_table_is_request_body_detail(table_name))
+            || target_tables.contains(table_name)
+        {
+            continue;
+        }
+        if postgres_public_table_has_rows(postgres_pool, table_name).await? {
+            missing.push(table_name.clone());
+        }
+    }
 
-CREATE TABLE IF NOT EXISTS usage_http_audits (
-    request_id TEXT PRIMARY KEY NOT NULL,
-    request_headers TEXT,
-    provider_request_headers TEXT,
-    response_headers TEXT,
-    client_response_headers TEXT,
-    request_body_ref TEXT,
-    provider_request_body_ref TEXT,
-    response_body_ref TEXT,
-    client_response_body_ref TEXT,
-    request_body_state TEXT,
-    provider_request_body_state TEXT,
-    response_body_state TEXT,
-    client_response_body_state TEXT,
-    body_capture_mode TEXT NOT NULL DEFAULT 'none',
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (request_id) REFERENCES "usage"(request_id) ON DELETE CASCADE
-);
-CREATE INDEX IF NOT EXISTS usage_http_audits_updated_at_idx
-    ON usage_http_audits (updated_at);
-"#,
-    )
-    .execute(pool)
-    .await
-    .map_sql_err()?;
+    if !missing.is_empty() {
+        return Err(DataLayerError::InvalidInput(format!(
+            "source Postgres has non-empty public tables that do not exist in the target SQLite schema: {}",
+            missing.join(", ")
+        )));
+    }
     Ok(())
 }
 
-async fn copy_postgres_usage_body_blobs_to_sqlite(
+async fn build_postgres_sqlite_copy_table_plan(
     postgres_pool: &crate::driver::postgres::PostgresPool,
     sqlite_pool: &crate::driver::sqlite::SqlitePool,
-) -> Result<usize, DataLayerError> {
-    let rows = sqlx::query(
-        r#"
-SELECT
-  body_ref,
-  request_id,
-  body_field,
-  payload_gzip,
-  created_at::text AS created_at,
-  updated_at::text AS updated_at
-FROM public.usage_body_blobs
-ORDER BY body_ref ASC
-"#,
-    )
-    .fetch_all(postgres_pool)
-    .await
-    .map_sql_err()?;
+    table_name: &str,
+    options: DataCopyOptions,
+) -> Result<SchemaCopyTable, DataLayerError> {
+    let sqlite_columns = load_sqlite_copy_columns(sqlite_pool, table_name).await?;
+    let postgres_columns =
+        load_postgres_import_columns(postgres_pool, &format!("public.{table_name}")).await?;
+    let source_has_rows = postgres_public_table_has_rows(postgres_pool, table_name).await?;
+    let mut columns = Vec::new();
 
+    for sqlite_column in sqlite_columns {
+        if options.omit_request_body_details
+            && table_name == "usage"
+            && USAGE_REQUEST_BODY_DETAIL_COLUMNS.contains(&sqlite_column.name.as_str())
+        {
+            continue;
+        }
+
+        if let Some(postgres_column) = postgres_columns.get(&sqlite_column.name) {
+            columns.push(SchemaCopyColumn {
+                sqlite: sqlite_column,
+                postgres: postgres_column.clone(),
+            });
+            continue;
+        }
+
+        if source_has_rows && sqlite_copy_column_is_required(&sqlite_column) {
+            return Err(DataLayerError::InvalidInput(format!(
+                "target SQLite table '{table_name}' has required column '{}' that does not exist in source Postgres",
+                sqlite_column.name
+            )));
+        }
+    }
+
+    if source_has_rows && columns.is_empty() {
+        return Err(DataLayerError::InvalidInput(format!(
+            "source Postgres table '{table_name}' has rows, but none of its columns exist in target SQLite"
+        )));
+    }
+
+    Ok(SchemaCopyTable {
+        table_name: table_name.to_string(),
+        columns,
+    })
+}
+
+async fn copy_postgres_sqlite_table(
+    postgres_pool: &crate::driver::postgres::PostgresPool,
+    sqlite_pool: &crate::driver::sqlite::SqlitePool,
+    table: &SchemaCopyTable,
+) -> Result<usize, DataLayerError> {
+    let source_sql = postgres_schema_copy_select_sql(table)?;
+    let target_sql = sqlite_schema_copy_insert_sql(table)?;
+    let mut rows = sqlx::query(&source_sql).fetch(postgres_pool);
     let mut imported = 0usize;
-    for row in rows {
-        sqlx::query(
-            r#"
-INSERT OR REPLACE INTO usage_body_blobs (
-  body_ref,
-  request_id,
-  body_field,
-  payload_gzip,
-  created_at,
-  updated_at
-) VALUES (?, ?, ?, ?, ?, ?)
-"#,
-        )
-        .bind(row.try_get::<String, _>("body_ref").map_sql_err()?)
-        .bind(row.try_get::<String, _>("request_id").map_sql_err()?)
-        .bind(row.try_get::<String, _>("body_field").map_sql_err()?)
-        .bind(row.try_get::<Vec<u8>, _>("payload_gzip").map_sql_err()?)
-        .bind(row.try_get::<String, _>("created_at").map_sql_err()?)
-        .bind(row.try_get::<String, _>("updated_at").map_sql_err()?)
-        .execute(sqlite_pool)
-        .await
-        .map_sql_err()?;
+
+    while let Some(row) = rows.try_next().await.map_sql_err()? {
+        let payload = row.try_get::<Value, _>("payload").map_sql_err()?;
+        let object = payload.as_object().ok_or_else(|| {
+            DataLayerError::UnexpectedValue(format!(
+                "postgres copy row for table '{}' did not produce a JSON object",
+                table.table_name
+            ))
+        })?;
+        let mut query = sqlx::query(&target_sql);
+        for column in &table.columns {
+            let value = object.get(&column.sqlite.name).ok_or_else(|| {
+                DataLayerError::UnexpectedValue(format!(
+                    "postgres copy row for table '{}' is missing column '{}'",
+                    table.table_name, column.sqlite.name
+                ))
+            })?;
+            query = bind_sqlite_copy_value(query, value, &column.sqlite)?;
+        }
+        query.execute(sqlite_pool).await.map_sql_err()?;
         imported = imported.saturating_add(1);
     }
+
     Ok(imported)
 }
 
-async fn copy_postgres_usage_http_audits_to_sqlite(
-    postgres_pool: &crate::driver::postgres::PostgresPool,
-    sqlite_pool: &crate::driver::sqlite::SqlitePool,
-) -> Result<usize, DataLayerError> {
+fn postgres_schema_copy_select_sql(table: &SchemaCopyTable) -> Result<String, DataLayerError> {
+    let table_sql = format!(
+        "public.{}",
+        postgres_quote_identifier(table.table_name.as_str())?
+    );
+    let mut payload_parts = Vec::new();
+    for column in &table.columns {
+        if let Some(expr) = postgres_schema_copy_override_expr(column)? {
+            payload_parts.push(sql_string_literal(&column.sqlite.name));
+            payload_parts.push(expr);
+        }
+    }
+    let payload_sql = if payload_parts.is_empty() {
+        "to_jsonb(t)".to_string()
+    } else {
+        format!(
+            "to_jsonb(t) || jsonb_build_object({})",
+            payload_parts.join(", ")
+        )
+    };
+
+    let order_by = table
+        .columns
+        .iter()
+        .filter(|column| column.sqlite.primary_key_position > 0)
+        .map(|column| {
+            postgres_quote_identifier(&column.sqlite.name).map(|quoted| format!("t.{quoted} ASC"))
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    let order_sql = if order_by.is_empty() {
+        String::new()
+    } else {
+        format!(" ORDER BY {}", order_by.join(", "))
+    };
+
+    Ok(format!(
+        "SELECT {payload_sql} AS payload FROM {table_sql} AS t{order_sql}"
+    ))
+}
+
+fn postgres_schema_copy_override_expr(
+    column: &SchemaCopyColumn,
+) -> Result<Option<String>, DataLayerError> {
+    let column_sql = format!("t.{}", postgres_quote_identifier(&column.sqlite.name)?);
+    let affinity = sqlite_copy_affinity(&column.sqlite);
+
+    if affinity == SqliteCopyAffinity::Blob && is_postgres_bytea_column(&column.postgres) {
+        return Ok(Some(format!(
+            "CASE WHEN {column_sql} IS NULL THEN NULL ELSE encode({column_sql}, 'hex') END"
+        )));
+    }
+
+    if affinity == SqliteCopyAffinity::Integer && is_postgres_boolean_column(&column.postgres) {
+        return Ok(Some(format!(
+            "CASE WHEN {column_sql} IS NULL THEN NULL WHEN {column_sql} THEN 1 ELSE 0 END"
+        )));
+    }
+
+    if affinity == SqliteCopyAffinity::Integer
+        && (is_postgres_timestamp_column(&column.postgres)
+            || is_postgres_date_column(&column.postgres))
+    {
+        let timestamp_sql = if is_postgres_date_column(&column.postgres) {
+            format!("{column_sql}::timestamp")
+        } else {
+            column_sql.clone()
+        };
+        let multiplier = if sqlite_copy_column_stores_unix_millis(&column.sqlite.name) {
+            " * 1000"
+        } else {
+            ""
+        };
+        return Ok(Some(format!(
+            "CASE WHEN {column_sql} IS NULL THEN NULL ELSE FLOOR(EXTRACT(EPOCH FROM {timestamp_sql}){multiplier})::bigint END"
+        )));
+    }
+
+    Ok(None)
+}
+
+fn sqlite_schema_copy_insert_sql(table: &SchemaCopyTable) -> Result<String, DataLayerError> {
+    let table_sql = sqlite_quote_identifier(&table.table_name)?;
+    let column_sql = table
+        .columns
+        .iter()
+        .map(|column| sqlite_quote_identifier(&column.sqlite.name))
+        .collect::<Result<Vec<_>, _>>()?
+        .join(", ");
+    let placeholder_sql = vec!["?"; table.columns.len()].join(", ");
+    Ok(format!(
+        "INSERT OR REPLACE INTO {table_sql} ({column_sql}) VALUES ({placeholder_sql})"
+    ))
+}
+
+async fn load_postgres_public_table_names(
+    pool: &crate::driver::postgres::PostgresPool,
+) -> Result<BTreeSet<String>, DataLayerError> {
     let rows = sqlx::query(
         r#"
-SELECT
-  request_id,
-  request_headers::text AS request_headers,
-  provider_request_headers::text AS provider_request_headers,
-  response_headers::text AS response_headers,
-  client_response_headers::text AS client_response_headers,
-  request_body_ref,
-  provider_request_body_ref,
-  response_body_ref,
-  client_response_body_ref,
-  request_body_state,
-  provider_request_body_state,
-  response_body_state,
-  client_response_body_state,
-  body_capture_mode,
-  created_at::text AS created_at,
-  updated_at::text AS updated_at
-FROM public.usage_http_audits
-ORDER BY request_id ASC
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
+  AND table_type = 'BASE TABLE'
+ORDER BY table_name
 "#,
     )
-    .fetch_all(postgres_pool)
+    .fetch_all(pool)
     .await
     .map_sql_err()?;
 
-    let mut imported = 0usize;
+    let mut tables = BTreeSet::new();
     for row in rows {
-        sqlx::query(
-            r#"
-INSERT OR REPLACE INTO usage_http_audits (
-  request_id,
-  request_headers,
-  provider_request_headers,
-  response_headers,
-  client_response_headers,
-  request_body_ref,
-  provider_request_body_ref,
-  response_body_ref,
-  client_response_body_ref,
-  request_body_state,
-  provider_request_body_state,
-  response_body_state,
-  client_response_body_state,
-  body_capture_mode,
-  created_at,
-  updated_at
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        tables.insert(row.try_get::<String, _>("table_name").map_sql_err()?);
+    }
+    Ok(tables)
+}
+
+async fn load_sqlite_copy_table_names(
+    pool: &crate::driver::sqlite::SqlitePool,
+) -> Result<BTreeSet<String>, DataLayerError> {
+    let rows = sqlx::query(
+        r#"
+SELECT name
+FROM sqlite_schema
+WHERE type = 'table'
+  AND name NOT LIKE 'sqlite_%'
+ORDER BY name
 "#,
-        )
-        .bind(row.try_get::<String, _>("request_id").map_sql_err()?)
-        .bind(
-            row.try_get::<Option<String>, _>("request_headers")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("provider_request_headers")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("response_headers")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("client_response_headers")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("request_body_ref")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("provider_request_body_ref")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("response_body_ref")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("client_response_body_ref")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("request_body_state")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("provider_request_body_state")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("response_body_state")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<Option<String>, _>("client_response_body_state")
-                .map_sql_err()?,
-        )
-        .bind(
-            row.try_get::<String, _>("body_capture_mode")
-                .map_sql_err()?,
-        )
-        .bind(row.try_get::<String, _>("created_at").map_sql_err()?)
-        .bind(row.try_get::<String, _>("updated_at").map_sql_err()?)
-        .execute(sqlite_pool)
+    )
+    .fetch_all(pool)
+    .await
+    .map_sql_err()?;
+
+    let mut tables = BTreeSet::new();
+    for row in rows {
+        let table_name = row.try_get::<String, _>("name").map_sql_err()?;
+        if !copy_table_is_lifecycle(&table_name) && !copy_table_is_sqlite_internal(&table_name) {
+            tables.insert(table_name);
+        }
+    }
+    Ok(tables)
+}
+
+async fn load_sqlite_copy_columns(
+    pool: &crate::driver::sqlite::SqlitePool,
+    table_name: &str,
+) -> Result<Vec<SqliteCopyColumn>, DataLayerError> {
+    let table_sql = sqlite_quote_identifier(table_name)?;
+    let rows = sqlx::query(&format!("PRAGMA table_info({table_sql})"))
+        .fetch_all(pool)
         .await
         .map_sql_err()?;
-        imported = imported.saturating_add(1);
+
+    let mut columns = Vec::new();
+    for row in rows {
+        columns.push(SqliteCopyColumn {
+            name: row.try_get::<String, _>("name").map_sql_err()?,
+            declared_type: row
+                .try_get::<Option<String>, _>("type")
+                .map_sql_err()?
+                .unwrap_or_default(),
+            not_null: row.try_get::<i64, _>("notnull").map_sql_err()? != 0,
+            has_default: row
+                .try_get::<Option<String>, _>("dflt_value")
+                .map_sql_err()?
+                .is_some(),
+            primary_key_position: row.try_get::<i64, _>("pk").map_sql_err()?,
+        });
     }
-    Ok(imported)
+
+    if columns.is_empty() {
+        return Err(DataLayerError::UnexpectedValue(format!(
+            "target SQLite table '{table_name}' has no visible columns"
+        )));
+    }
+    Ok(columns)
+}
+
+async fn postgres_public_table_has_rows(
+    pool: &crate::driver::postgres::PostgresPool,
+    table_name: &str,
+) -> Result<bool, DataLayerError> {
+    let table_sql = format!("public.{}", postgres_quote_identifier(table_name)?);
+    sqlx::query_scalar::<_, bool>(&format!(
+        "SELECT EXISTS (SELECT 1 FROM {table_sql} LIMIT 1)"
+    ))
+    .fetch_one(pool)
+    .await
+    .map_sql_err()
+}
+
+async fn ensure_sqlite_foreign_key_check_passes(
+    pool: &crate::driver::sqlite::SqlitePool,
+) -> Result<(), DataLayerError> {
+    let rows = sqlx::query("PRAGMA foreign_key_check")
+        .fetch_all(pool)
+        .await
+        .map_sql_err()?;
+    if rows.is_empty() {
+        return Ok(());
+    }
+
+    let mut violations = Vec::new();
+    for row in rows.iter().take(10) {
+        let table = row
+            .try_get::<Option<String>, _>("table")
+            .map_sql_err()?
+            .unwrap_or_else(|| "<unknown>".to_string());
+        let rowid = row.try_get::<Option<i64>, _>("rowid").map_sql_err()?;
+        let parent = row
+            .try_get::<Option<String>, _>("parent")
+            .map_sql_err()?
+            .unwrap_or_else(|| "<unknown>".to_string());
+        violations.push(format!("{table} rowid={rowid:?} parent={parent}"));
+    }
+    Err(DataLayerError::InvalidInput(format!(
+        "target SQLite foreign key check failed after copy: {}",
+        violations.join("; ")
+    )))
+}
+
+fn copy_table_is_lifecycle(table_name: &str) -> bool {
+    LIFECYCLE_TABLES.contains(&table_name)
+}
+
+fn copy_table_is_sqlite_internal(table_name: &str) -> bool {
+    table_name.starts_with("sqlite_")
+}
+
+fn copy_table_is_request_body_detail(table_name: &str) -> bool {
+    REQUEST_BODY_DETAIL_TABLES.contains(&table_name)
+}
+
+fn sqlite_copy_column_is_required(column: &SqliteCopyColumn) -> bool {
+    (column.not_null || column.primary_key_position > 0) && !column.has_default
+}
+
+fn sqlite_copy_column_stores_unix_millis(column_name: &str) -> bool {
+    column_name.ends_with("_unix_ms")
+}
+
+fn sqlite_copy_affinity(column: &SqliteCopyColumn) -> SqliteCopyAffinity {
+    let declared_type = column.declared_type.to_ascii_uppercase();
+    if declared_type.contains("INT") {
+        SqliteCopyAffinity::Integer
+    } else if declared_type.contains("CHAR")
+        || declared_type.contains("CLOB")
+        || declared_type.contains("TEXT")
+    {
+        SqliteCopyAffinity::Text
+    } else if declared_type.contains("BLOB") || declared_type.trim().is_empty() {
+        SqliteCopyAffinity::Blob
+    } else if declared_type.contains("REAL")
+        || declared_type.contains("FLOA")
+        || declared_type.contains("DOUB")
+    {
+        SqliteCopyAffinity::Real
+    } else {
+        SqliteCopyAffinity::Numeric
+    }
+}
+
+fn is_postgres_bytea_column(column: &PostgresImportColumn) -> bool {
+    column.data_type == "bytea" || column.udt_name == "bytea"
+}
+
+fn is_postgres_date_column(column: &PostgresImportColumn) -> bool {
+    column.data_type == "date" || column.udt_name == "date"
+}
+
+fn bind_sqlite_copy_value<'q>(
+    query: sqlx::query::Query<'q, sqlx::Sqlite, sqlx::sqlite::SqliteArguments<'q>>,
+    value: &'q Value,
+    column: &SqliteCopyColumn,
+) -> Result<sqlx::query::Query<'q, sqlx::Sqlite, sqlx::sqlite::SqliteArguments<'q>>, DataLayerError>
+{
+    Ok(match sqlite_copy_affinity(column) {
+        SqliteCopyAffinity::Integer => match value {
+            Value::Null => query.bind(Option::<i64>::None),
+            Value::Bool(value) => query.bind(i64::from(*value)),
+            Value::Number(number) => {
+                let value = number
+                    .as_i64()
+                    .or_else(|| number.as_u64().and_then(|value| i64::try_from(value).ok()))
+                    .ok_or_else(|| {
+                        DataLayerError::InvalidInput(format!(
+                            "sqlite copy column '{}' expected integer, got {number}",
+                            column.name
+                        ))
+                    })?;
+                query.bind(value)
+            }
+            Value::String(value) => query.bind(value.parse::<i64>().map_err(|err| {
+                DataLayerError::InvalidInput(format!(
+                    "sqlite copy column '{}' expected integer string: {err}",
+                    column.name
+                ))
+            })?),
+            Value::Array(_) | Value::Object(_) => {
+                return Err(DataLayerError::InvalidInput(format!(
+                    "sqlite copy column '{}' expected integer-compatible value",
+                    column.name
+                )));
+            }
+        },
+        SqliteCopyAffinity::Real => match value {
+            Value::Null => query.bind(Option::<f64>::None),
+            Value::Number(number) => query.bind(number.as_f64().ok_or_else(|| {
+                DataLayerError::InvalidInput(format!(
+                    "sqlite copy column '{}' expected finite real value",
+                    column.name
+                ))
+            })?),
+            Value::String(value) => query.bind(value.parse::<f64>().map_err(|err| {
+                DataLayerError::InvalidInput(format!(
+                    "sqlite copy column '{}' expected real string: {err}",
+                    column.name
+                ))
+            })?),
+            Value::Bool(value) => query.bind(if *value { 1.0 } else { 0.0 }),
+            Value::Array(_) | Value::Object(_) => {
+                return Err(DataLayerError::InvalidInput(format!(
+                    "sqlite copy column '{}' expected real-compatible value",
+                    column.name
+                )));
+            }
+        },
+        SqliteCopyAffinity::Blob => match value {
+            Value::Null => query.bind(Option::<Vec<u8>>::None),
+            Value::String(value) => query.bind(hex_decode(value, &column.name)?),
+            Value::Array(values) => {
+                let mut bytes = Vec::with_capacity(values.len());
+                for value in values {
+                    let Some(byte) = value.as_u64().and_then(|value| u8::try_from(value).ok())
+                    else {
+                        return Err(DataLayerError::InvalidInput(format!(
+                            "sqlite copy column '{}' contains non-byte array value",
+                            column.name
+                        )));
+                    };
+                    bytes.push(byte);
+                }
+                query.bind(bytes)
+            }
+            Value::Bool(_) | Value::Number(_) | Value::Object(_) => {
+                return Err(DataLayerError::InvalidInput(format!(
+                    "sqlite copy column '{}' expected blob-compatible value",
+                    column.name
+                )));
+            }
+        },
+        SqliteCopyAffinity::Text | SqliteCopyAffinity::Numeric => {
+            bind_sqlite_json_value(query, value)?
+        }
+    })
+}
+
+fn sql_string_literal(value: &str) -> String {
+    format!("'{}'", value.replace('\'', "''"))
+}
+
+fn hex_decode(value: &str, column_name: &str) -> Result<Vec<u8>, DataLayerError> {
+    let value = value.trim();
+    if value.len() % 2 != 0 {
+        return Err(DataLayerError::InvalidInput(format!(
+            "sqlite copy column '{column_name}' has odd-length hex data"
+        )));
+    }
+
+    let mut bytes = Vec::with_capacity(value.len() / 2);
+    for index in (0..value.len()).step_by(2) {
+        let byte = u8::from_str_radix(&value[index..index + 2], 16).map_err(|err| {
+            DataLayerError::InvalidInput(format!(
+                "sqlite copy column '{column_name}' has invalid hex data at byte {}: {err}",
+                index / 2
+            ))
+        })?;
+        bytes.push(byte);
+    }
+    Ok(bytes)
 }
 
 pub async fn export_sqlite_core_jsonl(
     pool: &crate::driver::sqlite::SqlitePool,
     created_at_unix_secs: u64,
 ) -> Result<String, DataLayerError> {
-    let records = export_sqlite_core_records(pool, created_at_unix_secs).await?;
-    encode_jsonl(&records)
+    export_sqlite_jsonl(pool, sqlite_core_export_domains(), created_at_unix_secs).await
 }
 
 pub async fn export_sqlite_jsonl(
@@ -887,22 +1002,6 @@ pub async fn export_sqlite_jsonl(
     domains: Vec<ExportDomain>,
     created_at_unix_secs: u64,
 ) -> Result<String, DataLayerError> {
-    let records = export_sqlite_records(pool, domains, created_at_unix_secs).await?;
-    encode_jsonl(&records)
-}
-
-pub async fn export_sqlite_core_records(
-    pool: &crate::driver::sqlite::SqlitePool,
-    created_at_unix_secs: u64,
-) -> Result<Vec<DataExportRecord>, DataLayerError> {
-    export_sqlite_records(pool, sqlite_core_export_domains(), created_at_unix_secs).await
-}
-
-pub async fn export_sqlite_records(
-    pool: &crate::driver::sqlite::SqlitePool,
-    domains: Vec<ExportDomain>,
-    created_at_unix_secs: u64,
-) -> Result<Vec<DataExportRecord>, DataLayerError> {
     let manifest = DataExportManifest::new(
         created_at_unix_secs,
         Some(DatabaseDriver::Sqlite),
@@ -919,14 +1018,6 @@ pub async fn export_sqlite_records(
             export_sqlite_wallet_records(pool, &mut records).await?;
             continue;
         }
-        if domain == ExportDomain::Stats {
-            export_sqlite_stats_records(pool, &mut records).await?;
-            continue;
-        }
-        if domain == ExportDomain::Auxiliary {
-            export_sqlite_auxiliary_records(pool, &mut records).await?;
-            continue;
-        }
         let (table_name, id_column) = sqlite_domain_table(domain)?;
         let order_by = export_order_by(domain, id_column);
         let sql = format!("SELECT * FROM {table_name} ORDER BY {order_by}");
@@ -937,7 +1028,7 @@ pub async fn export_sqlite_records(
         }
     }
 
-    Ok(records)
+    encode_jsonl(&records)
 }
 
 pub async fn import_sqlite_jsonl(
@@ -969,20 +1060,6 @@ pub async fn import_sqlite_plan(
             }
             continue;
         }
-        if *domain == ExportDomain::Stats {
-            for row in plan.rows(*domain) {
-                import_sqlite_stats_row(pool, row, &mut column_cache).await?;
-                imported = imported.saturating_add(1);
-            }
-            continue;
-        }
-        if *domain == ExportDomain::Auxiliary {
-            for row in plan.rows(*domain) {
-                import_sqlite_auxiliary_row(pool, row, &mut column_cache).await?;
-                imported = imported.saturating_add(1);
-            }
-            continue;
-        }
         let (table_name, _id_column) = sqlite_domain_table(*domain)?;
         let target_columns =
             sqlite_import_columns_cached(pool, &mut column_cache, table_name).await?;
@@ -998,8 +1075,7 @@ pub async fn export_postgres_core_jsonl(
     pool: &crate::driver::postgres::PostgresPool,
     created_at_unix_secs: u64,
 ) -> Result<String, DataLayerError> {
-    let records = export_postgres_core_records(pool, created_at_unix_secs).await?;
-    encode_jsonl(&records)
+    export_postgres_jsonl(pool, postgres_core_export_domains(), created_at_unix_secs).await
 }
 
 pub async fn export_postgres_jsonl(
@@ -1007,22 +1083,6 @@ pub async fn export_postgres_jsonl(
     domains: Vec<ExportDomain>,
     created_at_unix_secs: u64,
 ) -> Result<String, DataLayerError> {
-    let records = export_postgres_records(pool, domains, created_at_unix_secs).await?;
-    encode_jsonl(&records)
-}
-
-pub async fn export_postgres_core_records(
-    pool: &crate::driver::postgres::PostgresPool,
-    created_at_unix_secs: u64,
-) -> Result<Vec<DataExportRecord>, DataLayerError> {
-    export_postgres_records(pool, postgres_core_export_domains(), created_at_unix_secs).await
-}
-
-pub async fn export_postgres_records(
-    pool: &crate::driver::postgres::PostgresPool,
-    domains: Vec<ExportDomain>,
-    created_at_unix_secs: u64,
-) -> Result<Vec<DataExportRecord>, DataLayerError> {
     let manifest = DataExportManifest::new(
         created_at_unix_secs,
         Some(DatabaseDriver::Postgres),
@@ -1039,14 +1099,6 @@ pub async fn export_postgres_records(
             export_postgres_wallet_records(pool, &mut records).await?;
             continue;
         }
-        if domain == ExportDomain::Stats {
-            export_postgres_stats_records(pool, &mut records).await?;
-            continue;
-        }
-        if domain == ExportDomain::Auxiliary {
-            export_postgres_auxiliary_records(pool, &mut records).await?;
-            continue;
-        }
         let (table_name, id_column) = postgres_domain_table(domain)?;
         let export_id_sql = postgres_export_id_sql(domain, id_column);
         let order_by = export_order_by(domain, id_column);
@@ -1061,7 +1113,7 @@ pub async fn export_postgres_records(
         }
     }
 
-    Ok(records)
+    encode_jsonl(&records)
 }
 
 pub async fn import_postgres_jsonl(
@@ -1089,20 +1141,6 @@ pub async fn import_postgres_plan(
         if *domain == ExportDomain::Wallets {
             for row in plan.rows(*domain) {
                 import_postgres_wallet_row(pool, row, &mut column_cache).await?;
-                imported = imported.saturating_add(1);
-            }
-            continue;
-        }
-        if *domain == ExportDomain::Stats {
-            for row in plan.rows(*domain) {
-                import_postgres_stats_row(pool, row, &mut column_cache).await?;
-                imported = imported.saturating_add(1);
-            }
-            continue;
-        }
-        if *domain == ExportDomain::Auxiliary {
-            for row in plan.rows(*domain) {
-                import_postgres_auxiliary_row(pool, row, &mut column_cache).await?;
                 imported = imported.saturating_add(1);
             }
             continue;
@@ -1135,8 +1173,7 @@ pub async fn export_mysql_core_jsonl(
     pool: &crate::driver::mysql::MysqlPool,
     created_at_unix_secs: u64,
 ) -> Result<String, DataLayerError> {
-    let records = export_mysql_core_records(pool, created_at_unix_secs).await?;
-    encode_jsonl(&records)
+    export_mysql_jsonl(pool, mysql_core_export_domains(), created_at_unix_secs).await
 }
 
 pub async fn export_mysql_jsonl(
@@ -1144,22 +1181,6 @@ pub async fn export_mysql_jsonl(
     domains: Vec<ExportDomain>,
     created_at_unix_secs: u64,
 ) -> Result<String, DataLayerError> {
-    let records = export_mysql_records(pool, domains, created_at_unix_secs).await?;
-    encode_jsonl(&records)
-}
-
-pub async fn export_mysql_core_records(
-    pool: &crate::driver::mysql::MysqlPool,
-    created_at_unix_secs: u64,
-) -> Result<Vec<DataExportRecord>, DataLayerError> {
-    export_mysql_records(pool, mysql_core_export_domains(), created_at_unix_secs).await
-}
-
-pub async fn export_mysql_records(
-    pool: &crate::driver::mysql::MysqlPool,
-    domains: Vec<ExportDomain>,
-    created_at_unix_secs: u64,
-) -> Result<Vec<DataExportRecord>, DataLayerError> {
     let manifest = DataExportManifest::new(
         created_at_unix_secs,
         Some(DatabaseDriver::Mysql),
@@ -1176,14 +1197,6 @@ pub async fn export_mysql_records(
             export_mysql_wallet_records(pool, &mut records).await?;
             continue;
         }
-        if domain == ExportDomain::Stats {
-            export_mysql_stats_records(pool, &mut records).await?;
-            continue;
-        }
-        if domain == ExportDomain::Auxiliary {
-            export_mysql_auxiliary_records(pool, &mut records).await?;
-            continue;
-        }
         let (table_name, id_column) = mysql_domain_table(domain)?;
         let order_by = export_order_by(domain, id_column);
         let sql = format!("SELECT * FROM {table_name} ORDER BY {order_by}");
@@ -1194,7 +1207,7 @@ pub async fn export_mysql_records(
         }
     }
 
-    Ok(records)
+    encode_jsonl(&records)
 }
 
 pub async fn import_mysql_jsonl(
@@ -1222,20 +1235,6 @@ pub async fn import_mysql_plan(
         if *domain == ExportDomain::Wallets {
             for row in plan.rows(*domain) {
                 import_mysql_wallet_row(pool, row, &mut column_cache).await?;
-                imported = imported.saturating_add(1);
-            }
-            continue;
-        }
-        if *domain == ExportDomain::Stats {
-            for row in plan.rows(*domain) {
-                import_mysql_stats_row(pool, row, &mut column_cache).await?;
-                imported = imported.saturating_add(1);
-            }
-            continue;
-        }
-        if *domain == ExportDomain::Auxiliary {
-            for row in plan.rows(*domain) {
-                import_mysql_auxiliary_row(pool, row, &mut column_cache).await?;
                 imported = imported.saturating_add(1);
             }
             continue;
@@ -1275,13 +1274,6 @@ fn sqlite_domain_table(
         ExportDomain::Usage => Ok((r#""usage""#, "request_id")),
         ExportDomain::Billing => Err(DataLayerError::InvalidInput(
             "sqlite billing export uses multiple tables and must be handled as a domain"
-                .to_string(),
-        )),
-        ExportDomain::Stats => Err(DataLayerError::InvalidInput(
-            "sqlite stats export uses multiple tables and must be handled as a domain".to_string(),
-        )),
-        ExportDomain::Auxiliary => Err(DataLayerError::InvalidInput(
-            "sqlite auxiliary export uses multiple tables and must be handled as a domain"
                 .to_string(),
         )),
     }
@@ -1492,177 +1484,6 @@ fn sqlite_wallet_table_name(table_name: &str) -> Result<&'static str, DataLayerE
         })
 }
 
-async fn export_sqlite_stats_records(
-    pool: &crate::driver::sqlite::SqlitePool,
-    records: &mut Vec<DataExportRecord>,
-) -> Result<(), DataLayerError> {
-    for spec in SQLITE_STATS_TABLES {
-        if !sqlite_table_exists(pool, spec.table_name).await? {
-            continue;
-        }
-        let sql = format!(
-            "SELECT * FROM {} ORDER BY {} ASC",
-            spec.table_name, spec.id_column
-        );
-        let rows = sqlx::query(&sql).fetch_all(pool).await.map_sql_err()?;
-        for row in rows {
-            let id = row
-                .try_get::<Option<String>, _>(spec.id_column)
-                .map_sql_err()?
-                .ok_or_else(|| {
-                    DataLayerError::UnexpectedValue(format!(
-                        "stats export row in table '{}' has null id",
-                        spec.table_name
-                    ))
-                })?;
-            records.push(DataExportRecord::row(
-                ExportDomain::Stats,
-                format!("{}:{id}", spec.table_name),
-                payload_with_table(sqlite_row_payload(&row)?, spec.table_name)?,
-            ));
-        }
-    }
-    Ok(())
-}
-
-async fn import_sqlite_stats_row(
-    pool: &crate::driver::sqlite::SqlitePool,
-    row: &ExportRow,
-    column_cache: &mut BTreeMap<String, ImportColumnNames>,
-) -> Result<(), DataLayerError> {
-    let (table_name, payload) = domain_payload_table(row, "stats", None)?;
-    let table_name = sqlite_stats_table_name(&table_name)?;
-    let target_columns = sqlite_import_columns_cached(pool, column_cache, table_name).await?;
-    import_sqlite_row(
-        pool,
-        table_name,
-        ExportDomain::Stats,
-        &ExportRow {
-            id: row.id.clone(),
-            payload,
-        },
-        &target_columns,
-    )
-    .await
-}
-
-fn sqlite_stats_table_name(table_name: &str) -> Result<&'static str, DataLayerError> {
-    SQLITE_STATS_TABLES
-        .iter()
-        .find(|spec| spec.table_name == table_name)
-        .map(|spec| spec.table_name)
-        .ok_or_else(|| {
-            DataLayerError::InvalidInput(format!(
-                "unsupported sqlite stats export table '{table_name}'"
-            ))
-        })
-}
-
-async fn export_sqlite_auxiliary_records(
-    pool: &crate::driver::sqlite::SqlitePool,
-    records: &mut Vec<DataExportRecord>,
-) -> Result<(), DataLayerError> {
-    for spec in AUXILIARY_TABLES {
-        if !sqlite_table_exists(pool, spec.table_name).await? {
-            continue;
-        }
-        let export_id_sql = sqlite_export_id_sql(spec.id_columns)?;
-        let order_by = spec
-            .id_columns
-            .iter()
-            .map(|column| sqlite_quote_identifier(column))
-            .collect::<Result<Vec<_>, _>>()?
-            .join(", ");
-        let sql = format!(
-            "SELECT *, {export_id_sql} AS __export_id FROM {} ORDER BY {order_by}",
-            spec.table_name
-        );
-        let rows = sqlx::query(&sql).fetch_all(pool).await.map_sql_err()?;
-        for row in rows {
-            let id = row
-                .try_get::<Option<String>, _>("__export_id")
-                .map_sql_err()?
-                .ok_or_else(|| {
-                    DataLayerError::UnexpectedValue(format!(
-                        "auxiliary export row in table '{}' has null id",
-                        spec.table_name
-                    ))
-                })?;
-            let payload = payload_without_export_id(sqlite_row_payload(&row)?)?;
-            records.push(DataExportRecord::row(
-                ExportDomain::Auxiliary,
-                format!("{}:{id}", spec.table_name),
-                payload_with_table(payload, spec.table_name)?,
-            ));
-        }
-    }
-    Ok(())
-}
-
-async fn import_sqlite_auxiliary_row(
-    pool: &crate::driver::sqlite::SqlitePool,
-    row: &ExportRow,
-    column_cache: &mut BTreeMap<String, ImportColumnNames>,
-) -> Result<(), DataLayerError> {
-    let (table_name, payload) = domain_payload_table(row, "auxiliary", None)?;
-    let table_name = sqlite_auxiliary_table_name(&table_name)?;
-    let target_columns = sqlite_import_columns_cached(pool, column_cache, table_name).await?;
-    import_sqlite_row(
-        pool,
-        table_name,
-        ExportDomain::Auxiliary,
-        &ExportRow {
-            id: row.id.clone(),
-            payload,
-        },
-        &target_columns,
-    )
-    .await
-}
-
-fn sqlite_auxiliary_table_name(table_name: &str) -> Result<&'static str, DataLayerError> {
-    AUXILIARY_TABLES
-        .iter()
-        .find(|spec| spec.table_name == table_name)
-        .map(|spec| spec.table_name)
-        .ok_or_else(|| {
-            DataLayerError::InvalidInput(format!(
-                "unsupported sqlite auxiliary export table '{table_name}'"
-            ))
-        })
-}
-
-fn sqlite_export_id_sql(id_columns: &[&str]) -> Result<String, DataLayerError> {
-    id_columns
-        .iter()
-        .map(|column| {
-            let quoted = sqlite_quote_identifier(column)?;
-            Ok(format!("CAST({quoted} AS TEXT)"))
-        })
-        .collect::<Result<Vec<_>, DataLayerError>>()
-        .map(|parts| parts.join(" || ':' || "))
-}
-
-async fn sqlite_table_exists(
-    pool: &crate::driver::sqlite::SqlitePool,
-    table_name: &str,
-) -> Result<bool, DataLayerError> {
-    sqlx::query_scalar::<_, bool>(
-        r#"
-SELECT EXISTS (
-  SELECT 1
-  FROM sqlite_master
-  WHERE type = 'table'
-    AND name = ?
-)
-"#,
-    )
-    .bind(table_name)
-    .fetch_one(pool)
-    .await
-    .map_sql_err()
-}
-
 async fn sqlite_import_columns_cached(
     pool: &crate::driver::sqlite::SqlitePool,
     cache: &mut BTreeMap<String, ImportColumnNames>,
@@ -1774,14 +1595,6 @@ fn postgres_domain_table(
         ExportDomain::Usage => Ok(("public.usage", "request_id")),
         ExportDomain::Billing => Err(DataLayerError::InvalidInput(
             "postgres billing export uses multiple tables and must be handled as a domain"
-                .to_string(),
-        )),
-        ExportDomain::Stats => Err(DataLayerError::InvalidInput(
-            "postgres stats export uses multiple tables and must be handled as a domain"
-                .to_string(),
-        )),
-        ExportDomain::Auxiliary => Err(DataLayerError::InvalidInput(
-            "postgres auxiliary export uses multiple tables and must be handled as a domain"
                 .to_string(),
         )),
     }
@@ -2241,211 +2054,6 @@ fn postgres_wallet_table_name(
         })
 }
 
-async fn export_postgres_stats_records(
-    pool: &crate::driver::postgres::PostgresPool,
-    records: &mut Vec<DataExportRecord>,
-) -> Result<(), DataLayerError> {
-    for spec in SQLITE_STATS_TABLES {
-        let table_name = format!("public.{}", spec.table_name);
-        if !postgres_table_exists(pool, &table_name).await? {
-            continue;
-        }
-        let payload_sql = postgres_stats_payload_sql(spec);
-        let sql = format!(
-            "SELECT {}::text AS export_id, {payload_sql} AS payload FROM {table_name} AS t ORDER BY {} ASC",
-            spec.id_column, spec.id_column
-        );
-        let rows = sqlx::query(&sql).fetch_all(pool).await.map_sql_err()?;
-        for row in rows {
-            let id = row.try_get::<String, _>("export_id").map_sql_err()?;
-            let payload = row.try_get::<Value, _>("payload").map_sql_err()?;
-            records.push(DataExportRecord::row(
-                ExportDomain::Stats,
-                format!("{}:{id}", spec.table_name),
-                payload,
-            ));
-        }
-    }
-    Ok(())
-}
-
-fn postgres_stats_payload_sql(spec: &StatsTableSpec) -> String {
-    postgres_multi_table_payload_sql(spec.table_name, spec.timestamp_columns)
-}
-
-fn postgres_auxiliary_payload_sql(spec: &AuxiliaryTableSpec) -> String {
-    postgres_multi_table_payload_sql(spec.table_name, spec.timestamp_columns)
-}
-
-fn postgres_multi_table_payload_sql(table_name: &str, timestamp_columns: &[&str]) -> String {
-    let mut fields = vec![format!("'__table'"), format!("'{table_name}'")];
-    for column in timestamp_columns {
-        fields.push(format!("'{column}'"));
-        fields.push(format!(
-            "CASE WHEN t.{column} IS NULL THEN NULL ELSE FLOOR(EXTRACT(EPOCH FROM t.{column}))::bigint END"
-        ));
-    }
-    format!("to_jsonb(t) || jsonb_build_object({})", fields.join(", "))
-}
-
-async fn export_postgres_auxiliary_records(
-    pool: &crate::driver::postgres::PostgresPool,
-    records: &mut Vec<DataExportRecord>,
-) -> Result<(), DataLayerError> {
-    for spec in AUXILIARY_TABLES {
-        let table_name = format!("public.{}", spec.table_name);
-        if !postgres_table_exists(pool, &table_name).await? {
-            continue;
-        }
-        let export_id_sql = postgres_export_id_expr_sql(spec.id_columns)?;
-        let order_by = postgres_export_order_sql(spec.id_columns)?;
-        let payload_sql = postgres_auxiliary_payload_sql(spec);
-        let sql = format!(
-            "SELECT {export_id_sql} AS export_id, {payload_sql} AS payload FROM {table_name} AS t ORDER BY {order_by}"
-        );
-        let rows = sqlx::query(&sql).fetch_all(pool).await.map_sql_err()?;
-        for row in rows {
-            let id = row.try_get::<String, _>("export_id").map_sql_err()?;
-            let payload = row.try_get::<Value, _>("payload").map_sql_err()?;
-            records.push(DataExportRecord::row(
-                ExportDomain::Auxiliary,
-                format!("{}:{id}", spec.table_name),
-                payload,
-            ));
-        }
-    }
-    Ok(())
-}
-
-fn postgres_export_id_expr_sql(id_columns: &[&str]) -> Result<String, DataLayerError> {
-    id_columns
-        .iter()
-        .map(|column| {
-            let quoted = postgres_quote_identifier(column)?;
-            Ok(format!("t.{quoted}::text"))
-        })
-        .collect::<Result<Vec<_>, DataLayerError>>()
-        .map(|parts| parts.join(" || ':' || "))
-}
-
-fn postgres_export_order_sql(id_columns: &[&str]) -> Result<String, DataLayerError> {
-    id_columns
-        .iter()
-        .map(|column| postgres_quote_identifier(column).map(|quoted| format!("t.{quoted} ASC")))
-        .collect::<Result<Vec<_>, DataLayerError>>()
-        .map(|parts| parts.join(", "))
-}
-
-async fn import_postgres_stats_row(
-    pool: &crate::driver::postgres::PostgresPool,
-    row: &ExportRow,
-    column_cache: &mut BTreeMap<String, PostgresImportColumns>,
-) -> Result<(), DataLayerError> {
-    let (export_table_name, payload) = domain_payload_table(row, "stats", None)?;
-    let (table_name, id_column) = postgres_stats_table_name(&export_table_name)?;
-    let target_columns = postgres_import_columns_cached(pool, column_cache, table_name).await?;
-    import_postgres_row(
-        pool,
-        table_name,
-        &[id_column],
-        ExportDomain::Stats,
-        &ExportRow {
-            id: row.id.clone(),
-            payload,
-        },
-        &target_columns,
-    )
-    .await
-}
-
-fn postgres_stats_table_name(
-    table_name: &str,
-) -> Result<(&'static str, &'static str), DataLayerError> {
-    SQLITE_STATS_TABLES
-        .iter()
-        .find(|spec| spec.table_name == table_name)
-        .map(|spec| {
-            let table_name = match spec.table_name {
-                "stats_hourly" => "public.stats_hourly",
-                "stats_summary" => "public.stats_summary",
-                "stats_hourly_user" => "public.stats_hourly_user",
-                "stats_hourly_user_model" => "public.stats_hourly_user_model",
-                "user_model_usage_counts" => "public.user_model_usage_counts",
-                "stats_hourly_model" => "public.stats_hourly_model",
-                "stats_hourly_provider" => "public.stats_hourly_provider",
-                "stats_daily" => "public.stats_daily",
-                "stats_daily_model" => "public.stats_daily_model",
-                "stats_daily_provider" => "public.stats_daily_provider",
-                "stats_daily_api_key" => "public.stats_daily_api_key",
-                "stats_daily_error" => "public.stats_daily_error",
-                "stats_user_daily" => "public.stats_user_daily",
-                "stats_user_summary" => "public.stats_user_summary",
-                "stats_user_daily_model" => "public.stats_user_daily_model",
-                "stats_user_daily_provider" => "public.stats_user_daily_provider",
-                "stats_user_daily_api_format" => "public.stats_user_daily_api_format",
-                "stats_daily_model_provider" => "public.stats_daily_model_provider",
-                "stats_user_daily_model_provider" => "public.stats_user_daily_model_provider",
-                "stats_daily_cost_savings" => "public.stats_daily_cost_savings",
-                "stats_daily_cost_savings_provider" => "public.stats_daily_cost_savings_provider",
-                "stats_daily_cost_savings_model" => "public.stats_daily_cost_savings_model",
-                "stats_daily_cost_savings_model_provider" => {
-                    "public.stats_daily_cost_savings_model_provider"
-                }
-                "stats_user_daily_cost_savings" => "public.stats_user_daily_cost_savings",
-                "stats_user_daily_cost_savings_provider" => {
-                    "public.stats_user_daily_cost_savings_provider"
-                }
-                "stats_user_daily_cost_savings_model" => {
-                    "public.stats_user_daily_cost_savings_model"
-                }
-                "stats_user_daily_cost_savings_model_provider" => {
-                    "public.stats_user_daily_cost_savings_model_provider"
-                }
-                _ => unreachable!("stats table list and postgres mapping must stay in sync"),
-            };
-            (table_name, spec.id_column)
-        })
-        .ok_or_else(|| {
-            DataLayerError::InvalidInput(format!(
-                "unsupported postgres stats export table '{table_name}'"
-            ))
-        })
-}
-
-async fn import_postgres_auxiliary_row(
-    pool: &crate::driver::postgres::PostgresPool,
-    row: &ExportRow,
-    column_cache: &mut BTreeMap<String, PostgresImportColumns>,
-) -> Result<(), DataLayerError> {
-    let (export_table_name, payload) = domain_payload_table(row, "auxiliary", None)?;
-    let spec = auxiliary_table_spec(&export_table_name)?;
-    let table_name = format!("public.{}", spec.table_name);
-    let target_columns = postgres_import_columns_cached(pool, column_cache, &table_name).await?;
-    import_postgres_row(
-        pool,
-        &table_name,
-        spec.id_columns,
-        ExportDomain::Auxiliary,
-        &ExportRow {
-            id: row.id.clone(),
-            payload,
-        },
-        &target_columns,
-    )
-    .await
-}
-
-fn auxiliary_table_spec(table_name: &str) -> Result<&'static AuxiliaryTableSpec, DataLayerError> {
-    AUXILIARY_TABLES
-        .iter()
-        .find(|spec| spec.table_name == table_name)
-        .ok_or_else(|| {
-            DataLayerError::InvalidInput(format!(
-                "unsupported auxiliary export table '{table_name}'"
-            ))
-        })
-}
-
 fn postgres_quote_identifier(identifier: &str) -> Result<String, DataLayerError> {
     if identifier.trim().is_empty() {
         return Err(DataLayerError::InvalidInput(
@@ -2487,13 +2095,6 @@ fn mysql_domain_table(
         ExportDomain::Usage => Ok(("`usage`", "request_id")),
         ExportDomain::Billing => Err(DataLayerError::InvalidInput(
             "mysql billing export uses multiple tables and must be handled as a domain".to_string(),
-        )),
-        ExportDomain::Stats => Err(DataLayerError::InvalidInput(
-            "mysql stats export uses multiple tables and must be handled as a domain".to_string(),
-        )),
-        ExportDomain::Auxiliary => Err(DataLayerError::InvalidInput(
-            "mysql auxiliary export uses multiple tables and must be handled as a domain"
-                .to_string(),
         )),
     }
 }
@@ -2581,85 +2182,6 @@ async fn export_mysql_wallet_records(
         }
     }
     Ok(())
-}
-
-async fn export_mysql_stats_records(
-    pool: &crate::driver::mysql::MysqlPool,
-    records: &mut Vec<DataExportRecord>,
-) -> Result<(), DataLayerError> {
-    for spec in MYSQL_STATS_TABLES {
-        if !mysql_table_exists(pool, spec.table_name).await? {
-            continue;
-        }
-        let export_id_sql = mysql_export_id_sql(&[spec.id_column])?;
-        let order_by = mysql_quote_identifier(spec.id_column)?;
-        let sql = format!(
-            "SELECT *, {export_id_sql} AS `__export_id` FROM {} ORDER BY {order_by} ASC",
-            spec.table_name
-        );
-        let rows = sqlx::query(&sql).fetch_all(pool).await.map_sql_err()?;
-        for row in rows {
-            let id = row.try_get::<String, _>("__export_id").map_sql_err()?;
-            let payload = payload_without_export_id(mysql_row_payload(&row)?)?;
-            records.push(DataExportRecord::row(
-                ExportDomain::Stats,
-                format!("{}:{id}", spec.table_name),
-                payload_with_table(payload, spec.table_name)?,
-            ));
-        }
-    }
-    Ok(())
-}
-
-async fn export_mysql_auxiliary_records(
-    pool: &crate::driver::mysql::MysqlPool,
-    records: &mut Vec<DataExportRecord>,
-) -> Result<(), DataLayerError> {
-    for spec in AUXILIARY_TABLES {
-        if !mysql_table_exists(pool, spec.table_name).await? {
-            continue;
-        }
-        let export_id_sql = mysql_export_id_sql(spec.id_columns)?;
-        let order_by = spec
-            .id_columns
-            .iter()
-            .map(|column| mysql_quote_identifier(column))
-            .collect::<Result<Vec<_>, _>>()?
-            .join(", ");
-        let sql = format!(
-            "SELECT *, {export_id_sql} AS `__export_id` FROM {} ORDER BY {order_by}",
-            spec.table_name
-        );
-        let rows = sqlx::query(&sql).fetch_all(pool).await.map_sql_err()?;
-        for row in rows {
-            let id = row.try_get::<String, _>("__export_id").map_sql_err()?;
-            let payload = payload_without_export_id(mysql_row_payload(&row)?)?;
-            records.push(DataExportRecord::row(
-                ExportDomain::Auxiliary,
-                format!("{}:{id}", spec.table_name),
-                payload_with_table(payload, spec.table_name)?,
-            ));
-        }
-    }
-    Ok(())
-}
-
-fn mysql_export_id_sql(id_columns: &[&str]) -> Result<String, DataLayerError> {
-    id_columns
-        .iter()
-        .map(|column| {
-            let quoted = mysql_quote_identifier(column)?;
-            Ok(format!("CAST({quoted} AS CHAR)"))
-        })
-        .collect::<Result<Vec<_>, DataLayerError>>()
-        .map(|parts| parts.join(", ':', "))
-        .map(|joined| {
-            if id_columns.len() == 1 {
-                joined
-            } else {
-                format!("CONCAT({joined})")
-            }
-        })
 }
 
 async fn import_mysql_row(
@@ -2776,91 +2298,6 @@ fn mysql_wallet_table_name(table_name: &str) -> Result<&'static str, DataLayerEr
                 "unsupported mysql wallet export table '{table_name}'"
             ))
         })
-}
-
-async fn import_mysql_stats_row(
-    pool: &crate::driver::mysql::MysqlPool,
-    row: &ExportRow,
-    column_cache: &mut BTreeMap<String, ImportColumnNames>,
-) -> Result<(), DataLayerError> {
-    let (table_name, payload) = domain_payload_table(row, "stats", None)?;
-    let table_name = mysql_stats_table_name(&table_name)?;
-    let target_columns = mysql_import_columns_cached(pool, column_cache, table_name).await?;
-    import_mysql_row(
-        pool,
-        table_name,
-        ExportDomain::Stats,
-        &ExportRow {
-            id: row.id.clone(),
-            payload,
-        },
-        &target_columns,
-    )
-    .await
-}
-
-fn mysql_stats_table_name(table_name: &str) -> Result<&'static str, DataLayerError> {
-    MYSQL_STATS_TABLES
-        .iter()
-        .find(|spec| spec.table_name == table_name)
-        .map(|spec| spec.table_name)
-        .ok_or_else(|| {
-            DataLayerError::InvalidInput(format!(
-                "unsupported mysql stats export table '{table_name}'"
-            ))
-        })
-}
-
-async fn import_mysql_auxiliary_row(
-    pool: &crate::driver::mysql::MysqlPool,
-    row: &ExportRow,
-    column_cache: &mut BTreeMap<String, ImportColumnNames>,
-) -> Result<(), DataLayerError> {
-    let (table_name, payload) = domain_payload_table(row, "auxiliary", None)?;
-    let table_name = mysql_auxiliary_table_name(&table_name)?;
-    let target_columns = mysql_import_columns_cached(pool, column_cache, table_name).await?;
-    import_mysql_row(
-        pool,
-        table_name,
-        ExportDomain::Auxiliary,
-        &ExportRow {
-            id: row.id.clone(),
-            payload,
-        },
-        &target_columns,
-    )
-    .await
-}
-
-fn mysql_auxiliary_table_name(table_name: &str) -> Result<&'static str, DataLayerError> {
-    AUXILIARY_TABLES
-        .iter()
-        .find(|spec| spec.table_name == table_name)
-        .map(|spec| spec.table_name)
-        .ok_or_else(|| {
-            DataLayerError::InvalidInput(format!(
-                "unsupported mysql auxiliary export table '{table_name}'"
-            ))
-        })
-}
-
-async fn mysql_table_exists(
-    pool: &crate::driver::mysql::MysqlPool,
-    table_name: &str,
-) -> Result<bool, DataLayerError> {
-    let count = sqlx::query_scalar::<_, i64>(
-        r#"
-SELECT COUNT(*)
-FROM information_schema.tables
-WHERE table_schema = DATABASE()
-  AND table_name = ?
-"#,
-    )
-    .bind(table_name)
-    .fetch_one(pool)
-    .await
-    .map_sql_err()?;
-    Ok(count > 0)
 }
 
 async fn mysql_import_columns_cached(
@@ -3006,14 +2443,6 @@ fn payload_with_table(payload: Value, table_name: &str) -> Result<Value, DataLay
     })?;
     normalize_billing_payload(table_name, &mut object)?;
     object.insert("__table".to_string(), Value::String(table_name.to_string()));
-    Ok(Value::Object(object))
-}
-
-fn payload_without_export_id(payload: Value) -> Result<Value, DataLayerError> {
-    let mut object = payload.as_object().cloned().ok_or_else(|| {
-        DataLayerError::UnexpectedValue("export row payload must be a JSON object".to_string())
-    })?;
-    object.remove("__export_id");
     Ok(Value::Object(object))
 }
 
@@ -3211,9 +2640,9 @@ mod tests {
         build_import_plan, decode_jsonl, encode_jsonl, export_mysql_core_jsonl, export_mysql_jsonl,
         export_postgres_core_jsonl, export_sqlite_core_jsonl, import_mysql_jsonl,
         import_postgres_jsonl, import_sqlite_jsonl, mysql_core_export_domains,
-        normalize_postgres_import_payload, omit_request_body_details_from_records,
-        postgres_core_export_domains, sqlite_core_export_domains, DataExportManifest,
-        DataExportRecord, DataImportPlan, ExportDomain, ExportRow, PostgresImportColumn,
+        normalize_postgres_import_payload, postgres_core_export_domains,
+        sqlite_core_export_domains, DataExportManifest, DataExportRecord, DataImportPlan,
+        ExportDomain, ExportRow, PostgresImportColumn,
     };
     use crate::driver::postgres::{PostgresPoolConfig, PostgresPoolFactory};
     use crate::lifecycle::migrate::{
@@ -3269,74 +2698,6 @@ mod tests {
     fn core_export_domains_match_across_sql_drivers() {
         assert_eq!(sqlite_core_export_domains(), mysql_core_export_domains());
         assert_eq!(sqlite_core_export_domains(), postgres_core_export_domains());
-    }
-
-    #[test]
-    fn postgres_auxiliary_payload_keeps_existing_unix_timestamp_columns() {
-        for table_name in [
-            "pool_member_scores",
-            "background_task_runs",
-            "background_task_events",
-        ] {
-            let spec =
-                super::auxiliary_table_spec(table_name).expect("auxiliary table spec should exist");
-            assert!(
-                spec.timestamp_columns.is_empty(),
-                "{table_name} stores unix timestamps directly and must not use EXTRACT(EPOCH)"
-            );
-            assert!(
-                !super::postgres_auxiliary_payload_sql(spec).contains("EXTRACT(EPOCH"),
-                "{table_name} export should not treat bigint unix timestamps as Postgres timestamps"
-            );
-        }
-    }
-
-    #[test]
-    fn omit_request_body_details_removes_legacy_usage_body_columns() {
-        let mut records = vec![
-            DataExportRecord::manifest(DataExportManifest::new(
-                1_700_000_000,
-                Some(DatabaseDriver::Postgres),
-                vec![ExportDomain::Usage],
-            )),
-            DataExportRecord::row(
-                ExportDomain::Usage,
-                "request-1",
-                json!({
-                    "request_id": "request-1",
-                    "request_body": {"model": "gpt-test"},
-                    "provider_request_body": {"temperature": 0.2},
-                    "response_body": {"output": "hello"},
-                    "client_response_body": {"output_text": "hello"},
-                    "request_body_compressed": "compressed-request",
-                    "provider_request_body_compressed": "compressed-provider-request",
-                    "response_body_compressed": "compressed-response",
-                    "client_response_body_compressed": "compressed-client-response",
-                    "input_tokens": 10
-                }),
-            ),
-        ];
-
-        omit_request_body_details_from_records(&mut records);
-
-        let DataExportRecord::Row { payload, .. } = &records[1] else {
-            panic!("second record should be usage row");
-        };
-        let object = payload.as_object().expect("payload should be an object");
-        for column_name in [
-            "request_body",
-            "provider_request_body",
-            "response_body",
-            "client_response_body",
-            "request_body_compressed",
-            "provider_request_body_compressed",
-            "response_body_compressed",
-            "client_response_body_compressed",
-        ] {
-            assert!(!object.contains_key(column_name));
-        }
-        assert_eq!(payload["request_id"], "request-1");
-        assert_eq!(payload["input_tokens"], 10);
     }
 
     #[test]
@@ -3530,10 +2891,6 @@ INSERT INTO wallets (id, user_id, created_at, updated_at)
 VALUES ('wallet-1', 'user-1', '1970-01-01T00:00:01Z', '1970-01-01T00:00:02Z');
 INSERT INTO "usage" (request_id, id, user_id, provider_name, model, status, billing_status, created_at_unix_ms, updated_at_unix_secs)
 VALUES ('request-1', 'request-1', 'user-1', 'Provider One', 'gpt-test', 'completed', 'settled', 1, 2);
-INSERT INTO usage_routing_snapshots (request_id, selected_provider_id, route_kind)
-VALUES ('request-1', 'provider-1', 'direct');
-INSERT INTO stats_user_daily_model (id, user_id, date, model, total_requests)
-VALUES ('stats-user-model-1', 'user-1', 1715731200, 'gpt-test', 7);
 "#,
         )
         .execute(&pool)
@@ -3573,18 +2930,6 @@ VALUES ('stats-user-model-1', 'user-1', 1715731200, 'gpt-test', 7);
             "ciphertext-provider"
         );
         assert_eq!(import_plan.rows(ExportDomain::Usage)[0].id, "request-1");
-        assert!(import_plan
-            .rows(ExportDomain::Stats)
-            .iter()
-            .any(|row| row.id == "stats_user_daily_model:stats-user-model-1"
-                && row.payload["__table"] == "stats_user_daily_model"
-                && row.payload["total_requests"] == 7));
-        assert!(import_plan
-            .rows(ExportDomain::Auxiliary)
-            .iter()
-            .any(|row| row.id == "usage_routing_snapshots:request-1"
-                && row.payload["__table"] == "usage_routing_snapshots"
-                && row.payload["selected_provider_id"] == "provider-1"));
         assert_eq!(import_plan.rows(ExportDomain::Billing).len(), 2);
         assert_eq!(
             import_plan.rows(ExportDomain::Billing)[0].payload["__table"],
@@ -3606,7 +2951,7 @@ VALUES ('stats-user-model-1', 'user-1', 1715731200, 'gpt-test', 7);
         let imported = import_sqlite_jsonl(&target_pool, &encoded)
             .await
             .expect("sqlite import should load exported rows");
-        assert_eq!(imported, import_plan_row_count(&import_plan));
+        assert_eq!(imported, 16);
 
         let imported_api_key = sqlx::query_as::<_, (String,)>(
             "SELECT key_encrypted FROM api_keys WHERE id = 'api-key-1'",
@@ -3641,22 +2986,6 @@ VALUES ('stats-user-model-1', 'user-1', 1715731200, 'gpt-test', 7);
         .expect("imported billing rule should load");
         assert_eq!(imported_billing_rule.0, "input_tokens * 0.01");
 
-        let imported_stats = sqlx::query_as::<_, (i64,)>(
-            "SELECT total_requests FROM stats_user_daily_model WHERE id = 'stats-user-model-1'",
-        )
-        .fetch_one(&target_pool)
-        .await
-        .expect("imported stats row should load");
-        assert_eq!(imported_stats.0, 7);
-
-        let imported_routing_snapshot = sqlx::query_as::<_, (String,)>(
-            "SELECT selected_provider_id FROM usage_routing_snapshots WHERE request_id = 'request-1'",
-        )
-        .fetch_one(&target_pool)
-        .await
-        .expect("imported routing snapshot should load");
-        assert_eq!(imported_routing_snapshot.0, "provider-1");
-
         if let Some(database_url) = std::env::var("AETHER_TEST_POSTGRES_URL")
             .ok()
             .filter(|value| !value.trim().is_empty())
@@ -3682,7 +3011,7 @@ VALUES ('stats-user-model-1', 'user-1', 1715731200, 'gpt-test', 7);
             let imported = import_postgres_jsonl(&postgres_pool, &encoded)
                 .await
                 .expect("postgres import should load exported rows");
-            assert_eq!(imported, import_plan_row_count(&import_plan));
+            assert_eq!(imported, 16);
 
             let imported_api_key = sqlx::query_as::<_, (String,)>(
                 "SELECT key_encrypted FROM api_keys WHERE id = 'api-key-1'",

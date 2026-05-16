@@ -75,10 +75,11 @@ The script keeps the production cutover window short:
    `AETHER_GATEWAY_DATA_ENCRYPTION_KEY`, admin settings, port, and app config.
 3. Installs the single-node release with `install.sh --mode single-node --skip-start`.
 4. Preflights SQLite migrations with the installed single-node binary.
-5. Pulls the target single-node image, confirms its `copy` command supports the
-   current migration domains, and verifies that its Docker image ID matches the
-   currently running source `app` image ID.
-6. Checks for non-empty Postgres tables not covered by the migration domains.
+5. Pulls the target single-node image, confirms its `copy` command is available,
+   and verifies that its Docker image ID matches the currently running source
+   `app` image ID.
+6. Uses the target SQLite schema as the migration plan: same-name source
+   Postgres tables and columns are copied into the temporary SQLite DB.
 7. Applies the compressed body and HTTP body detail policy. The default is full,
    and you can opt into an omit mode for large artifacts.
 8. Checks that the work directory and target SQLite directory have enough free
@@ -93,8 +94,8 @@ The image check compares Docker image IDs, not just tag strings. If both source
 and target say `latest` but resolve to different image IDs, migration stops.
 Upgrade the source PG Compose `app` to the target single-node version first,
 verify it is healthy, then run the migration. The scripts also check that the
-target image supports `stats`, `auxiliary`, and the request-body omit flag; using
-a new script with an old image stops before cutover to avoid missing data.
+target image supports direct copy and the request-body omit flag; using a new
+script with an old image stops before cutover to avoid missing data.
 
 ## Production Cutover
 
@@ -175,16 +176,16 @@ you want to inspect the stopped source deployment manually instead.
 
 ## Data Coverage Guard
 
-The current migration covers these persistent domains: users, API keys,
-providers, provider keys, endpoints, models, global models, auth modules, OAuth
-links, user groups, proxy nodes, system configs, wallets, usage, and billing
-data.
+The migration does not maintain a separate business-domain table list. The
+target single-node image first builds a temporary SQLite database with its
+normal migrations, then `aether-gateway copy` reads that SQLite schema and copies
+matching public Postgres tables and columns.
 
-Before stopping the app, and again after the source app has stopped, the script
-checks the source Postgres database for non-empty tables outside that migration
-coverage. It does not run source Postgres migrations or backfills during the
-cutover. It ignores lifecycle metadata tables such as `_sqlx_migrations` and
-`schema_backfills`. Any other non-empty uncovered table blocks the migration.
+If the source Postgres database has a non-empty public table that does not exist
+in the target SQLite schema, the copy stops instead of silently dropping it. It
+ignores lifecycle metadata tables such as `_sqlx_migrations` and
+`schema_backfills`. Extra source columns that are absent from the target schema
+are not copied.
 
 ## Request Body Detail Policy
 
@@ -219,15 +220,6 @@ scripts/migrate-pg-to-single-node.sh \
 
 `omit` only skips writing those large artifacts and detail tables into the
 target SQLite database. It does not delete or clear the source Postgres data.
-
-If a table is intentionally excluded, allow it explicitly:
-
-```bash
-scripts/migrate-pg-to-single-node.sh \
-  --allow-non-exported-table legacy_custom_table
-```
-
-Use that only after confirming the table is not required in the single-node target.
 
 ## Notes
 

@@ -30,8 +30,6 @@ INSTALL_DOWNLOAD_URL=""
 INSTALL_REPO=""
 INSTALL_SOURCE_REF=""
 
-EXTRA_ALLOWED_NON_EXPORTED_TABLES=()
-
 APP_STOPPED="false"
 CUTOVER_COMPLETE="false"
 SOURCE_COMPOSE_ABS=""
@@ -45,91 +43,6 @@ SINGLE_NODE_ENV=""
 SINGLE_NODE_BIN=""
 NOW=""
 ENV_FILE_ARGS=()
-
-EXPORTED_TABLES=(
-  announcement_reads
-  announcements
-  api_key_provider_mappings
-  users
-  api_keys
-  audit_logs
-  management_tokens
-  user_preferences
-  user_sessions
-  providers
-  provider_api_keys
-  provider_endpoints
-  provider_usage_tracking
-  models
-  global_models
-  gemini_file_mappings
-  ldap_configs
-  auth_modules
-  oauth_providers
-  user_oauth_links
-  user_groups
-  user_group_members
-  pool_member_scores
-  proxy_nodes
-  proxy_node_events
-  proxy_node_metrics_1m
-  proxy_node_metrics_1h
-  system_configs
-  request_candidates
-  video_tasks
-  usage
-  usage_routing_snapshots
-  billing_rules
-  dimension_collectors
-  usage_settlement_snapshots
-  wallets
-  wallet_transactions
-  wallet_daily_usage_ledgers
-  payment_orders
-  payment_callbacks
-  refund_requests
-  redeem_code_batches
-  redeem_codes
-  background_task_runs
-  background_task_events
-  stats_hourly
-  stats_summary
-  stats_hourly_user
-  stats_hourly_user_model
-  user_model_usage_counts
-  stats_hourly_model
-  stats_hourly_provider
-  stats_daily
-  stats_daily_model
-  stats_daily_provider
-  stats_daily_api_key
-  stats_daily_error
-  stats_user_daily
-  stats_user_summary
-  stats_user_daily_model
-  stats_user_daily_provider
-  stats_user_daily_api_format
-  stats_daily_model_provider
-  stats_user_daily_model_provider
-  stats_daily_cost_savings
-  stats_daily_cost_savings_provider
-  stats_daily_cost_savings_model
-  stats_daily_cost_savings_model_provider
-  stats_user_daily_cost_savings
-  stats_user_daily_cost_savings_provider
-  stats_user_daily_cost_savings_model
-  stats_user_daily_cost_savings_model_provider
-)
-
-IGNORED_LIFECYCLE_TABLES=(
-  _sqlx_migrations
-  schema_backfills
-)
-
-REQUEST_BODY_ARTIFACT_TABLES=(
-  usage_body_blobs
-  usage_http_audits
-)
 
 usage() {
   cat <<'EOF'
@@ -158,8 +71,6 @@ Options:
   --install-download-url URL  Pass --download-url to install.sh
   --install-repo OWNER/REPO   Pass --repo to install.sh
   --install-source-ref REF    Pass --source-ref to install.sh
-  --allow-non-exported-table TABLE
-                            Allow a specific non-exported source table to be non-empty
   --replace-existing          Allow replacing an existing target SQLite database
   --dry-run                   Install/preflight and copy to a temporary SQLite DB, but do not stop/switch
   --request-body-mode MODE    Request/response body detail handling: full/1 or omit/2
@@ -174,7 +85,7 @@ Default cutover behavior:
   1. Derive a single-node env file from the source .env, preserving JWT/encryption keys.
   2. Run install.sh --mode single-node --skip-start with that env file.
   3. Preflight SQLite migrations with the single-node binary.
-  4. Check migration coverage and available disk space.
+  4. Check request-body policy and available disk space.
   5. Pull the target single-node image and verify it matches the running source app image ID.
   6. Stop only the source app service; keep Postgres/Redis running.
   7. Copy Postgres records directly into a temporary SQLite DB without JSONL files.
@@ -339,11 +250,6 @@ parse_args() {
       --install-source-ref)
         [[ $# -ge 2 ]] || die "--install-source-ref requires a value"
         INSTALL_SOURCE_REF="$2"
-        shift 2
-        ;;
-      --allow-non-exported-table)
-        [[ $# -ge 2 ]] || die "--allow-non-exported-table requires a value"
-        EXTRA_ALLOWED_NON_EXPORTED_TABLES+=("$2")
         shift 2
         ;;
       --replace-existing)
@@ -609,16 +515,6 @@ copy_source_to_sqlite() {
     "${copy_args[@]}"
 }
 
-sql_quote_list() {
-  local sep=""
-  local item escaped
-  for item in "$@"; do
-    escaped="${item//\'/\'\'}"
-    printf "%s'%s'" "$sep" "$escaped"
-    sep=", "
-  done
-}
-
 run_psql_stdin() {
   local sql_file="$1"
   compose exec -T \
@@ -743,55 +639,6 @@ check_disk_space() {
   else
     assert_available_space "$WORK_DIR" "$((estimated_db_bytes + backup_bytes))" "work dir"
     assert_available_space "$target_dir" "$estimated_db_bytes" "target DB dir"
-  fi
-}
-
-check_non_exported_tables() {
-  local allowed_tables=("${EXPORTED_TABLES[@]}" "${IGNORED_LIFECYCLE_TABLES[@]}" "${REQUEST_BODY_ARTIFACT_TABLES[@]}" "${EXTRA_ALLOWED_NON_EXPORTED_TABLES[@]}")
-  local allow_sql
-  local sql_file
-  local result_file
-
-  allow_sql="$(sql_quote_list "${allowed_tables[@]}")"
-  sql_file="${WORK_DIR}/check-non-exported-tables.sql"
-  result_file="${WORK_DIR}/non-exported-tables.txt"
-
-  cat > "$sql_file" <<SQL
-CREATE TEMP TABLE aether_non_exported_nonempty_tables (
-  table_name text PRIMARY KEY
-) ON COMMIT PRESERVE ROWS;
-
-DO \$\$
-DECLARE
-  candidate record;
-  has_rows boolean;
-BEGIN
-  FOR candidate IN
-    SELECT tablename
-    FROM pg_tables
-    WHERE schemaname = 'public'
-      AND tablename NOT IN (${allow_sql})
-    ORDER BY tablename
-  LOOP
-    EXECUTE format('SELECT EXISTS (SELECT 1 FROM %I.%I LIMIT 1)', 'public', candidate.tablename)
-      INTO has_rows;
-    IF has_rows THEN
-      INSERT INTO aether_non_exported_nonempty_tables(table_name)
-      VALUES (candidate.tablename)
-      ON CONFLICT DO NOTHING;
-    END IF;
-  END LOOP;
-END
-\$\$;
-
-SELECT table_name FROM aether_non_exported_nonempty_tables ORDER BY table_name;
-SQL
-
-  run_psql_stdin "$sql_file" > "$result_file"
-
-  if [[ -s "$result_file" ]]; then
-    cat "$result_file" >&2
-    die "source Postgres has non-empty tables that are not covered by the current migration domains"
   fi
 }
 
@@ -935,13 +782,13 @@ assert_source_and_target_images_match() {
   fi
 }
 
-assert_target_copy_supports_migration_domains() {
+assert_target_copy_command_available() {
   local target_image="$1"
   local help_output
 
   help_output="$(docker run --rm --entrypoint aether-gateway "$target_image" copy --help 2>&1 || true)"
-  if [[ "$help_output" != *"stats"* || "$help_output" != *"auxiliary"* || "$help_output" != *"--omit-request-body-details"* ]]; then
-    die "target single-node image does not support the current PG-to-SQLite copy domains; use a matching Aether release image"
+  if [[ "$help_output" != *"--source-driver"* || "$help_output" != *"--target-driver"* || "$help_output" != *"--omit-request-body-details"* ]]; then
+    die "target single-node image does not support direct PG-to-SQLite copy; use a matching Aether release image"
   fi
 }
 
@@ -1132,9 +979,8 @@ main() {
   rm -f "$preflight_db"
   run_single_node_gateway "sqlite://${preflight_db}" --migrate
 
-  log "checking source tables that are outside the migration domains"
+  log "checking request body detail policy"
   check_request_body_artifacts
-  check_non_exported_tables
 
   log "checking available disk space before copy"
   check_disk_space
@@ -1143,15 +989,15 @@ main() {
   target_image="$(copy_image)"
   docker pull "$target_image"
 
-  log "checking target image copy command supports current migration domains"
-  assert_target_copy_supports_migration_domains "$target_image"
+  log "checking target image copy command is available"
+  assert_target_copy_command_available "$target_image"
 
   log "checking source app image matches target single-node image"
   assert_source_and_target_images_match "$target_image"
 
   if [[ "$DRY_RUN" == "true" ]]; then
     warn "dry-run copy happens while the source app may still be writing; use only for rehearsal"
-    log "copying source Postgres records directly into dry-run SQLite target"
+    log "copying source Postgres tables directly into dry-run SQLite target"
     copy_source_to_sqlite "$dry_run_db"
     log "dry run complete; temporary SQLite DB is ${dry_run_db}"
     return
@@ -1165,11 +1011,10 @@ main() {
   compose stop "$APP_SERVICE"
   APP_STOPPED="true"
 
-  log "checking source tables again after the app has stopped"
+  log "checking request body detail policy again after the app has stopped"
   check_request_body_artifacts
-  check_non_exported_tables
 
-  log "copying source Postgres records directly into temporary SQLite DB"
+  log "copying source Postgres tables directly into temporary SQLite DB"
   copy_source_to_sqlite "$target_temp_db"
 
   finalize_target_db "$target_temp_db"

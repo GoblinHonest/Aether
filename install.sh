@@ -62,7 +62,6 @@ MIGRATE_REPLACE_TARGET_COMPOSE="false"
 MIGRATE_KEEP_SOURCE_STOPPED_ON_ERROR="false"
 MIGRATE_INTERACTIVE="false"
 MIGRATE_REQUEST_BODY_MODE=""
-MIGRATE_ALLOW_NON_EXPORTED_TABLES=()
 
 usage() {
     cat <<'EOF'
@@ -105,8 +104,6 @@ Options:
                       Source compose Postgres service for migration
   --single-node-service NAME
                       Target compose service for --mode compose-single-node migration
-  --allow-non-exported-table TABLE
-                      Allow one source table outside export coverage to be non-empty
   --replace-existing   Allow replacing an existing target SQLite DB during migration
   --replace-target-compose
                       Overwrite target compose file from the single-node template during migration
@@ -341,11 +338,6 @@ parse_args() {
             --single-node-service)
                 [[ $# -ge 2 ]] || die "--single-node-service requires a service name"
                 MIGRATE_SINGLE_NODE_SERVICE="$2"
-                shift 2
-                ;;
-            --allow-non-exported-table)
-                [[ $# -ge 2 ]] || die "--allow-non-exported-table requires a table name"
-                MIGRATE_ALLOW_NON_EXPORTED_TABLES+=("$2")
                 shift 2
                 ;;
             --replace-existing)
@@ -1007,7 +999,6 @@ migration_options_requested() {
     [[ "${MIGRATE_REPLACE_TARGET_COMPOSE}" == "true" ]] && return 0
     [[ -n "${MIGRATE_REQUEST_BODY_MODE}" ]] && return 0
     [[ "${MIGRATE_KEEP_SOURCE_STOPPED_ON_ERROR}" == "true" ]] && return 0
-    [[ "${#MIGRATE_ALLOW_NON_EXPORTED_TABLES[@]}" -gt 0 ]] && return 0
     return 1
 }
 
@@ -1353,9 +1344,6 @@ run_compose_single_node_migration() {
     [[ -z "${MIGRATE_APP_SERVICE}" ]] || migrate_args+=(--app-service "${MIGRATE_APP_SERVICE}")
     [[ -z "${MIGRATE_POSTGRES_SERVICE}" ]] || migrate_args+=(--postgres-service "${MIGRATE_POSTGRES_SERVICE}")
     [[ -z "${MIGRATE_SINGLE_NODE_SERVICE}" ]] || migrate_args+=(--single-node-service "${MIGRATE_SINGLE_NODE_SERVICE}")
-    for table in "${MIGRATE_ALLOW_NON_EXPORTED_TABLES[@]}"; do
-        migrate_args+=(--allow-non-exported-table "${table}")
-    done
     [[ "${MIGRATE_REPLACE_EXISTING}" != "true" ]] || migrate_args+=(--replace-existing)
     [[ "${MIGRATE_REPLACE_TARGET_COMPOSE}" != "true" ]] || migrate_args+=(--replace-target-compose)
     [[ -z "${MIGRATE_REQUEST_BODY_MODE}" ]] || migrate_args+=(--request-body-mode "${MIGRATE_REQUEST_BODY_MODE}")
@@ -1399,9 +1387,6 @@ run_single_node_service_migration() {
     [[ -z "${MIGRATE_WORK_DIR}" ]] || migrate_args+=(--work-dir "${MIGRATE_WORK_DIR}")
     [[ -z "${MIGRATE_APP_SERVICE}" ]] || migrate_args+=(--app-service "${MIGRATE_APP_SERVICE}")
     [[ -z "${MIGRATE_POSTGRES_SERVICE}" ]] || migrate_args+=(--postgres-service "${MIGRATE_POSTGRES_SERVICE}")
-    for table in "${MIGRATE_ALLOW_NON_EXPORTED_TABLES[@]}"; do
-        migrate_args+=(--allow-non-exported-table "${table}")
-    done
     [[ "${MIGRATE_REPLACE_EXISTING}" != "true" ]] || migrate_args+=(--replace-existing)
     [[ -z "${MIGRATE_REQUEST_BODY_MODE}" ]] || migrate_args+=(--request-body-mode "${MIGRATE_REQUEST_BODY_MODE}")
     [[ "${MIGRATE_KEEP_SOURCE_STOPPED_ON_ERROR}" != "true" ]] || migrate_args+=(--keep-source-stopped-on-error)

@@ -71,9 +71,10 @@ PG Compose 文件，并确认该 Compose 配置里存在默认的 `app` 和 `pos
 3. 执行 `install.sh --mode single-node --skip-start`，提前安装 single-node
    release，但不启动服务。
 4. 使用已安装的 single-node 二进制预检 SQLite schema migration。
-5. 拉取目标 single-node 镜像，确认其 `copy` 命令支持当前迁移域，并检查源
-   `app` 当前运行镜像 ID 与目标镜像 ID 一致。
-6. 检查 Postgres 里是否存在当前迁移域没有覆盖、但又非空的表。
+5. 拉取目标 single-node 镜像，确认其 `copy` 命令可用，并检查源 `app`
+   当前运行镜像 ID 与目标镜像 ID 一致。
+6. 以目标 SQLite schema 作为迁移计划：把源 Postgres 中同名表、同名字段
+   复制到临时 SQLite DB。
 7. 检查请求体明细迁移策略；默认全部迁移，也可以选择只跳过请求体明细。
 8. 检查 work-dir 和目标 SQLite 目录是否有足够空间容纳临时库和正式库。
 9. 只停止源 Compose 的 `app` 服务，保留 Postgres 和 Redis 运行，方便回滚。
@@ -84,8 +85,8 @@ PG Compose 文件，并确认该 Compose 配置里存在默认的 `app` 和 `pos
 镜像一致性检查比较的是 Docker 镜像 ID，不只是 tag 字符串。即使源和目标都写着
 `latest`，只要实际镜像 ID 不同，迁移也会中止。请先把源 PG Compose 的 `app`
 升级到目标 single-node 相同版本，确认运行正常后再迁移。迁移脚本也会检查目标镜像
-是否支持 `stats`、`auxiliary` 和请求体跳过开关；如果只是换了脚本但镜像还是旧版本，
-脚本会直接中止，避免漏迁。
+是否支持直接 copy 和请求体跳过开关；如果只是换了脚本但镜像还是旧版本，脚本会
+直接中止，避免漏迁。
 
 ## 生产切换
 
@@ -166,14 +167,13 @@ docker compose -f docker-compose.yml up -d app
 
 ## 数据覆盖保护
 
-当前迁移覆盖的持久化域包括：用户、API Key、供应商、供应商 Key、
-端点、模型、全局模型、认证模块、OAuth 关联、用户组、代理节点、系统配置、
-钱包、用量和计费数据。
+迁移不再维护一份额外的业务表清单。目标 single-node 镜像会先用正常
+migrations 建出临时 SQLite 数据库，然后 `aether-gateway copy` 读取这个
+SQLite schema，把源 Postgres 里同名表、同名字段复制过去。
 
-脚本会在停机前，以及源 `app` 停止之后，再检查一次源 Postgres：如果发现
-当前迁移域没有覆盖的非空表，会直接中止迁移，避免漏迁。切换期间不会对源
-Postgres 执行 migrations 或 backfills。生命周期元数据表 `_sqlx_migrations`
-和 `schema_backfills` 会被忽略。
+如果源 Postgres 里存在非空 public 表，但目标 SQLite schema 中没有同名表，
+copy 会直接中止，不会静默丢弃。生命周期元数据表 `_sqlx_migrations` 和
+`schema_backfills` 会被忽略。源表中存在但目标 SQLite 不存在的额外字段不会复制。
 
 ## 请求体明细策略
 
@@ -205,15 +205,6 @@ scripts/migrate-pg-to-single-node.sh \
 ```
 
 `omit` 只是不把这些大字段和明细表写进目标 SQLite，不会删除或清空源 Postgres。
-
-如果某个表确认不需要迁移，可以显式允许：
-
-```bash
-scripts/migrate-pg-to-single-node.sh \
-  --allow-non-exported-table legacy_custom_table
-```
-
-只有在确认该表对 single-node 目标库不重要时才这样做。
 
 ## 注意事项
 

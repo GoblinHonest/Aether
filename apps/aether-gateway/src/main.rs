@@ -80,8 +80,6 @@ enum ExportDomainArg {
     Wallets,
     Usage,
     Billing,
-    Stats,
-    Auxiliary,
 }
 
 impl From<ExportDomainArg> for ExportDomain {
@@ -98,8 +96,6 @@ impl From<ExportDomainArg> for ExportDomain {
             ExportDomainArg::Wallets => ExportDomain::Wallets,
             ExportDomainArg::Usage => ExportDomain::Usage,
             ExportDomainArg::Billing => ExportDomain::Billing,
-            ExportDomainArg::Stats => ExportDomain::Stats,
-            ExportDomainArg::Auxiliary => ExportDomain::Auxiliary,
         }
     }
 }

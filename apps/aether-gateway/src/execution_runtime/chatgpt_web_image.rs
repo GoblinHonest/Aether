@@ -115,10 +115,9 @@ pub(crate) async fn maybe_execute_chatgpt_web_image_stream(
 }
 
 fn is_chatgpt_web_image_plan(plan: &ExecutionPlan, report_context: Option<&Value>) -> bool {
-    if !plan.client_api_format.eq_ignore_ascii_case("openai:image")
-        || !plan
-            .provider_api_format
-            .eq_ignore_ascii_case("openai:image")
+    if !plan
+        .provider_api_format
+        .eq_ignore_ascii_case("openai:image")
     {
         return false;
     }
@@ -2257,6 +2256,32 @@ data: [DONE]
         assert_eq!(result.status_code, 400);
         let body = execution_result_json(&result).expect("error should be json");
         assert_eq!(body["error"]["type"], "invalid_request_error");
+        assert_eq!(body["error"]["code"], "chatgpt_web_image_unsupported");
+    }
+
+    #[tokio::test]
+    async fn chatgpt_web_image_executor_accepts_marked_responses_client_plan() {
+        let state = crate::AppState::new().expect("state should build");
+        let mut plan = sample_plan(
+            CHATGPT_WEB_DEFAULT_BASE_URL,
+            json!({
+                "error": {
+                    "message": "ChatGPT-Web 不支持该分辨率",
+                    "type": "invalid_request_error",
+                    "code": "chatgpt_web_image_unsupported"
+                }
+            }),
+            false,
+        );
+        plan.client_api_format = "openai:responses".to_string();
+
+        let result = maybe_execute_chatgpt_web_image_sync(&state, &plan, None)
+            .await
+            .expect("executor should run")
+            .expect("marked image provider plan should be intercepted");
+
+        assert_eq!(result.status_code, 400);
+        let body = execution_result_json(&result).expect("error should be json");
         assert_eq!(body["error"]["code"], "chatgpt_web_image_unsupported");
     }
 

@@ -85,7 +85,32 @@ pub(crate) async fn maybe_build_local_openai_chat_decision_payload_for_candidate
         &mut extra_fields,
         resolved.transport.provider.provider_type.as_str(),
     );
+    if let Some(image_request_summary) = resolved.image_request_summary.as_ref() {
+        extra_fields.insert("image_request".to_string(), image_request_summary.clone());
+    }
+    if resolved
+        .provider_api_format
+        .eq_ignore_ascii_case("openai:image")
+        && resolved
+            .transport
+            .provider
+            .provider_type
+            .trim()
+            .eq_ignore_ascii_case("chatgpt_web")
+    {
+        extra_fields.insert("chatgpt_web_image".to_string(), serde_json::json!(true));
+        extra_fields.insert(
+            "local_failover_policy".to_string(),
+            serde_json::json!({
+                "stop_status_codes": [400, 401, 403, 429, 500, 502, 503, 504],
+                "error_stop_patterns": [
+                    { "pattern": ".*" }
+                ]
+            }),
+        );
+    }
     let super::request::LocalOpenAiChatCandidatePayloadParts {
+        client_api_format,
         auth_header,
         auth_value,
         mapped_model,
@@ -99,6 +124,7 @@ pub(crate) async fn maybe_build_local_openai_chat_decision_payload_for_candidate
         envelope_name,
         transport,
         request_redacted,
+        image_request_summary: _,
     } = resolved;
     let original_request_body_json = if request_redacted {
         Some(&provider_request_body)
@@ -122,7 +148,7 @@ pub(crate) async fn maybe_build_local_openai_chat_decision_payload_for_candidate
                 global_model_id: Some(&candidate.global_model_id),
                 global_model_name: Some(&candidate.global_model_name),
                 provider_api_format: &provider_api_format,
-                client_api_format: "openai:chat",
+                client_api_format: &client_api_format,
                 mapped_model: Some(&mapped_model),
                 candidate_group_id: eligible.orchestration.candidate_group_id.as_deref(),
                 pool_key_lease: eligible.orchestration.pool_key_lease.as_ref(),
@@ -154,7 +180,7 @@ pub(crate) async fn maybe_build_local_openai_chat_decision_payload_for_candidate
             }),
             execution_strategy,
             conversion_mode,
-            "openai:chat",
+            client_api_format.as_str(),
             candidate.endpoint_api_format.as_str(),
         ),
         &transport,
@@ -178,7 +204,7 @@ pub(crate) async fn maybe_build_local_openai_chat_decision_payload_for_candidate
             auth_header: Some(auth_header),
             auth_value: Some(auth_value),
             provider_api_format,
-            client_api_format: "openai:chat".to_string(),
+            client_api_format,
             model_name: input.requested_model.clone(),
             mapped_model,
             prompt_cache_key,

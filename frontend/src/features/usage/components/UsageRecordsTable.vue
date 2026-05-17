@@ -317,10 +317,9 @@
         <col v-if="isColumnVisible('tokens')" class="w-[10%]">
         <col v-if="isColumnVisible('cost')" class="w-[6%]">
         <col v-if="isColumnVisible('performance')" class="w-[9%]">
-        <col v-if="isColumnVisible('client_family')" class="w-[9%]">
+        <col v-if="isColumnVisible('client_family')" class="w-[12%]">
         <col v-if="isColumnVisible('client_ip')" class="w-[10%]">
         <col v-if="isColumnVisible('user_agent')" class="w-[13%]">
-        <col v-if="isColumnVisible('request_path')" class="w-[13%]">
       </colgroup>
       <colgroup v-else>
         <col v-if="isColumnVisible('time')" class="w-[9%]">
@@ -331,10 +330,9 @@
         <col v-if="isColumnVisible('tokens')" class="w-[11%]">
         <col v-if="isColumnVisible('cost')" class="w-[7%]">
         <col v-if="isColumnVisible('performance')" class="w-[10%]">
-        <col v-if="isColumnVisible('client_family')" class="w-[9%]">
+        <col v-if="isColumnVisible('client_family')" class="w-[12%]">
         <col v-if="isColumnVisible('client_ip')" class="w-[10%]">
         <col v-if="isColumnVisible('user_agent')" class="w-[13%]">
-        <col v-if="isColumnVisible('request_path')" class="w-[13%]">
       </colgroup>
       <TableHeader>
         <TableRow class="border-b border-border/60 hover:bg-transparent">
@@ -457,7 +455,7 @@
           </TableHead>
           <SortableTableHead
             v-if="isColumnVisible('client_family')"
-            class="h-12 font-semibold w-[9%]"
+            class="h-12 font-semibold w-[12%]"
             column-key="client_family"
             :sortable="false"
             :filter-active="filterClientFamily !== '__all__'"
@@ -479,9 +477,6 @@
           </TableHead>
           <TableHead v-if="isColumnVisible('user_agent')" class="h-12 font-semibold w-[13%]">
             User-Agent
-          </TableHead>
-          <TableHead v-if="isColumnVisible('request_path')" class="h-12 font-semibold w-[13%]">
-            请求路径
           </TableHead>
         </TableRow>
       </TableHeader>
@@ -802,15 +797,23 @@
           </TableCell>
           <TableCell
             v-if="isColumnVisible('client_family')"
-            class="py-4 w-[9%] text-xs"
-            :title="record.client_family || '-'"
+            class="py-4 w-[12%] text-xs"
+            :title="getClientTitle(record)"
           >
-            <Badge
-              variant="outline"
-              class="whitespace-nowrap border-border/60 text-muted-foreground"
-            >
-              {{ formatClientFamily(record.client_family) }}
-            </Badge>
+            <div class="flex min-w-0 flex-col gap-0.5">
+              <Badge
+                variant="outline"
+                class="w-fit max-w-full border-border/60 text-muted-foreground"
+              >
+                <span class="truncate">{{ getClientDisplayName(record) }}</span>
+              </Badge>
+              <span
+                v-if="record.client_ip"
+                class="truncate text-[11px] text-muted-foreground"
+              >
+                {{ record.client_ip }}
+              </span>
+            </div>
           </TableCell>
           <TableCell
             v-if="isColumnVisible('client_ip')"
@@ -825,13 +828,6 @@
             :title="record.user_agent || '-'"
           >
             {{ formatUserAgent(record.user_agent) }}
-          </TableCell>
-          <TableCell
-            v-if="isColumnVisible('request_path')"
-            class="py-4 w-[13%] text-xs truncate"
-            :title="getRequestPath(record) || '-'"
-          >
-            {{ getRequestPath(record) || '-' }}
           </TableCell>
         </TableRow>
       </TableBody>
@@ -926,7 +922,6 @@ type UsageRecordColumnId =
   | 'client_family'
   | 'client_ip'
   | 'user_agent'
-  | 'request_path'
 
 interface UsageRecordColumnOption {
   id: UsageRecordColumnId
@@ -949,7 +944,6 @@ const USAGE_RECORD_COLUMN_OPTIONS: UsageRecordColumnOption[] = [
   { id: 'client_family', label: '客户端类型' },
   { id: 'client_ip', label: 'IP 地址' },
   { id: 'user_agent', label: 'User-Agent' },
-  { id: 'request_path', label: '请求路径' },
 ]
 
 const DEFAULT_ADMIN_COLUMNS: UsageRecordColumnId[] = [
@@ -1087,8 +1081,7 @@ const desktopTableMinWidthClass = computed(() => {
   const metadataColumnCount = visibleColumnIds.value.filter(column => (
     column === 'client_family' ||
     column === 'client_ip' ||
-    column === 'user_agent' ||
-    column === 'request_path'
+    column === 'user_agent'
   )).length
   if (metadataColumnCount >= 3) return 'min-w-[1520px]'
   if (metadataColumnCount > 0) return 'min-w-[1320px]'
@@ -1124,10 +1117,42 @@ function formatClientFamily(value: string | null | undefined): string {
   const normalized = value?.trim().toLowerCase()
   if (!normalized) return '-'
   if (normalized === 'codex') return 'Codex'
+  if (normalized === 'codex_vscode') return 'Codex VS Code'
   if (normalized === 'claude_code') return 'Claude Code'
   if (normalized === 'opencode') return 'OpenCode'
+  if (normalized === 'gemini_cli') return 'Gemini CLI'
   if (normalized === 'generic') return '通用客户端'
   return value?.trim() || '-'
+}
+
+function formatClientFromUserAgent(value: string | null | undefined): string | null {
+  const userAgent = value?.trim()
+  if (!userAgent) return null
+
+  const normalized = userAgent.toLowerCase()
+  if (normalized.startsWith('codex_vscode')) return 'Codex VS Code'
+  if (normalized.startsWith('codex')) return 'Codex'
+  if (normalized.includes('claude-code') || normalized.includes('claude_code')) return 'Claude Code'
+  if (normalized.includes('opencode')) return 'OpenCode'
+  if (normalized.includes('geminicli') || normalized.includes('gemini-cli')) return 'Gemini CLI'
+
+  const product = userAgent.split(/[\s/]/)[0]?.trim()
+  return product || null
+}
+
+function getClientDisplayName(record: UsageRecord): string {
+  const family = formatClientFamily(record.client_family)
+  if (family !== '-') return family
+  return formatClientFromUserAgent(record.user_agent) || record.client_ip?.trim() || '-'
+}
+
+function getClientTitle(record: UsageRecord): string {
+  const details = [
+    record.client_family?.trim() ? `客户端: ${formatClientFamily(record.client_family)}` : null,
+    record.client_ip?.trim() ? `IP: ${record.client_ip.trim()}` : null,
+    record.user_agent?.trim() ? `User-Agent: ${record.user_agent.trim()}` : null,
+  ].filter((detail): detail is string => Boolean(detail))
+  return details.length > 0 ? details.join('\n') : '-'
 }
 
 const clientFamilyFilterOptions = computed<FilterOption[]>(() => {
@@ -1300,10 +1325,6 @@ function formatUserAgent(value: string | null | undefined): string {
   const userAgent = value?.trim()
   if (!userAgent) return '-'
   return userAgent.length > 48 ? `${userAgent.slice(0, 45)}...` : userAgent
-}
-
-function getRequestPath(record: UsageRecord): string | null {
-  return record.request_path_and_query?.trim() || record.request_path?.trim() || null
 }
 
 // useDebounceFn 自动处理清理，无需 onUnmounted

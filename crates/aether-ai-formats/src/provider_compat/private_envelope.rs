@@ -8,7 +8,7 @@ use crate::provider_compat::kiro_stream::KiroToClaudeCliStreamState;
 use super::surfaces::{
     provider_adaptation_allows_sync_finalize_envelope, provider_adaptation_descriptor_for_envelope,
     provider_adaptation_should_unwrap_stream_envelope, ANTIGRAVITY_V1INTERNAL_ENVELOPE_NAME,
-    GEMINI_CLI_V1INTERNAL_ENVELOPE_NAME, KIRO_ENVELOPE_NAME,
+    GEMINI_CLI_V1INTERNAL_ENVELOPE_NAME, KIRO_ENVELOPE_NAME, WINDSURF_ENVELOPE_NAME,
 };
 
 pub fn provider_private_response_allows_sync_finalize(report_context: &Value) -> bool {
@@ -92,6 +92,7 @@ pub fn normalize_provider_private_response_value(
                 data
             }
         }
+        Some(WINDSURF_ENVELOPE_NAME) => normalize_windsurf_sync_response_value(data)?,
         _ => return None,
     };
     postprocess_private_response_value(&mut unwrapped, report_context);
@@ -102,12 +103,26 @@ pub fn transform_provider_private_stream_line(
     report_context: &Value,
     line: Vec<u8>,
 ) -> Result<Vec<u8>, serde_json::Error> {
+    transform_provider_private_stream_line_with_event_state(report_context, line, &mut None)
+}
+
+fn transform_provider_private_stream_line_with_event_state(
+    report_context: &Value,
+    line: Vec<u8>,
+    current_event_type: &mut Option<String>,
+) -> Result<Vec<u8>, serde_json::Error> {
     let Ok(text) = std::str::from_utf8(&line) else {
         return Ok(line);
     };
     let trimmed = text.trim_matches('\r').trim();
-    if trimmed.is_empty() || trimmed.starts_with(':') || trimmed.starts_with("event:") {
+    if trimmed.is_empty() || trimmed.starts_with(':') {
         return Ok(Vec::new());
+    }
+    if let Some(event_name) = trimmed.strip_prefix("event:") {
+        let event_name = event_name.trim().to_string();
+        let is_error = event_name.eq_ignore_ascii_case("error");
+        *current_event_type = (!event_name.is_empty()).then_some(event_name);
+        return if is_error { Ok(line) } else { Ok(Vec::new()) };
     }
     let Some(data_line) = trimmed.strip_prefix("data:") else {
         return Ok(line);
@@ -121,6 +136,13 @@ pub fn transform_provider_private_stream_line(
         Ok(value) => value,
         Err(_) => return Ok(line),
     };
+    let event_is_error = current_event_type
+        .as_deref()
+        .is_some_and(|event| event.eq_ignore_ascii_case("error"));
+    *current_event_type = None;
+    if event_is_error {
+        return Ok(line);
+    }
 
     let envelope_name = report_context
         .get("envelope_name")
@@ -131,6 +153,9 @@ pub fn transform_provider_private_stream_line(
         .and_then(Value::as_str)
         .unwrap_or_default();
     if !provider_adaptation_should_unwrap_stream_envelope(envelope_name, provider_api_format) {
+        return Ok(line);
+    }
+    if envelope_name == WINDSURF_ENVELOPE_NAME && looks_like_windsurf_error(&body) {
         return Ok(line);
     }
     let unwrapped = match envelope_name {
@@ -147,6 +172,7 @@ pub fn transform_provider_private_stream_line(
             inject_antigravity_stream_tool_ids(&mut response);
             response
         }
+        WINDSURF_ENVELOPE_NAME => normalize_windsurf_stream_event_value(&body).unwrap_or(body),
         _ => body,
     };
 
@@ -164,6 +190,7 @@ enum ProviderPrivateStreamNormalizeMode {
 pub struct ProviderPrivateStreamNormalizer<'a> {
     report_context: &'a Value,
     buffered: Vec<u8>,
+    current_event_type: Option<String>,
     mode: ProviderPrivateStreamNormalizeMode,
 }
 
@@ -203,6 +230,7 @@ pub fn maybe_build_provider_private_stream_normalizer<'a>(
     Some(ProviderPrivateStreamNormalizer {
         report_context,
         buffered: Vec::new(),
+        current_event_type: None,
         mode,
     })
 }
@@ -219,8 +247,12 @@ impl ProviderPrivateStreamNormalizer<'_> {
                 while let Some(line_end) = self.buffered.iter().position(|byte| *byte == b'\n') {
                     let line = self.buffered.drain(..=line_end).collect::<Vec<_>>();
                     output.extend(
-                        transform_provider_private_stream_line(self.report_context, line)
-                            .map_err(AiSurfaceFinalizeError::from)?,
+                        transform_provider_private_stream_line_with_event_state(
+                            self.report_context,
+                            line,
+                            &mut self.current_event_type,
+                        )
+                        .map_err(AiSurfaceFinalizeError::from)?,
                     );
                 }
                 Ok(output)
@@ -238,11 +270,169 @@ impl ProviderPrivateStreamNormalizer<'_> {
                     return Ok(Vec::new());
                 }
                 let line = std::mem::take(&mut self.buffered);
-                transform_provider_private_stream_line(self.report_context, line)
-                    .map_err(AiSurfaceFinalizeError::from)
+                transform_provider_private_stream_line_with_event_state(
+                    self.report_context,
+                    line,
+                    &mut self.current_event_type,
+                )
+                .map_err(AiSurfaceFinalizeError::from)
             }
         }
     }
+}
+
+fn normalize_windsurf_sync_response_value(data: Value) -> Option<Value> {
+    if looks_like_openai_chat_response(&data) {
+        return Some(data);
+    }
+    if looks_like_windsurf_error(&data) {
+        return None;
+    }
+    if let Some(response) = data
+        .get("response")
+        .or_else(|| data.get("message"))
+        .or_else(|| data.get("chatMessage"))
+        .cloned()
+    {
+        if looks_like_openai_chat_response(&response) {
+            return Some(response);
+        }
+        if let Some(text) = extract_windsurf_text(&response) {
+            return Some(build_openai_chat_response_from_text(&data, text));
+        }
+    }
+    extract_windsurf_text(&data).map(|text| build_openai_chat_response_from_text(&data, text))
+}
+
+fn normalize_windsurf_stream_event_value(data: &Value) -> Option<Value> {
+    if looks_like_openai_chat_stream_event(data) {
+        return Some(data.clone());
+    }
+    if looks_like_windsurf_error(data) {
+        return None;
+    }
+    let response = data
+        .get("response")
+        .or_else(|| data.get("message"))
+        .or_else(|| data.get("chatMessage"))
+        .unwrap_or(data);
+    if looks_like_openai_chat_stream_event(response) {
+        return Some(response.clone());
+    }
+    extract_windsurf_text(response).map(|text| {
+        serde_json::json!({
+            "id": windsurf_response_id(data),
+            "object": "chat.completion.chunk",
+            "choices": [{
+                "index": 0,
+                "delta": {"content": text},
+                "finish_reason": null
+            }]
+        })
+    })
+}
+
+fn looks_like_openai_chat_response(value: &Value) -> bool {
+    value
+        .get("choices")
+        .and_then(Value::as_array)
+        .is_some_and(|choices| !choices.is_empty())
+}
+
+fn looks_like_openai_chat_stream_event(value: &Value) -> bool {
+    value
+        .get("choices")
+        .and_then(Value::as_array)
+        .and_then(|choices| choices.first())
+        .and_then(Value::as_object)
+        .is_some_and(|choice| choice.contains_key("delta"))
+}
+
+fn looks_like_windsurf_error(value: &Value) -> bool {
+    let Some(object) = value.as_object() else {
+        return false;
+    };
+    if object.contains_key("error") {
+        return true;
+    }
+    if object
+        .get("type")
+        .and_then(Value::as_str)
+        .is_some_and(|value| value.eq_ignore_ascii_case("error"))
+    {
+        return true;
+    }
+    if object.contains_key("code") || object.contains_key("status") {
+        return object
+            .get("message")
+            .and_then(Value::as_str)
+            .is_some_and(|value| !value.trim().is_empty());
+    }
+    object
+        .get("message")
+        .and_then(Value::as_str)
+        .is_some_and(|value| !value.trim().is_empty())
+        && !object.contains_key("response")
+        && !object.contains_key("chatMessage")
+        && !object.contains_key("choices")
+        && !object.contains_key("text")
+        && !object.contains_key("content")
+        && !object.contains_key("assistantMessage")
+        && !object.contains_key("assistant_message")
+}
+
+fn extract_windsurf_text(value: &Value) -> Option<String> {
+    if let Some(text) = value
+        .as_str()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        return Some(text.to_string());
+    }
+    let object = value.as_object()?;
+    for key in [
+        "text",
+        "content",
+        "message",
+        "answer",
+        "completion",
+        "assistantMessage",
+        "assistant_message",
+    ] {
+        if let Some(text) = object
+            .get(key)
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+        {
+            return Some(text.to_string());
+        }
+    }
+    None
+}
+
+fn windsurf_response_id(value: &Value) -> String {
+    value
+        .get("id")
+        .or_else(|| value.get("responseId"))
+        .or_else(|| value.get("messageId"))
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("windsurf-cascade")
+        .to_string()
+}
+
+fn build_openai_chat_response_from_text(source: &Value, text: String) -> Value {
+    serde_json::json!({
+        "id": windsurf_response_id(source),
+        "object": "chat.completion",
+        "choices": [{
+            "index": 0,
+            "message": {"role": "assistant", "content": text},
+            "finish_reason": "stop"
+        }]
+    })
 }
 
 pub fn stream_body_contains_error_event(body: &[u8]) -> bool {
@@ -498,6 +688,47 @@ mod tests {
     }
 
     #[test]
+    fn normalizes_windsurf_sync_text_response_to_openai_chat() {
+        let report_context = json!({
+            "has_envelope": true,
+            "envelope_name": "windsurf:GetChatMessage",
+            "provider_api_format": "openai:chat",
+        });
+        let normalized = normalize_provider_private_response_value(
+            json!({
+                "responseId": "ws-1",
+                "response": {"text": "hello from cascade"}
+            }),
+            &report_context,
+        )
+        .expect("windsurf response should normalize");
+
+        assert_eq!(normalized["id"], json!("ws-1"));
+        assert_eq!(
+            normalized["choices"][0]["message"]["content"],
+            json!("hello from cascade")
+        );
+    }
+
+    #[test]
+    fn unwraps_windsurf_stream_text_event() {
+        let report_context = json!({
+            "has_envelope": true,
+            "envelope_name": "windsurf:GetChatMessage",
+            "provider_api_format": "openai:chat",
+        });
+        let output = transform_provider_private_stream_line(
+            &report_context,
+            br#"data: {"responseId":"ws-2","response":{"text":"chunk"}}"#.to_vec(),
+        )
+        .expect("windsurf stream line should transform");
+        let text = String::from_utf8(output).expect("utf8");
+
+        assert!(text.contains(r#""object":"chat.completion.chunk""#));
+        assert!(text.contains(r#""content":"chunk""#));
+    }
+
+    #[test]
     fn private_stream_normalizer_unwraps_antigravity_stream() {
         let report_context = json!({
             "has_envelope": true,
@@ -525,5 +756,40 @@ data: {"message":"bad"}
 
 "#;
         assert!(stream_body_contains_error_event(body));
+    }
+
+    #[test]
+    fn windsurf_sync_error_message_is_not_normalized_as_success() {
+        let report_context = json!({
+            "has_envelope": true,
+            "envelope_name": "windsurf:GetChatMessage",
+            "provider_api_format": "openai:chat",
+        });
+
+        let normalized = normalize_provider_private_response_value(
+            json!({"message": "rate limited"}),
+            &report_context,
+        );
+
+        assert!(normalized.is_none());
+    }
+
+    #[test]
+    fn windsurf_stream_error_event_is_preserved() {
+        let report_context = json!({
+            "has_envelope": true,
+            "envelope_name": "windsurf:GetChatMessage",
+            "provider_api_format": "openai:chat",
+        });
+        let mut normalizer = maybe_build_provider_private_stream_normalizer(Some(&report_context))
+            .expect("normalizer should exist");
+        let output = normalizer
+            .push_chunk(b"event: error\ndata: {\"message\":\"rate limited\"}\n\n")
+            .expect("normalizer should preserve error event");
+        let output_text = String::from_utf8(output).expect("utf8");
+
+        assert!(output_text.contains("event: error"));
+        assert!(output_text.contains("\"message\":\"rate limited\""));
+        assert!(!output_text.contains("chat.completion.chunk"));
     }
 }

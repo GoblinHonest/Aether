@@ -214,6 +214,53 @@ function getGrokQuotaText(quota: QuotaStatusSnapshot): string | null {
   return normalizeText(quota.label)
 }
 
+function getWindsurfQuotaText(quota: QuotaStatusSnapshot): string | null {
+  const code = normalizeText(quota.code)?.toLowerCase()
+  if (code === 'banned' || code === 'forbidden' || code === 'quarantined') {
+    return normalizeText(quota.label) || '账号不可用'
+  }
+  if (code === 'rate_limited' || code === 'rate_limit' || code === 'cooldown') {
+    return normalizeText(quota.label) || '速率受限'
+  }
+  if (code === 'exhausted') {
+    return normalizeText(quota.label) || '额度已耗尽'
+  }
+
+  const parts: string[] = []
+  const dailyRemaining = getQuotaWindowRemainingPercent(getQuotaWindow(quota, 'daily'))
+  const weeklyRemaining = getQuotaWindowRemainingPercent(getQuotaWindow(quota, 'weekly'))
+  if (dailyRemaining != null) parts.push(`日剩余 ${formatPercent(dailyRemaining)}`)
+  if (weeklyRemaining != null) parts.push(`周剩余 ${formatPercent(weeklyRemaining)}`)
+
+  for (const [label, code] of [
+    ['Prompt', 'prompt'],
+    ['Flex', 'flex'],
+  ] as const) {
+    const window = getQuotaWindow(quota, code)
+    if (!window) continue
+    if (typeof window.remaining_value === 'number' && typeof window.limit_value === 'number' && window.limit_value > 0) {
+      parts.push(`${label} 剩余 ${formatQuotaValue(window.remaining_value)}/${formatQuotaValue(window.limit_value)}`)
+      continue
+    }
+    if (typeof window.used_value === 'number' && typeof window.limit_value === 'number' && window.limit_value > 0) {
+      parts.push(`${label} 剩余 ${formatQuotaValue(Math.max(window.limit_value - window.used_value, 0))}/${formatQuotaValue(window.limit_value)}`)
+      continue
+    }
+    const remainingPercent = getQuotaWindowRemainingPercent(window)
+    if (remainingPercent != null) {
+      parts.push(`${label} 剩余 ${formatPercent(remainingPercent)}`)
+    }
+  }
+
+  if (typeof quota.allowed_models_count === 'number') {
+    parts.push(`可用模型 ${quota.allowed_models_count} 个`)
+  }
+
+  if (parts.length > 0) return parts.join(' | ')
+
+  return normalizeText(quota.label)
+}
+
 function getAntigravityQuotaText(quota: QuotaStatusSnapshot): string | null {
   const code = normalizeText(quota.code)?.toLowerCase()
   if (code === 'forbidden') {
@@ -312,6 +359,8 @@ export function getQuotaSnapshotFallbackText(
       return getKiroQuotaText(quota)
     case 'grok':
       return getGrokQuotaText(quota)
+    case 'windsurf':
+      return getWindsurfQuotaText(quota)
     case 'antigravity':
       return getAntigravityQuotaText(quota)
     case 'gemini_cli':

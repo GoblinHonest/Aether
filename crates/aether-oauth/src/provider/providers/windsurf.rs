@@ -214,7 +214,7 @@ impl WindsurfProviderOAuthAdapter {
                 request_id: "provider-oauth:windsurf-auth1-login".to_string(),
                 method: reqwest::Method::POST,
                 url: AUTH1_PASSWORD_LOGIN_URL.to_string(),
-                headers: json_headers(),
+                headers: windsurf_browser_json_headers(),
                 content_type: Some("application/json".to_string()),
                 json_body: Some(json!({ "email": email, "password": password })),
                 body_bytes: None,
@@ -255,12 +255,11 @@ impl WindsurfProviderOAuthAdapter {
                 .await;
             match response {
                 Ok(response) if (200..300).contains(&response.status_code) => {
-                    let payload = response
-                        .json_body
-                        .or_else(|| serde_json::from_str::<Value>(&response.body_text).ok())
-                        .ok_or_else(|| {
-                            OAuthError::invalid_response("WindsurfPostAuth response is not json")
-                        })?;
+                    let payload = parse_windsurf_post_auth_payload(&response).ok_or_else(|| {
+                        OAuthError::invalid_response(
+                            "WindsurfPostAuth response missing sessionToken",
+                        )
+                    })?;
                     if let Some(session_token) = string_any(&payload, &["sessionToken"]) {
                         let mut auth_config = Map::new();
                         auth_config
@@ -542,6 +541,36 @@ fn json_headers() -> BTreeMap<String, String> {
     ])
 }
 
+fn windsurf_browser_json_headers() -> BTreeMap<String, String> {
+    let mut headers = windsurf_browser_headers();
+    headers.insert("content-type".to_string(), "application/json".to_string());
+    headers.insert(
+        "accept".to_string(),
+        "application/json, text/plain, */*".to_string(),
+    );
+    headers
+}
+
+fn windsurf_browser_headers() -> BTreeMap<String, String> {
+    BTreeMap::from([
+        (
+            "user-agent".to_string(),
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36".to_string(),
+        ),
+        ("accept".to_string(), "application/json, text/plain, */*".to_string()),
+        ("accept-language".to_string(), "en-US,en;q=0.9".to_string()),
+        ("accept-encoding".to_string(), "identity".to_string()),
+        ("origin".to_string(), "https://windsurf.com".to_string()),
+        ("referer".to_string(), "https://windsurf.com/".to_string()),
+        ("sec-ch-ua".to_string(), "\"Chromium\";v=\"134\", \"Google Chrome\";v=\"134\", \"Not.A/Brand\";v=\"99\"".to_string()),
+        ("sec-ch-ua-mobile".to_string(), "?0".to_string()),
+        ("sec-ch-ua-platform".to_string(), "\"macOS\"".to_string()),
+        ("sec-fetch-dest".to_string(), "empty".to_string()),
+        ("sec-fetch-mode".to_string(), "cors".to_string()),
+        ("sec-fetch-site".to_string(), "cross-site".to_string()),
+    ])
+}
+
 fn json_connect_headers() -> BTreeMap<String, String> {
     let mut headers = json_headers();
     headers.insert("connect-protocol-version".to_string(), "1".to_string());
@@ -549,16 +578,59 @@ fn json_connect_headers() -> BTreeMap<String, String> {
 }
 
 fn proto_headers() -> BTreeMap<String, String> {
-    BTreeMap::from([
-        ("content-type".to_string(), "application/proto".to_string()),
-        ("accept".to_string(), "application/json".to_string()),
-        ("connect-protocol-version".to_string(), "1".to_string()),
-        (
-            "referer".to_string(),
-            "https://windsurf.com/account/login".to_string(),
-        ),
-        ("user-agent".to_string(), "windsurf/1.9600.41".to_string()),
-    ])
+    let mut headers = windsurf_browser_headers();
+    headers.insert("content-type".to_string(), "application/proto".to_string());
+    headers.insert("content-length".to_string(), "0".to_string());
+    headers.insert("connect-protocol-version".to_string(), "1".to_string());
+    headers.insert(
+        "referer".to_string(),
+        "https://windsurf.com/account/login".to_string(),
+    );
+    headers
+}
+
+fn parse_windsurf_post_auth_payload(response: &crate::network::OAuthHttpResponse) -> Option<Value> {
+    let payload = response
+        .json_body
+        .clone()
+        .or_else(|| serde_json::from_str::<Value>(&response.body_text).ok());
+    if payload
+        .as_ref()
+        .and_then(|value| string_any(value, &["sessionToken"]))
+        .is_some()
+    {
+        return payload;
+    }
+    let session_token = extract_windsurf_session_token_from_text(&response.body_text)?;
+    let account_id = extract_windsurf_raw_match(&response.body_text, "account-");
+    let primary_org_id = extract_windsurf_raw_match(&response.body_text, "org-");
+    let mut payload = Map::new();
+    payload.insert("sessionToken".to_string(), json!(session_token));
+    if let Some(account_id) = account_id {
+        payload.insert("accountId".to_string(), json!(account_id));
+    }
+    if let Some(primary_org_id) = primary_org_id {
+        payload.insert("primaryOrgId".to_string(), json!(primary_org_id));
+    }
+    Some(Value::Object(payload))
+}
+
+fn extract_windsurf_session_token_from_text(value: &str) -> Option<String> {
+    let start = value.find("devin-session-token$")?;
+    let token = value[start..]
+        .chars()
+        .take_while(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '$' | '.' | '_' | '-'))
+        .collect::<String>();
+    (token.len() > "devin-session-token$".len()).then_some(token)
+}
+
+fn extract_windsurf_raw_match(value: &str, prefix: &str) -> Option<String> {
+    let start = value.find(prefix)?;
+    let matched = value[start..]
+        .chars()
+        .take_while(|ch| ch.is_ascii_hexdigit() || *ch == '-')
+        .collect::<String>();
+    (matched.len() > prefix.len()).then_some(matched)
 }
 
 fn copy_optional_string(
@@ -697,6 +769,7 @@ mod tests {
     #[derive(Default)]
     struct RecordingExecutor {
         requests: Arc<Mutex<Vec<OAuthHttpRequest>>>,
+        raw_post_auth_body: Option<String>,
     }
 
     #[async_trait]
@@ -732,6 +805,13 @@ mod tests {
                 });
             }
             if request.url == WINDSURF_POST_AUTH_URL {
+                if let Some(body_text) = self.raw_post_auth_body.clone() {
+                    return Ok(OAuthHttpResponse {
+                        status_code: 200,
+                        body_text,
+                        json_body: None,
+                    });
+                }
                 return Ok(OAuthHttpResponse {
                     status_code: 200,
                     body_text: r#"{"sessionToken":"devin-session-token$password","accountId":"acct-password","primaryOrgId":"org-password","planName":"Pro"}"#.to_string(),
@@ -906,6 +986,42 @@ mod tests {
                 .map(String::as_str),
             Some("auth1-token")
         );
+    }
+
+    #[tokio::test]
+    async fn imports_email_password_from_raw_post_auth_body() {
+        let executor = RecordingExecutor {
+            raw_post_auth_body: Some(
+                "\u{0}\u{8}devin-session-token$raw-password-token\u{0}".to_string(),
+            ),
+            ..RecordingExecutor::default()
+        };
+        let adapter = WindsurfProviderOAuthAdapter;
+        let result = adapter
+            .import_credentials(
+                &executor,
+                &ctx(),
+                ProviderOAuthImportInput {
+                    provider_type: "windsurf".to_string(),
+                    name: None,
+                    refresh_token: None,
+                    raw_credentials: Some(json!({
+                        "email": "alice@example.com",
+                        "password": "secret-password"
+                    })),
+                    network: crate::network::OAuthNetworkContext::provider_operation(None),
+                },
+            )
+            .await
+            .expect("raw post auth body should import");
+
+        assert_eq!(
+            result.token_set.access_token,
+            "devin-session-token$raw-password-token"
+        );
+        assert_eq!(result.auth_config["auth_method"], json!("email_password"));
+        assert_eq!(result.auth_config["email"], json!("alice@example.com"));
+        assert!(result.auth_config.get("password").is_none());
     }
 
     #[tokio::test]

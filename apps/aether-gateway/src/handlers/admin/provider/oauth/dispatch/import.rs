@@ -49,8 +49,30 @@ fn sanitize_windsurf_import_error(error: &OAuthError) -> String {
         OAuthError::HttpStatus { status_code, .. } => {
             format!("Windsurf 凭据验证失败: HTTP {status_code}")
         }
+        OAuthError::InvalidResponse(detail) => sanitize_windsurf_invalid_response_detail(detail)
+            .unwrap_or_else(|| "Windsurf 凭据验证失败".to_string()),
         _ => "Windsurf 凭据验证失败".to_string(),
     }
+}
+
+fn sanitize_windsurf_invalid_response_detail(detail: &str) -> Option<String> {
+    let detail = detail.trim();
+    if detail.eq_ignore_ascii_case("Auth1 response is not json") {
+        return Some("Windsurf 凭据验证失败: Auth1 响应无法解析".to_string());
+    }
+    if detail.eq_ignore_ascii_case("Auth1 response missing token") {
+        return Some("Windsurf 凭据验证失败: Auth1 响应缺少 token".to_string());
+    }
+    if detail.contains("WindsurfPostAuth response missing sessionToken")
+        || detail.contains("WindsurfPostAuth response is not json")
+        || (detail.contains("WindsurfPostAuth failed") && detail.contains("missing sessionToken"))
+    {
+        return Some("Windsurf 凭据验证失败: PostAuth 未返回 sessionToken".to_string());
+    }
+    if detail.contains("WindsurfPostAuth failed") {
+        return Some("Windsurf 凭据验证失败: PostAuth 失败".to_string());
+    }
+    None
 }
 
 fn import_payload_has_windsurf_credentials(
@@ -630,5 +652,17 @@ mod tests {
         assert_eq!(detail, "Windsurf 凭据验证失败");
         assert!(!detail.contains("secret-token"));
         assert!(!detail.contains("firebase_id_token"));
+    }
+
+    #[test]
+    fn windsurf_import_error_keeps_safe_post_auth_stage() {
+        let error = OAuthError::invalid_response("WindsurfPostAuth response missing sessionToken");
+
+        let detail = sanitize_windsurf_import_error(&error);
+
+        assert_eq!(
+            detail,
+            "Windsurf 凭据验证失败: PostAuth 未返回 sessionToken"
+        );
     }
 }

@@ -307,6 +307,7 @@ Runtime policy 必须表达：
    - Vertex batch embedding 不得通过 direct URL 构造检查
 8. Gateway test connection:
    - Gemini generate content 测试不能强制 `maxOutputTokens = 5`
+   - Google OpenAI-compatible `openai:chat` 测试不能强制 `max_tokens = 5`，否则 Gemini thinking 模型仍可能只返回 thought token / 空 visible content
    - Gemini 3 / thinking 模型返回 HTTP 200 但无 visible content 时必须判失败，不能写成成功
 9. Google OpenAI-compatible roots:
    - Developer API OpenAI root `.../v1beta/openai` 打 `openai:chat` 时生成 `.../chat/completions`，不得生成 `.../openai/v1/chat/completions`
@@ -371,9 +372,10 @@ http://aether-app:8084/v1
 3. 让 request URL builder 对 Vertex single embedding 走 Vertex helper。
 4. 让 request URL builder 对 Vertex batch embedding fail closed。
 5. 移除测试连接中对 Gemini generate content 的过低 `maxOutputTokens` 硬编码，防止 Gemini 3 thinking 被预算挤空。
-6. 跑 red/green 测试。
-7. 部署 live。
-8. 校验 live DB provider endpoints 与外部接入方地址。
+6. 移除公开 test-connection 对 OpenAI-compatible chat 的过低 `max_tokens` 硬编码，防止 Google OpenAI-compatible root 复发同类空输出。
+7. 跑 red/green 测试。
+8. 部署 live。
+9. 校验 live DB provider endpoints 与外部接入方地址。
 
 ---
 

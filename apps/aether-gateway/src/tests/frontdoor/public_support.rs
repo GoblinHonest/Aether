@@ -1920,6 +1920,10 @@ async fn gateway_handles_public_test_connection_without_hitting_fallback_probe()
                 );
                 assert_eq!(body_json["model"], "gpt-5");
                 assert_eq!(body_json["messages"][0]["content"], "Health check");
+                assert!(
+                    body_json.get("max_tokens").is_none(),
+                    "public OpenAI-compatible test connection must not force a tiny max_tokens value"
+                );
                 Json(json!({"id": "resp_local_test"})).into_response()
             }
         }),

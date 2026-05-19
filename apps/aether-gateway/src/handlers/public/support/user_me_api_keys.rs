@@ -228,7 +228,9 @@ fn users_me_validate_ip_or_cidr(value: &str) -> bool {
     }
 }
 
-fn normalize_users_me_allowed_ips(values: Option<Vec<String>>) -> Result<Option<Vec<String>>, String> {
+fn normalize_users_me_allowed_ips(
+    values: Option<Vec<String>>,
+) -> Result<Option<Vec<String>>, String> {
     let Some(values) = values else {
         return Ok(None);
     };
@@ -682,33 +684,6 @@ pub(super) async fn handle_users_me_api_key_create(
     .into_response()
 }
 
-#[cfg(test)]
-mod tests {
-    use super::normalize_users_me_allowed_ips;
-
-    #[test]
-    fn normalize_allowed_ips_trims_ip_and_cidr_values() {
-        let values = normalize_users_me_allowed_ips(Some(vec![
-            " 203.0.113.10 ".to_string(),
-            "10.0.0.0/24".to_string(),
-        ]))
-        .expect("valid whitelist should normalize");
-
-        assert_eq!(
-            values,
-            Some(vec!["203.0.113.10".to_string(), "10.0.0.0/24".to_string()]),
-        );
-    }
-
-    #[test]
-    fn normalize_allowed_ips_rejects_invalid_cidr() {
-        let err = normalize_users_me_allowed_ips(Some(vec!["10.0.0.0/99".to_string()]))
-            .expect_err("invalid cidr should fail");
-
-        assert_eq!(err, "无效的 IP 地址或 CIDR: 10.0.0.0/99");
-    }
-}
-
 pub(super) async fn handle_users_me_api_key_update(
     state: &AppState,
     request_context: &GatewayPublicRequestContext,
@@ -1151,4 +1126,31 @@ pub(super) async fn handle_users_me_api_key_capabilities_put(
         "force_capabilities": updated.force_capabilities.unwrap_or(serde_json::Value::Null),
     }))
     .into_response()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::normalize_users_me_allowed_ips;
+
+    #[test]
+    fn normalize_allowed_ips_trims_ip_and_cidr_values() {
+        let values = normalize_users_me_allowed_ips(Some(vec![
+            " 203.0.113.10 ".to_string(),
+            "10.0.0.0/24".to_string(),
+        ]))
+        .expect("valid whitelist should normalize");
+
+        assert_eq!(
+            values,
+            Some(vec!["203.0.113.10".to_string(), "10.0.0.0/24".to_string()]),
+        );
+    }
+
+    #[test]
+    fn normalize_allowed_ips_rejects_invalid_cidr() {
+        let err = normalize_users_me_allowed_ips(Some(vec!["10.0.0.0/99".to_string()]))
+            .expect_err("invalid cidr should fail");
+
+        assert_eq!(err, "无效的 IP 地址或 CIDR: 10.0.0.0/99");
+    }
 }

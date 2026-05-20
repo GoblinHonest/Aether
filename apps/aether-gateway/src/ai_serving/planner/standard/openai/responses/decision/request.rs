@@ -113,13 +113,8 @@ pub(crate) async fn resolve_local_openai_responses_candidate_payload_parts(
         .provider_type
         .trim()
         .eq_ignore_ascii_case("grok");
-    let is_codex = transport
-        .provider
-        .provider_type
-        .trim()
-        .eq_ignore_ascii_case("codex");
 
-    if is_codex && provider_api_format.eq_ignore_ascii_case("openai:image") {
+    if !is_grok && provider_api_format.eq_ignore_ascii_case("openai:image") {
         return resolve_openai_responses_to_openai_image_payload_parts(
             state,
             parts,

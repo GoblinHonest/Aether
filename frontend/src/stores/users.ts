@@ -12,6 +12,7 @@ import {
   type ResolveUserBatchSelectionResponse,
   type UserBatchActionRequest,
   type UserBatchActionResponse,
+  type UserRole,
   type UserGroup,
   type UserGroupMember,
   type UpsertUserGroupRequest,
@@ -24,21 +25,32 @@ import { parseApiError } from '@/utils/errorParser'
 
 export const useUsersStore = defineStore('users', () => {
   const users = ref<User[]>([])
+  const total = ref(0)
+  const skip = ref(0)
+  const limit = ref(0)
+  const hasMore = ref(false)
   const loading = ref(false)
   const error = ref<string | null>(null)
 
   async function fetchUsers(options: {
     cacheTtlMs?: number
     search?: string
-    role?: 'admin' | 'user'
+    role?: UserRole
     is_active?: boolean
     group_id?: string
+    skip?: number
+    limit?: number
   } = {}) {
     loading.value = true
     error.value = null
 
     try {
-      users.value = await usersApi.getAllUsers(options)
+      const response = await usersApi.getAllUsersPage(options)
+      users.value = response.items
+      total.value = response.total
+      skip.value = response.skip
+      limit.value = response.limit
+      hasMore.value = response.has_more
     } catch (err: unknown) {
       error.value = parseApiError(err, '获取用户列表失败')
     } finally {
@@ -296,6 +308,10 @@ export const useUsersStore = defineStore('users', () => {
 
   return {
     users,
+    total,
+    skip,
+    limit,
+    hasMore,
     loading,
     error,
     fetchUsers,

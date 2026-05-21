@@ -1547,6 +1547,39 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn health_success_keeps_scheduler_affinity_after_health_state_update() {
+        let state = health_state();
+        let plan = sample_plan();
+        let report_context = json!({
+            "api_key_id": "api-key-1",
+            "client_api_format": "openai:chat",
+            "model": "gpt-5",
+        });
+        let cache_key =
+            build_scheduler_affinity_cache_key_for_api_key_id("api-key-1", "openai:chat", "gpt-5")
+                .expect("scheduler affinity cache key should build");
+
+        apply_local_execution_effect(
+            &state,
+            LocalExecutionEffectContext {
+                plan: &plan,
+                report_context: Some(&report_context),
+            },
+            LocalExecutionEffect::HealthSuccess(LocalHealthSuccessEffect),
+        )
+        .await;
+
+        assert_eq!(
+            state.read_scheduler_affinity_target(cache_key.as_str(), SCHEDULER_AFFINITY_TTL),
+            Some(SchedulerAffinityTarget {
+                provider_id: "prov-1".to_string(),
+                endpoint_id: "ep-1".to_string(),
+                key_id: "key-1".to_string(),
+            })
+        );
+    }
+
+    #[tokio::test]
     async fn load_balance_success_does_not_remember_scheduler_affinity_cache() {
         let state = AppState::new()
             .expect("gateway state should build")

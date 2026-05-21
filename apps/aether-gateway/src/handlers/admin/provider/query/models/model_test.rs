@@ -1515,12 +1515,18 @@ fn provider_query_aggregate_standard_stream_sync_response(
 fn provider_query_standard_execution_response_body(
     provider_api_format: &str,
     result: &aether_contracts::ExecutionResult,
+    report_context: Option<&Value>,
 ) -> Option<Value> {
     let body = provider_query_execution_json_body(result).or_else(|| {
         provider_query_decode_execution_body(result).and_then(|body| {
             provider_query_aggregate_standard_stream_sync_response(provider_api_format, &body)
         })
     })?;
+    let body = report_context
+        .and_then(|context| {
+            crate::ai_serving::api::normalize_provider_private_response_value(body.clone(), context)
+        })
+        .unwrap_or(body);
     if result.status_code < 400
         && provider_query_normalize_api_format_alias(provider_api_format)
             == "gemini:generate_content"
@@ -2876,6 +2882,16 @@ async fn provider_query_execute_standard_test_candidate(
             }
         };
     }
+    let private_report_context =
+        (crate::provider_transport::is_gemini_cli_provider_transport(&transport)
+            && normalized_provider_api_format == "gemini:generate_content")
+            .then(|| {
+                json!({
+                    "has_envelope": true,
+                    "envelope_name": crate::provider_transport::GEMINI_CLI_V1INTERNAL_ENVELOPE_NAME,
+                    "provider_api_format": provider_api_format,
+                })
+            });
 
     let uses_vertex_query_auth =
         crate::provider_transport::uses_vertex_api_key_query_auth(&transport, provider_api_format);
@@ -3080,7 +3096,11 @@ async fn provider_query_execute_standard_test_candidate(
         .execute_execution_runtime_sync_plan(Some(trace_id), &plan)
         .await?;
     let response_body = if result.status_code < 400 {
-        provider_query_standard_execution_response_body(provider_api_format, &result)
+        provider_query_standard_execution_response_body(
+            provider_api_format,
+            &result,
+            private_report_context.as_ref(),
+        )
     } else {
         result.body.as_ref().and_then(|body| body.json_body.clone())
     };

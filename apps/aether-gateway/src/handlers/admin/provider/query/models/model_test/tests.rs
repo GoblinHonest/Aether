@@ -124,7 +124,7 @@ fn provider_query_execution_json_body_decodes_stream_encoded_json_response() {
         Some(body.clone())
     );
     assert_eq!(
-        provider_query_standard_execution_response_body("openai:image", &result),
+        provider_query_standard_execution_response_body("openai:image", &result, None),
         Some(body)
     );
 }
@@ -308,7 +308,7 @@ fn provider_query_standard_test_aggregates_responses_stream_body() {
         error: None,
     };
 
-    let body = provider_query_standard_execution_response_body("openai:responses", &result)
+    let body = provider_query_standard_execution_response_body("openai:responses", &result, None)
         .expect("stream body should aggregate");
 
     assert_eq!(body["model"], json!("gpt-5.4-mini"));
@@ -340,7 +340,7 @@ fn provider_query_standard_test_aggregates_responses_image_generation_call() {
         error: None,
     };
 
-    let body = provider_query_standard_execution_response_body("openai:responses", &result)
+    let body = provider_query_standard_execution_response_body("openai:responses", &result, None)
         .expect("responses image stream body should aggregate");
 
     assert_eq!(body["output"][0]["type"], json!("image_generation_call"));
@@ -502,10 +502,12 @@ fn provider_query_standard_test_rejects_gemini_success_without_visible_output() 
         error: None,
     };
 
-    assert!(
-        provider_query_standard_execution_response_body("gemini:generate_content", &result)
-            .is_none()
-    );
+    assert!(provider_query_standard_execution_response_body(
+        "gemini:generate_content",
+        &result,
+        None
+    )
+    .is_none());
 }
 
 #[test]

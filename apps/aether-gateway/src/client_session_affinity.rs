@@ -307,6 +307,18 @@ impl ClientSessionScopeAdapter for GenericSessionScopeAdapter {
     }
 
     fn extract_scope(&self, request: &ClientSessionRequest<'_>) -> Option<ClientSessionScope> {
+        if let Some(root_session) = header_value_str(request.headers, "session_id")
+            .or_else(|| header_value_str(request.headers, "conversation_id"))
+        {
+            return Some(ClientSessionScope::new(
+                self.family(),
+                root_session,
+                None,
+                None,
+                ClientSessionSignalSource::Header,
+            ));
+        }
+
         let body = request.body_json?;
         let root_session = value_at_paths(
             body,

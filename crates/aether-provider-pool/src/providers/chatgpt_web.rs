@@ -24,8 +24,6 @@ const CHATGPT_WEB_CLIENT_VERSION: &str = "prod-be885abbfcfe7b1f511e88b3003d9ee44
 const CHATGPT_WEB_BUILD_NUMBER: &str = "5955942";
 const CHATGPT_WEB_SEC_CH_UA: &str =
     r#""Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24""#;
-const CHATGPT_WEB_FREE_IMAGE_QUOTA_LIMIT: f64 = 25.0;
-
 #[derive(Debug, Clone, Default)]
 pub struct ChatGptWebProviderPoolAdapter;
 
@@ -185,14 +183,8 @@ pub fn normalize_chatgpt_web_image_quota_limit(
     let remaining = provider_pool_json_f64(object.get("image_quota_remaining"));
     let explicit_limit =
         provider_pool_json_f64(object.get("image_quota_total")).filter(|value| *value > 0.0);
-    let plan_type = chatgpt_web_json_string(object.get("plan_type"));
-    let is_free_plan = plan_type.is_some_and(|value| value.trim().eq_ignore_ascii_case("free"));
-    let limit = if is_free_plan {
-        Some(CHATGPT_WEB_FREE_IMAGE_QUOTA_LIMIT)
-    } else {
-        explicit_limit
-            .or_else(|| infer_chatgpt_web_image_quota_limit(plan_type, remaining, existing_limit))
-    };
+    let limit =
+        explicit_limit.or_else(|| infer_chatgpt_web_image_quota_limit(remaining, existing_limit));
 
     if let Some(limit) = limit {
         object.insert("image_quota_total".to_string(), json!(limit));
@@ -222,13 +214,6 @@ fn chatgpt_web_auth_config_string(auth_config: Option<&Value>, fields: &[&str]) 
     })
 }
 
-fn chatgpt_web_json_string(value: Option<&Value>) -> Option<&str> {
-    value
-        .and_then(Value::as_str)
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-}
-
 fn existing_chatgpt_web_image_quota_limit(upstream_metadata: Option<&Value>) -> Option<f64> {
     upstream_metadata
         .and_then(Value::as_object)
@@ -239,15 +224,9 @@ fn existing_chatgpt_web_image_quota_limit(upstream_metadata: Option<&Value>) -> 
 }
 
 fn infer_chatgpt_web_image_quota_limit(
-    plan_type: Option<&str>,
     remaining: Option<f64>,
     existing_limit: Option<f64>,
 ) -> Option<f64> {
-    let normalized_plan = plan_type.unwrap_or_default().trim().to_ascii_lowercase();
-    if normalized_plan == "free" {
-        return Some(CHATGPT_WEB_FREE_IMAGE_QUOTA_LIMIT);
-    }
-
     if let Some(existing_limit) = existing_limit.filter(|value| *value > 0.0) {
         return Some(existing_limit);
     }

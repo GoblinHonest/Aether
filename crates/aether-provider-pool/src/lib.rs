@@ -212,7 +212,7 @@ mod tests {
     }
 
     #[test]
-    fn chatgpt_web_quota_metadata_enriches_auth_and_normalizes_free_limit() {
+    fn chatgpt_web_quota_metadata_enriches_auth_and_uses_first_remaining_as_limit() {
         let mut metadata = json!({
             "image_quota_remaining": 12,
         });
@@ -229,8 +229,8 @@ mod tests {
         assert_eq!(metadata["plan_type"], json!("free"));
         assert_eq!(metadata["email"], json!("user@example.com"));
         assert_eq!(metadata["account_id"], json!("acct-1"));
-        assert_eq!(metadata["image_quota_total"], json!(25.0));
-        assert_eq!(metadata["image_quota_used"], json!(13.0));
+        assert_eq!(metadata["image_quota_total"], json!(12.0));
+        assert_eq!(metadata["image_quota_used"], json!(0.0));
     }
 
     #[test]

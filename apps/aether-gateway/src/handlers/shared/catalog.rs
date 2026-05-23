@@ -438,16 +438,6 @@ fn chatgpt_web_image_quota_limit(
     metadata: &Map<String, Value>,
     remaining: Option<f64>,
 ) -> Option<f64> {
-    let plan_type = metadata
-        .get("plan_type")
-        .and_then(Value::as_str)
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-        .map(|value| value.to_ascii_lowercase());
-    if plan_type.as_deref() == Some("free") {
-        return Some(25.0);
-    }
-
     let explicit_limit = metadata
         .get("image_quota_total")
         .and_then(admin_provider_quota_pure::coerce_json_f64)
@@ -2535,12 +2525,12 @@ mod tests {
         assert_eq!(quota.get("code"), Some(&json!("ok")));
         assert_eq!(quota.get("plan_type"), Some(&json!("free")));
         assert_eq!(quota.get("reset_at"), Some(&json!(1_778_157_172u64)));
-        assert_eq!(quota.get("usage_ratio"), Some(&json!(0.04)));
+        assert_eq!(quota.get("usage_ratio"), Some(&json!(0.0)));
         assert_eq!(window.get("code"), Some(&json!("image_gen")));
         assert_eq!(window.get("remaining_value"), Some(&json!(24.0)));
-        assert_eq!(window.get("limit_value"), Some(&json!(25.0)));
-        assert_eq!(window.get("used_value"), Some(&json!(1.0)));
-        assert_eq!(window.get("remaining_ratio"), Some(&json!(0.96)));
+        assert_eq!(window.get("limit_value"), Some(&json!(24.0)));
+        assert_eq!(window.get("used_value"), Some(&json!(0.0)));
+        assert_eq!(window.get("remaining_ratio"), Some(&json!(1.0)));
     }
 
     #[test]

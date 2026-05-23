@@ -253,6 +253,55 @@ mod tests {
     }
 
     #[test]
+    fn chatgpt_web_quota_metadata_does_not_preserve_legacy_free_25_limit() {
+        let mut metadata = json!({
+            "plan_type": "free",
+            "image_quota_remaining": 19,
+        });
+        normalize_chatgpt_web_image_quota_limit(
+            &mut metadata,
+            Some(&json!({
+                "chatgpt_web": {
+                    "plan_type": "free",
+                    "image_quota_total": 25
+                }
+            })),
+        );
+
+        assert_eq!(metadata["image_quota_total"], json!(19.0));
+        assert_eq!(metadata["image_quota_used"], json!(0.0));
+        assert_eq!(
+            metadata["image_quota_limit_source"],
+            json!("first_remaining")
+        );
+    }
+
+    #[test]
+    fn chatgpt_web_quota_metadata_preserves_marked_free_first_limit() {
+        let mut metadata = json!({
+            "plan_type": "free",
+            "image_quota_remaining": 18,
+        });
+        normalize_chatgpt_web_image_quota_limit(
+            &mut metadata,
+            Some(&json!({
+                "chatgpt_web": {
+                    "plan_type": "free",
+                    "image_quota_total": 19,
+                    "image_quota_limit_source": "first_remaining"
+                }
+            })),
+        );
+
+        assert_eq!(metadata["image_quota_total"], json!(19.0));
+        assert_eq!(metadata["image_quota_used"], json!(1.0));
+        assert_eq!(
+            metadata["image_quota_limit_source"],
+            json!("first_remaining")
+        );
+    }
+
+    #[test]
     fn windsurf_quota_request_uses_user_status_connect_rpc() {
         let spec = build_windsurf_pool_quota_request("key-ws", "session-token-123");
 

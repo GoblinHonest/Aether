@@ -184,6 +184,8 @@ async fn execute_chatgpt_web_image(
         "gateway executing ChatGPT-Web image request"
     );
 
+    apply_chatgpt_web_image_quota_request_delta_at_start(state, plan).await;
+
     web_bootstrap(plan, &base_url, &fp).await?;
     let requirements = web_requirements(plan, &base_url, &fp, token.as_str()).await?;
     let mut uploads = Vec::new();
@@ -222,7 +224,7 @@ async fn execute_chatgpt_web_image(
         &uploads,
     )
     .await?;
-    spawn_chatgpt_web_image_quota_sync_after_request(state, plan, &base_url, token.as_str());
+    spawn_chatgpt_web_image_quota_refresh_after_request(state, plan, &base_url, token.as_str());
     filter_uploaded_asset_ids(&mut summary, &uploads);
 
     let mut downloaded = resolve_and_download_images(
@@ -945,7 +947,56 @@ async fn execute_subrequest(
         .await
 }
 
-fn spawn_chatgpt_web_image_quota_sync_after_request(
+async fn apply_chatgpt_web_image_quota_request_delta_at_start(
+    state: &AppState,
+    plan: &ExecutionPlan,
+) {
+    if !state.has_provider_catalog_data_reader() || !state.has_provider_catalog_data_writer() {
+        return;
+    }
+    if plan.key_id.trim().is_empty() || plan.provider_id.trim().is_empty() {
+        return;
+    }
+
+    match apply_chatgpt_web_image_quota_request_delta(state, plan).await {
+        Ok(true) => {
+            debug!(
+                event_name = "chatgpt_web_image_quota_request_delta_applied",
+                log_type = "debug",
+                request_id = %plan.request_id,
+                candidate_id = ?plan.candidate_id,
+                provider_id = %plan.provider_id,
+                key_id = %plan.key_id,
+                "gateway persisted ChatGPT-Web image quota request delta"
+            );
+        }
+        Ok(false) => {
+            debug!(
+                event_name = "chatgpt_web_image_quota_request_delta_skipped",
+                log_type = "debug",
+                request_id = %plan.request_id,
+                candidate_id = ?plan.candidate_id,
+                provider_id = %plan.provider_id,
+                key_id = %plan.key_id,
+                "gateway skipped ChatGPT-Web image quota request delta"
+            );
+        }
+        Err(err) => {
+            warn!(
+                event_name = "chatgpt_web_image_quota_request_delta_failed",
+                log_type = "ops",
+                request_id = %plan.request_id,
+                candidate_id = ?plan.candidate_id,
+                provider_id = %plan.provider_id,
+                key_id = %plan.key_id,
+                error = %err,
+                "gateway failed to persist ChatGPT-Web image quota request delta"
+            );
+        }
+    }
+}
+
+fn spawn_chatgpt_web_image_quota_refresh_after_request(
     state: &AppState,
     plan: &ExecutionPlan,
     base_url: &str,
@@ -964,18 +1015,6 @@ fn spawn_chatgpt_web_image_quota_sync_after_request(
     let base_url = base_url.to_string();
     let token = token.to_string();
     tokio::spawn(async move {
-        if let Err(err) = apply_chatgpt_web_image_quota_request_delta(&state, &plan).await {
-            warn!(
-                event_name = "chatgpt_web_image_quota_request_delta_failed",
-                log_type = "ops",
-                request_id = %plan.request_id,
-                candidate_id = ?plan.candidate_id,
-                provider_id = %plan.provider_id,
-                key_id = %plan.key_id,
-                error = %err,
-                "gateway failed to persist ChatGPT-Web image quota request delta"
-            );
-        }
         tokio::time::sleep(Duration::from_secs(5)).await;
         if let Err(err) =
             refresh_chatgpt_web_image_quota_after_success(&state, &plan, &base_url, &token).await
@@ -1000,6 +1039,9 @@ async fn apply_chatgpt_web_image_quota_request_delta(
 ) -> Result<bool, String> {
     let key_id = plan.key_id.trim();
     let provider_id = plan.provider_id.trim();
+    if key_id.is_empty() || provider_id.is_empty() {
+        return Ok(false);
+    }
     let Some(mut latest_key) = state
         .read_provider_catalog_keys_by_ids(&[key_id.to_string()])
         .await
@@ -1038,7 +1080,7 @@ async fn apply_chatgpt_web_image_quota_request_delta(
         latest_key.status_snapshot.as_ref(),
         "chatgpt_web",
         latest_key.upstream_metadata.as_ref(),
-        "image_success_local",
+        "image_request_local",
     );
     latest_key.status_snapshot =
         sync_provider_key_oauth_status_snapshot(latest_key.status_snapshot.as_ref(), &latest_key);
@@ -1057,13 +1099,12 @@ fn apply_chatgpt_web_image_quota_request_delta_to_metadata(
     now_unix_secs: u64,
 ) -> bool {
     let snapshot_window = chatgpt_web_image_quota_snapshot_window(status_snapshot);
-    let limit = chatgpt_web_image_quota_f64(metadata.get("image_quota_total"))
-        .filter(|value| *value > 0.0)
-        .or_else(|| {
-            snapshot_window.and_then(|window| {
-                chatgpt_web_image_quota_f64(window.get("limit_value")).filter(|value| *value > 0.0)
-            })
-        });
+    let metadata_limit =
+        chatgpt_web_image_quota_f64(metadata.get("image_quota_total")).filter(|value| *value > 0.0);
+    let snapshot_limit = snapshot_window.and_then(|window| {
+        chatgpt_web_image_quota_f64(window.get("limit_value")).filter(|value| *value > 0.0)
+    });
+    let candidate_limit = metadata_limit.or(snapshot_limit);
     let used = chatgpt_web_image_quota_f64(metadata.get("image_quota_used")).or_else(|| {
         snapshot_window.and_then(|window| chatgpt_web_image_quota_f64(window.get("used_value")))
     });
@@ -1072,19 +1113,40 @@ fn apply_chatgpt_web_image_quota_request_delta_to_metadata(
             snapshot_window
                 .and_then(|window| chatgpt_web_image_quota_f64(window.get("remaining_value")))
         })
-        .or_else(|| limit.zip(used).map(|(limit, used)| (limit - used).max(0.0)));
+        .or_else(|| {
+            candidate_limit
+                .zip(used)
+                .map(|(limit, used)| (limit - used).max(0.0))
+        });
     let Some(remaining) = remaining else {
         return false;
     };
-    let limit = limit.unwrap_or(remaining.max(0.0));
+    let limit = chatgpt_web_image_quota_request_limit_choice(
+        metadata,
+        status_snapshot,
+        metadata_limit,
+        snapshot_limit,
+        remaining,
+    );
+    let limit_value = limit
+        .as_ref()
+        .map(|limit| limit.value)
+        .unwrap_or(remaining.max(0.0));
     let new_remaining = (remaining - 1.0).max(0.0);
 
     metadata.insert("image_quota_remaining".to_string(), json!(new_remaining));
-    if limit > 0.0 {
-        metadata.insert("image_quota_total".to_string(), json!(limit));
+    if limit_value > 0.0 {
+        metadata.insert("image_quota_total".to_string(), json!(limit_value));
+        if let Some(source) = limit
+            .as_ref()
+            .and_then(|limit| limit.source.as_deref())
+            .filter(|value| !value.is_empty())
+        {
+            metadata.insert("image_quota_limit_source".to_string(), json!(source));
+        }
         metadata.insert(
             "image_quota_used".to_string(),
-            json!((limit - new_remaining).max(0.0)),
+            json!((limit_value - new_remaining).max(0.0)),
         );
     } else if let Some(used) = used {
         metadata.insert("image_quota_used".to_string(), json!(used + 1.0));
@@ -1108,6 +1170,102 @@ fn apply_chatgpt_web_image_quota_request_delta_to_metadata(
         json!(local_request_count.saturating_add(1)),
     );
     true
+}
+
+#[derive(Debug, Clone)]
+struct ChatGptWebImageQuotaRequestLimit {
+    value: f64,
+    source: Option<String>,
+}
+
+fn chatgpt_web_image_quota_request_limit_choice(
+    metadata: &Map<String, Value>,
+    status_snapshot: Option<&Value>,
+    metadata_limit: Option<f64>,
+    snapshot_limit: Option<f64>,
+    remaining: f64,
+) -> Option<ChatGptWebImageQuotaRequestLimit> {
+    let plan_type = chatgpt_web_image_quota_metadata_str(metadata, "plan_type").or_else(|| {
+        chatgpt_web_image_quota_snapshot(status_snapshot)
+            .and_then(|quota| chatgpt_web_image_quota_metadata_str(quota, "plan_type"))
+    });
+    let metadata_limit_source =
+        chatgpt_web_image_quota_metadata_str(metadata, "image_quota_limit_source");
+
+    if let Some(limit) = metadata_limit {
+        if !chatgpt_web_image_quota_limit_is_legacy_free_default(
+            limit,
+            metadata_limit_source,
+            plan_type,
+            remaining,
+        ) {
+            let source = metadata_limit_source.map(ToOwned::to_owned).or_else(|| {
+                let is_first_remaining = plan_type
+                    .is_some_and(|value| value.eq_ignore_ascii_case("free"))
+                    && (limit - remaining).abs() <= f64::EPSILON;
+                Some(
+                    if is_first_remaining {
+                        "first_remaining"
+                    } else {
+                        "stored"
+                    }
+                    .to_string(),
+                )
+            });
+            return Some(ChatGptWebImageQuotaRequestLimit {
+                value: limit,
+                source,
+            });
+        }
+    }
+
+    if let Some(limit) = snapshot_limit {
+        if !chatgpt_web_image_quota_limit_is_legacy_free_default(limit, None, plan_type, remaining)
+        {
+            return Some(ChatGptWebImageQuotaRequestLimit {
+                value: limit,
+                source: Some("status_snapshot".to_string()),
+            });
+        }
+    }
+
+    remaining
+        .is_finite()
+        .then_some(remaining)
+        .filter(|value| *value > 0.0)
+        .map(|value| ChatGptWebImageQuotaRequestLimit {
+            value,
+            source: Some("first_remaining".to_string()),
+        })
+}
+
+fn chatgpt_web_image_quota_metadata_str<'a>(
+    metadata: &'a Map<String, Value>,
+    key: &str,
+) -> Option<&'a str> {
+    metadata
+        .get(key)
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+}
+
+fn chatgpt_web_image_quota_limit_is_legacy_free_default(
+    limit: f64,
+    source: Option<&str>,
+    plan_type: Option<&str>,
+    remaining: f64,
+) -> bool {
+    let plan_type_is_free = plan_type
+        .map(str::trim)
+        .is_some_and(|value| value.eq_ignore_ascii_case("free"));
+    if !plan_type_is_free || source.is_some() {
+        return false;
+    }
+    if (limit - 25.0).abs() > f64::EPSILON {
+        return false;
+    }
+    remaining < limit
 }
 
 async fn refresh_chatgpt_web_image_quota_after_success(
@@ -1302,17 +1460,7 @@ fn merge_provider_metadata_object(
 fn chatgpt_web_image_quota_snapshot_window(
     status_snapshot: Option<&Value>,
 ) -> Option<&Map<String, Value>> {
-    let quota = status_snapshot
-        .and_then(Value::as_object)
-        .and_then(|snapshot| snapshot.get("quota"))
-        .and_then(Value::as_object)?;
-    if quota
-        .get("provider_type")
-        .and_then(Value::as_str)
-        .is_some_and(|value| !value.trim().eq_ignore_ascii_case("chatgpt_web"))
-    {
-        return None;
-    }
+    let quota = chatgpt_web_image_quota_snapshot(status_snapshot)?;
     quota
         .get("windows")
         .and_then(Value::as_array)?
@@ -1337,6 +1485,23 @@ fn chatgpt_web_image_quota_snapshot_window(
                         .is_some_and(|value| value.trim().eq_ignore_ascii_case("account"))
                 })
         })
+}
+
+fn chatgpt_web_image_quota_snapshot(
+    status_snapshot: Option<&Value>,
+) -> Option<&Map<String, Value>> {
+    let quota = status_snapshot
+        .and_then(Value::as_object)
+        .and_then(|snapshot| snapshot.get("quota"))
+        .and_then(Value::as_object)?;
+    if quota
+        .get("provider_type")
+        .and_then(Value::as_str)
+        .is_some_and(|value| !value.trim().eq_ignore_ascii_case("chatgpt_web"))
+    {
+        return None;
+    }
+    Some(quota)
 }
 
 fn chatgpt_web_image_quota_f64(value: Option<&Value>) -> Option<f64> {
@@ -2624,6 +2789,30 @@ mod tests {
         assert_eq!(metadata["image_quota_total"], json!(25.0));
         assert_eq!(metadata["image_quota_used"], json!(7.0));
         assert_eq!(metadata["image_quota_reset_at"], json!(2_000u64));
+    }
+
+    #[test]
+    fn chatgpt_web_image_quota_request_delta_ignores_legacy_free_25_limit() {
+        let mut metadata = Map::from_iter([
+            ("plan_type".to_string(), json!("free")),
+            ("image_quota_remaining".to_string(), json!(19.0)),
+            ("image_quota_total".to_string(), json!(25.0)),
+            ("image_quota_used".to_string(), json!(6.0)),
+        ]);
+
+        assert!(apply_chatgpt_web_image_quota_request_delta_to_metadata(
+            &mut metadata,
+            None,
+            1_000,
+        ));
+
+        assert_eq!(metadata["image_quota_remaining"], json!(18.0));
+        assert_eq!(metadata["image_quota_total"], json!(19.0));
+        assert_eq!(metadata["image_quota_used"], json!(1.0));
+        assert_eq!(
+            metadata["image_quota_limit_source"],
+            json!("first_remaining")
+        );
     }
 
     async fn start_mock_chatgpt_web() -> (String, tokio::task::JoinHandle<()>) {

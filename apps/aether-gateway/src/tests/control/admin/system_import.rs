@@ -124,6 +124,14 @@ fn sample_system_import_payload() -> Value {
                 "name": "primary",
                 "api_formats": ["openai:chat"],
                 "auth_type": "api_key",
+                "auth_type_by_format": {
+                    "openai:chat": "api_key",
+                    "openai:video": "bearer"
+                },
+                "allow_auth_channel_mismatch_formats": [
+                    "openai:chat",
+                    "openai:video"
+                ],
                 "api_key": "sk-import-123",
                 "internal_priority": 5,
                 "is_active": true
@@ -372,6 +380,15 @@ async fn gateway_imports_admin_system_config_locally_and_persists_data() {
         )
         .expect("api key should decrypt"),
         "sk-import-123"
+    );
+    assert_eq!(keys[0].api_formats, Some(json!(["openai:chat"])));
+    assert_eq!(
+        keys[0].auth_type_by_format,
+        Some(json!({ "openai:chat": "api_key" }))
+    );
+    assert_eq!(
+        keys[0].allow_auth_channel_mismatch_formats,
+        Some(json!(["openai:chat"]))
     );
 
     let provider_models = global_model_repository

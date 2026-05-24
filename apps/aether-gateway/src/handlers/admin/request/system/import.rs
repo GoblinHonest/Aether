@@ -261,6 +261,68 @@ fn build_import_key_match_name(item: &ImportedProviderKey) -> Option<String> {
         .map(ToOwned::to_owned)
 }
 
+fn normalize_selected_import_key_format(
+    value: &str,
+    allowed_formats: &BTreeSet<String>,
+) -> Option<String> {
+    let normalized = normalize_import_endpoint_format(value).ok()?;
+    allowed_formats.contains(&normalized).then_some(normalized)
+}
+
+fn normalize_import_key_format_scoped_list(
+    value: Option<&Value>,
+    normalized_api_formats: &[String],
+) -> Option<Value> {
+    let value = value?;
+    let Value::Array(items) = value else {
+        return Some(value.clone());
+    };
+    let allowed_formats = normalized_api_formats
+        .iter()
+        .cloned()
+        .collect::<BTreeSet<_>>();
+    let mut seen = BTreeSet::new();
+    let mut normalized = Vec::new();
+    for item in items {
+        let Some(raw) = item
+            .as_str()
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+        else {
+            continue;
+        };
+        let Some(api_format) = normalize_selected_import_key_format(raw, &allowed_formats) else {
+            continue;
+        };
+        if seen.insert(api_format.clone()) {
+            normalized.push(json!(api_format));
+        }
+    }
+    Some(Value::Array(normalized))
+}
+
+fn normalize_import_key_format_scoped_object(
+    value: Option<&Value>,
+    normalized_api_formats: &[String],
+) -> Option<Value> {
+    let value = value?;
+    let Value::Object(map) = value else {
+        return Some(value.clone());
+    };
+    let allowed_formats = normalized_api_formats
+        .iter()
+        .cloned()
+        .collect::<BTreeSet<_>>();
+    let mut normalized = Map::new();
+    for (key, value) in map {
+        let Some(api_format) = normalize_selected_import_key_format(key, &allowed_formats) else {
+            continue;
+        };
+        normalized.insert(api_format, value.clone());
+    }
+    Some(Value::Object(normalized))
+}
+
 fn normalize_import_key_raw_payload(
     raw_key: &Map<String, Value>,
     auth_type: &str,
@@ -272,6 +334,21 @@ fn normalize_import_key_raw_payload(
         payload.remove("api_key");
     }
     payload.insert("api_formats".to_string(), json!(normalized_api_formats));
+    if let Some(auth_type_by_format) = normalize_import_key_format_scoped_object(
+        raw_key.get("auth_type_by_format"),
+        normalized_api_formats,
+    ) {
+        payload.insert("auth_type_by_format".to_string(), auth_type_by_format);
+    }
+    if let Some(allow_auth_channel_mismatch_formats) = normalize_import_key_format_scoped_list(
+        raw_key.get("allow_auth_channel_mismatch_formats"),
+        normalized_api_formats,
+    ) {
+        payload.insert(
+            "allow_auth_channel_mismatch_formats".to_string(),
+            allow_auth_channel_mismatch_formats,
+        );
+    }
     if let Some(auth_config) = normalized_auth_config {
         payload.insert("auth_config".to_string(), auth_config);
     } else if raw_key.contains_key("auth_config") {
@@ -3111,8 +3188,8 @@ mod tests {
         imported_optional_bool, imported_optional_f64, imported_optional_i32,
         imported_optional_u64, imported_rfc3339_to_unix_secs, imported_string_list_from_value,
         normalize_import_endpoint_format, normalize_import_key_formats,
-        normalize_imported_wallet_target, validate_imported_system_users_export_version,
-        ImportedProviderKey,
+        normalize_import_key_raw_payload, normalize_imported_wallet_target,
+        validate_imported_system_users_export_version, ImportedProviderKey,
     };
 
     #[test]
@@ -3184,6 +3261,61 @@ mod tests {
 
         assert_eq!(formats, vec!["claude:messages", "openai:responses:compact"]);
         assert!(missing.is_empty());
+    }
+
+    #[test]
+    fn config_import_filters_key_format_scoped_fields_to_selected_api_formats() {
+        let raw_key = json!({
+            "name": "test-key",
+            "api_key": "sk-test",
+            "api_formats": ["openai:responses", "openai:video"],
+            "auth_type_by_format": {
+                "openai:responses": "api_key",
+                "openai:video": "bearer"
+            },
+            "allow_auth_channel_mismatch_formats": [
+                "openai:responses",
+                "openai:video"
+            ]
+        });
+        let raw_key = raw_key.as_object().expect("key should be object");
+
+        let payload = normalize_import_key_raw_payload(
+            raw_key,
+            "api_key",
+            &["openai:responses".to_string()],
+            None,
+        );
+
+        assert_eq!(payload["api_formats"], json!(["openai:responses"]));
+        assert_eq!(
+            payload["auth_type_by_format"],
+            json!({ "openai:responses": "api_key" })
+        );
+        assert_eq!(
+            payload["allow_auth_channel_mismatch_formats"],
+            json!(["openai:responses"])
+        );
+    }
+
+    #[test]
+    fn config_import_preserves_explicit_empty_mismatch_scope_after_filtering() {
+        let raw_key = json!({
+            "name": "test-key",
+            "api_key": "sk-test",
+            "api_formats": ["openai:responses"],
+            "allow_auth_channel_mismatch_formats": ["openai:video"]
+        });
+        let raw_key = raw_key.as_object().expect("key should be object");
+
+        let payload = normalize_import_key_raw_payload(
+            raw_key,
+            "api_key",
+            &["openai:responses".to_string()],
+            None,
+        );
+
+        assert_eq!(payload["allow_auth_channel_mismatch_formats"], json!([]));
     }
 
     #[test]

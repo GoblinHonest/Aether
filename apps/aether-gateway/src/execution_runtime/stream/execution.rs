@@ -120,7 +120,6 @@ const SSE_CONTROL_FILTER_MAX_BUFFER_BYTES: usize = 1024 * 1024;
 const STREAM_IDLE_LOG_INTERVAL: Duration = Duration::from_secs(60);
 const STREAM_IDLE_LOG_INTERVAL_MS: u64 = 60_000;
 const REWRITTEN_STREAM_PREFETCH_TIMEOUT: Duration = Duration::from_millis(750);
-const OPENAI_IMAGE_STREAM_DEFAULT_TOTAL_TIMEOUT_MS: u64 = 900_000;
 
 fn record_sync_terminal_usage(
     state: &AppState,
@@ -1386,22 +1385,6 @@ fn encode_openai_image_failed_event(
     Ok(Bytes::from(event))
 }
 
-fn resolve_openai_image_stream_total_timeout_ms(
-    plan_kind: &str,
-    plan: &ExecutionPlan,
-) -> Option<u64> {
-    if plan_kind != OPENAI_IMAGE_STREAM_PLAN_KIND {
-        return None;
-    }
-    Some(
-        plan.timeouts
-            .as_ref()
-            .and_then(|timeouts| timeouts.total_ms)
-            .unwrap_or(OPENAI_IMAGE_STREAM_DEFAULT_TOTAL_TIMEOUT_MS)
-            .max(1),
-    )
-}
-
 fn should_limit_direct_finalize_prefetch(plan_kind: &str, has_local_stream_rewriter: bool) -> bool {
     plan_kind == OPENAI_IMAGE_STREAM_PLAN_KIND || has_local_stream_rewriter
 }
@@ -2622,8 +2605,6 @@ async fn execute_stream_from_frame_stream(
     let candidate_id_for_report = candidate_id.clone();
     let candidate_index_for_report = candidate_index.clone();
     let is_openai_image_stream_for_report = plan_kind == OPENAI_IMAGE_STREAM_PLAN_KIND;
-    let openai_image_stream_total_timeout_ms =
-        resolve_openai_image_stream_total_timeout_ms(plan_kind, &plan);
     let plan_for_report = plan;
     let emit_passthrough_sse_terminal_error = skip_direct_finalize_prefetch
         && response_headers_indicate_sse(&upstream_headers)
@@ -2883,77 +2864,14 @@ async fn execute_stream_from_frame_stream(
         }
 
         if terminal_failure.is_none() && !reached_eof {
-            let mut image_stream_total_timeout = openai_image_stream_total_timeout_ms
-                .map(|timeout_ms| Box::pin(tokio::time::sleep(Duration::from_millis(timeout_ms))));
             loop {
-                let next_frame_result = if let Some(timeout_sleep) =
-                    image_stream_total_timeout.as_mut()
-                {
-                    tokio::select! {
-                        biased;
-                        _ = tx.closed(), if client_visible_stream_completed => {
-                            downstream_dropped = true;
-                            break;
-                        }
-                        result = next_stream_frame(&mut buffered_frames, &mut lines) => result,
-                        _ = timeout_sleep.as_mut() => {
-                            let timeout_ms = openai_image_stream_total_timeout_ms
-                                .unwrap_or(OPENAI_IMAGE_STREAM_DEFAULT_TOTAL_TIMEOUT_MS);
-                            let elapsed_ms = stream_started_at_for_report
-                                .elapsed()
-                                .as_millis()
-                                .min(u128::from(u64::MAX)) as u64;
-                            warn!(
-                                event_name = "openai_image_stream_total_timeout",
-                                log_type = "ops",
-                                trace_id = %trace_id_owned,
-                                request_id = %request_id_for_report_log,
-                                candidate_id = ?candidate_id_for_report.as_deref(),
-                                candidate_index = candidate_index_for_report.as_str(),
-                                plan_kind = plan_kind_for_report.as_str(),
-                                provider_name = plan_for_report.provider_name.as_deref().unwrap_or("-"),
-                                endpoint_id = %plan_for_report.endpoint_id,
-                                key_id = %plan_for_report.key_id,
-                                model_name = plan_for_report.model_name.as_deref().unwrap_or("-"),
-                                elapsed_ms,
-                                timeout_ms,
-                                provider_bytes = provider_stream_bytes.load(Ordering::Relaxed),
-                                client_bytes = client_stream_bytes.load(Ordering::Relaxed),
-                                last_upstream_frame_elapsed_ms = last_upstream_frame_elapsed_ms.load(Ordering::Relaxed),
-                                last_client_chunk_elapsed_ms = last_client_chunk_elapsed_ms.load(Ordering::Relaxed),
-                                "gateway OpenAI image stream exceeded total timeout"
-                            );
-                            telemetry = Some(ExecutionTelemetry {
-                                ttfb_ms: telemetry
-                                    .as_ref()
-                                    .and_then(|telemetry| telemetry.ttfb_ms)
-                                    .or_else(|| {
-                                        usage_stream_telemetry
-                                            .as_ref()
-                                            .and_then(|telemetry| telemetry.ttfb_ms)
-                                    }),
-                                elapsed_ms: Some(elapsed_ms),
-                                upstream_bytes: Some(provider_stream_bytes.load(Ordering::Relaxed)),
-                            });
-                            terminal_failure = Some(build_stream_failure_report(
-                                "image_stream_total_timeout",
-                                format!(
-                                    "OpenAI image stream exceeded total timeout of {timeout_ms}ms"
-                                ),
-                                504,
-                            ));
-                            break;
-                        }
+                let next_frame_result = tokio::select! {
+                    biased;
+                    _ = tx.closed(), if client_visible_stream_completed => {
+                        downstream_dropped = true;
+                        break;
                     }
-                } else {
-                    tokio::select! {
-                        biased;
-                        _ = tx.closed(), if client_visible_stream_completed => {
-                            downstream_dropped = true;
-                            break;
-                        }
-                        result = next_stream_frame(&mut buffered_frames, &mut lines) => result,
-                    }
+                    result = next_stream_frame(&mut buffered_frames, &mut lines) => result,
                 };
                 let next_frame = match next_frame_result {
                     Ok(frame) => frame,
@@ -4804,7 +4722,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn openai_image_stream_total_timeout_emits_image_failed_event() {
+    async fn openai_image_stream_ignores_plan_total_timeout() {
         let state = AppState::new().expect("app state should build");
         let plan = ExecutionPlan {
             request_id: "req-image-stream-timeout".into(),
@@ -4876,17 +4794,19 @@ mod tests {
         .expect("execution should succeed")
         .expect("execution should return a client response");
 
-        let body = tokio::time::timeout(
-            Duration::from_secs(2),
-            to_bytes(response.into_body(), usize::MAX),
-        )
-        .await
-        .expect("timeout failure should close the response body")
-        .expect("response body should read");
-        let text = String::from_utf8(body.to_vec()).expect("response body should be utf8");
-        assert!(text.contains(": aether-keepalive\n\n"));
-        assert!(text.contains("event: image_generation.failed"));
-        assert!(text.contains("\"type\":\"image_stream_total_timeout\""));
+        let mut body_stream = response.into_body().into_data_stream();
+        let keepalive = tokio::time::timeout(Duration::from_millis(50), body_stream.next())
+            .await
+            .expect("initial keepalive should be emitted")
+            .expect("body should yield initial keepalive")
+            .expect("initial keepalive should be ok");
+        assert_eq!(keepalive.as_ref(), b": aether-keepalive\n\n");
+
+        let next_chunk = tokio::time::timeout(Duration::from_millis(100), body_stream.next()).await;
+        assert!(
+            next_chunk.is_err(),
+            "stream total_ms must not synthesize an image failure or close the response body"
+        );
     }
 
     #[tokio::test]

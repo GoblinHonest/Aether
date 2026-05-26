@@ -1292,6 +1292,7 @@ pub fn build_admin_module_validation_result(
     important_notification_configured: bool,
     server_chan_push_configured: bool,
     bark_push_configured: bool,
+    s3_backup_configured: bool,
 ) -> (bool, Option<String>) {
     match module_name {
         "oauth" => {
@@ -1383,6 +1384,13 @@ pub fn build_admin_module_validation_result(
                 (false, Some("请先配置 Bark Device Key".to_string()))
             }
         }
+        "s3_backup" => {
+            if s3_backup_configured {
+                (true, None)
+            } else {
+                (false, Some("请先完成 S3 备份配置".to_string()))
+            }
+        }
         "gemini_files" => {
             if gemini_files_has_capable_key {
                 (true, None)
@@ -1408,7 +1416,8 @@ pub fn build_admin_module_health(
         | "proxy_nodes"
         | "important_notification"
         | "bark_push"
-        | "server_chan_push" => "healthy",
+        | "server_chan_push"
+        | "s3_backup" => "healthy",
         "gemini_files" => {
             if gemini_files_has_capable_key {
                 "healthy"

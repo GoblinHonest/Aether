@@ -1,31 +1,38 @@
 <template>
-  <CardSection
-    title="S3 备份"
-    description="按导出范围备份到 S3-compatible 存储"
-  >
-    <template #actions>
-      <div class="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          :disabled="backupRunDisabled"
-          @click="backup.runS3BackupNow"
-        >
-          <Play class="w-3.5 h-3.5 mr-1.5" />
-          {{ backup.running.value ? '提交中...' : '立即备份' }}
-        </Button>
-        <Button
-          size="sm"
-          :disabled="backup.saving.value || !backup.hasChanges.value"
-          @click="backup.saveS3BackupConfig"
-        >
-          <Save class="w-3.5 h-3.5 mr-1.5" />
-          {{ backup.saving.value ? '保存中...' : '保存' }}
-        </Button>
-      </div>
-    </template>
+  <PageContainer>
+    <PageHeader
+      title="S3 备份"
+      description="按导出范围备份到 S3-compatible 存储"
+    />
 
-    <div class="space-y-5">
+    <CardSection
+      title="备份配置"
+      description="配置自动备份周期、对象存储连接和保留策略"
+      class="mt-6"
+    >
+      <template #actions>
+        <div class="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            :disabled="backupRunDisabled"
+            @click="backup.runS3BackupNow"
+          >
+            <Play class="w-3.5 h-3.5 mr-1.5" />
+            {{ backup.running.value ? '提交中...' : '立即备份' }}
+          </Button>
+          <Button
+            size="sm"
+            :disabled="backup.saving.value || !backup.hasChanges.value"
+            @click="backup.saveS3BackupConfig"
+          >
+            <Save class="w-3.5 h-3.5 mr-1.5" />
+            {{ backup.saving.value ? '保存中...' : '保存' }}
+          </Button>
+        </div>
+      </template>
+
+      <div class="space-y-5">
       <div class="flex items-center justify-between rounded-lg border border-border p-4">
         <div class="flex items-center gap-3 min-w-0">
           <div class="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
@@ -395,8 +402,9 @@
           </div>
         </div>
       </div>
-    </div>
-  </CardSection>
+      </div>
+    </CardSection>
+  </PageContainer>
 </template>
 
 <script setup lang="ts">
@@ -418,7 +426,7 @@ import SelectItem from '@/components/ui/select-item.vue'
 import SelectTrigger from '@/components/ui/select-trigger.vue'
 import SelectValue from '@/components/ui/select-value.vue'
 import Switch from '@/components/ui/switch.vue'
-import { CardSection } from '@/components/layout'
+import { CardSection, PageContainer, PageHeader } from '@/components/layout'
 import {
   useS3BackupConfig,
   type S3BackupConfig,

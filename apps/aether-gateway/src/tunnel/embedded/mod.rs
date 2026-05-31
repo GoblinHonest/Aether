@@ -376,6 +376,7 @@ fn resolve_proxy_protocol_version(headers: &HeaderMap) -> u8 {
         .and_then(|value| value.to_str().ok())
         .and_then(|value| value.parse::<u8>().ok())
         .filter(|value| *value >= 1)
+        .map(|value| value.min(aether_contracts::tunnel::CURRENT_TUNNEL_PROTOCOL_VERSION))
         .unwrap_or(1)
 }
 

@@ -18,7 +18,8 @@ use crate::egress_proxy::{
 };
 use crate::state::{AppState, ServerContext};
 use aether_contracts::tunnel::{
-    CURRENT_TUNNEL_PROTOCOL_VERSION, TUNNEL_NODE_NAME_B64_HEADER, TUNNEL_PROTOCOL_VERSION_HEADER,
+    HelloPayload, SettingsPayload, CURRENT_TUNNEL_PROTOCOL_VERSION, TUNNEL_NODE_NAME_B64_HEADER,
+    TUNNEL_PROTOCOL_VERSION_HEADER,
 };
 use aether_contracts::tunnel_security::{
     SecureFrameCodec, TunnelSecurityRole, TUNNEL_SECURITY_HEADER, TUNNEL_SECURITY_NON_TLS_REQUIRED,
@@ -186,7 +187,13 @@ pub async fn connect_and_run(
         Some(Arc::clone(&server.tunnel_metrics)),
         security.clone(),
     );
-    let drain_signal = spawn_drain_signal(conn_idx, frame_tx.clone(), drain.clone());
+    send_protocol_v3_hello(&frame_tx, &security_session, state).await;
+    let drain_signal = spawn_drain_signal(
+        conn_idx,
+        frame_tx.clone(),
+        drain.clone(),
+        state.config.tunnel_drain_deadline_ms,
+    );
 
     // Spawn heartbeat task (only for primary connection to avoid
     // resetting shared atomic metrics via swap(0))
@@ -298,10 +305,48 @@ pub async fn connect_and_run(
     outcome
 }
 
+async fn send_protocol_v3_hello(
+    frame_tx: &writer::FrameSender,
+    security_session: &str,
+    state: &Arc<AppState>,
+) {
+    let hello = super::protocol::Frame::control(
+        super::protocol::MsgType::Hello,
+        serde_json::to_vec(&HelloPayload {
+            protocol_version: CURRENT_TUNNEL_PROTOCOL_VERSION,
+            capabilities: vec![
+                "flow-control".to_string(),
+                "reset-stream".to_string(),
+                "graceful-drain".to_string(),
+                "load-report".to_string(),
+            ],
+            session_id: Some(security_session.to_string()),
+            replica_id: None,
+        })
+        .expect("hello payload should serialize"),
+    );
+    let settings = super::protocol::Frame::control(
+        super::protocol::MsgType::Settings,
+        serde_json::to_vec(&SettingsPayload {
+            initial_stream_window_bytes: state.config.tunnel_stream_initial_window_bytes,
+            min_window_update_bytes: state
+                .config
+                .tunnel_stream_initial_window_bytes
+                .saturating_div(4)
+                .max(1),
+            drain_deadline_ms: state.config.tunnel_drain_deadline_ms,
+        })
+        .expect("settings payload should serialize"),
+    );
+    let _ = tokio::time::timeout(Duration::from_millis(250), frame_tx.send(hello)).await;
+    let _ = tokio::time::timeout(Duration::from_millis(250), frame_tx.send(settings)).await;
+}
+
 fn spawn_drain_signal(
     conn_idx: usize,
     frame_tx: writer::FrameSender,
     mut drain: watch::Receiver<bool>,
+    drain_deadline_ms: u64,
 ) -> tokio::task::JoinHandle<()> {
     tokio::spawn(async move {
         if !*drain.borrow() {
@@ -320,7 +365,12 @@ fn spawn_drain_signal(
             Duration::from_millis(250),
             frame_tx.send(super::protocol::Frame::control(
                 super::protocol::MsgType::GoAway,
-                bytes::Bytes::new(),
+                serde_json::to_vec(&aether_contracts::tunnel::GoAwayPayload {
+                    last_accepted_stream_id: u32::MAX,
+                    drain_deadline_ms,
+                    reason: "tunnel drain requested".to_string(),
+                })
+                .expect("goaway payload should serialize"),
             )),
         )
         .await

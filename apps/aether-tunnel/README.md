@@ -128,6 +128,9 @@ sudo aether-tunnel uninstall
 | `--tunnel-connections` | `AETHER_TUNNEL_CONNECTIONS` | 自动（硬件估算） | 最小连接池大小；显式设置后默认固定为该值 |
 | `--tunnel-connections-max` | `AETHER_TUNNEL_CONNECTIONS_MAX` | 自动（硬件估算） | 连接池自动扩容上限；大于 `tunnel_connections` 时启用 autoscale |
 | `--tunnel-max-streams` | `AETHER_TUNNEL_MAX_STREAMS` | 自动（硬件估算） | 单连接最大并发 stream 数 |
+| `--tunnel-profile` | `AETHER_TUNNEL_PROFILE` | `standard` | 自动连接池档位：`lite=2`、`standard=4`、`throughput=8+autoscale` |
+| `--tunnel-stream-initial-window-bytes` | `AETHER_TUNNEL_STREAM_INITIAL_WINDOW_BYTES` | `4194304` | v3 stream 初始流控窗口 |
+| `--tunnel-drain-deadline-ms` | `AETHER_TUNNEL_DRAIN_DEADLINE_MS` | `30000` | v3 GOAWAY/drain 优雅退出期限 |
 | `--tunnel-ping-interval-ms` | `AETHER_TUNNEL_PING_INTERVAL_MS` | `10000` | WebSocket ping 周期（毫秒） |
 | `--tunnel-connect-timeout-ms` | `AETHER_TUNNEL_CONNECT_TIMEOUT_MS` | `3000` | tunnel 建连超时（毫秒） |
 | `--tunnel-ipv4-only` | `AETHER_TUNNEL_IPV4_ONLY` | `false` | 仅使用 IPv4 地址建立直连 WebSocket tunnel；配置 `aether_outbound_proxy_url` 时仅限制代理端点解析 |
@@ -142,7 +145,7 @@ sudo aether-tunnel uninstall
 | `--tunnel-reconnect-base-ms` | `AETHER_TUNNEL_RECONNECT_BASE_MS` | `50` | 指数退避基础延迟（毫秒） |
 | `--tunnel-reconnect-max-ms` | `AETHER_TUNNEL_RECONNECT_MAX_MS` | `250` | 指数退避上限（毫秒） |
 
-省略 `tunnel_connections` 时，tunnel 会按设备能力自动计算一个基线值和偏单机上限的扩容上限：默认至少保留 2 条常驻 tunnel，并会更早触发扩容；如果显式设置了 `tunnel_connections` 但没有设置 `tunnel_connections_max`，则保持固定连接池，不自动扩缩。
+省略 `tunnel_connections` 时，tunnel 会按 `tunnel_profile` 和设备能力自动计算一个基线值和扩容上限：`standard` 默认至少保留 4 条常驻 tunnel；如果显式设置了 `tunnel_connections` 但没有设置 `tunnel_connections_max`，则保持固定连接池，不自动扩缩。
 
 `tunnel_ipv4_only` / `tunnel_ipv6_only` 只能二选一。它们只改变 WebSocket tunnel 回连的 TCP 地址选择：直连 Aether 时过滤 Aether 域名的 DNS 结果；配置 `aether_outbound_proxy_url` 时过滤代理服务器端点的 DNS 结果，Host/SNI 仍使用原始 WebSocket URL。该选项不会影响 provider 上游请求；如需限制 provider 上游流量，请在 `upstream_proxy_url` 或系统网络层处理。对于 Cloudflare 等边缘 IP 会变化的域名，优先使用该选项而不是固定 `/etc/hosts`。
 

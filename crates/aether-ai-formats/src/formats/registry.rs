@@ -282,7 +282,7 @@ fn validate_request_conversion(
     if is_rerank_format(source) || is_rerank_format(target) {
         return validate_rerank_request_conversion(source, target, request);
     }
-    validate_known_standard_request_root_fields(source, body)?;
+    validate_known_standard_request_root_fields(source, target, body)?;
     validate_cross_format_generation_target(source, target, request)?;
     validate_openai_reasoning_effort(source, target, body)?;
     match (source, target) {
@@ -321,6 +321,7 @@ fn validate_response_conversion(
 
 fn validate_known_standard_request_root_fields(
     source: FormatId,
+    target: FormatId,
     body: &Value,
 ) -> Result<(), FormatError> {
     let Some(object) = body.as_object() else {
@@ -330,8 +331,9 @@ fn validate_known_standard_request_root_fields(
         if standard_request_root_field_is_audited(source, key) {
             continue;
         }
-        return Err(FormatError::UnsupportedField {
-            format: source.as_str().to_string(),
+        return Err(FormatError::UnauditedField {
+            source_format: source.as_str().to_string(),
+            target_format: target.as_str().to_string(),
             field: key.clone(),
             reason: "source request root field is not in the audited provider schema for cross-format conversion".to_string(),
         });
@@ -2781,7 +2783,14 @@ mod tests {
 
         assert!(matches!(
             error,
-            super::FormatError::UnsupportedField { ref field, .. } if field == "future_field"
+            super::FormatError::UnauditedField {
+                ref source_format,
+                ref target_format,
+                ref field,
+                ..
+            } if source_format == "openai:chat"
+                && target_format == "gemini:generate_content"
+                && field == "future_field"
         ));
     }
 
@@ -3825,6 +3834,7 @@ mod tests {
             "mapped",
             "mapped/lossy-blocked",
             "extension-preserved",
+            "unaudited",
             "unsupported",
             "invalid-enum",
             "lossy-blocked",

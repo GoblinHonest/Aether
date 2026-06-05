@@ -483,7 +483,7 @@ def render_matrix(
         "",
         "Regenerate with: `python3 docs/api/generate_format_field_coverage.py`.",
         "",
-        "Statuses used in this matrix: `native`, `mapped`, `mapped/lossy-blocked`, `extension-preserved`, `unsupported`, `invalid-enum`, `lossy-blocked`, `not-in-conversion-surface`.",
+        "Statuses used in this matrix: `native`, `mapped`, `mapped/lossy-blocked`, `extension-preserved`, `unaudited`, `unsupported`, `invalid-enum`, `lossy-blocked`, `not-in-conversion-surface`.",
         "",
         "| Provider | Schema | Field | Required | Type | Surface | Same-Format Runtime | Canonical Roundtrip | Cross-Format | Notes |",
         "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",

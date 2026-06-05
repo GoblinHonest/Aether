@@ -935,6 +935,7 @@ fn response_conversion_error_requires_fail_closed(error: &FormatError) -> bool {
     matches!(
         error,
         FormatError::UnsupportedField { .. }
+            | FormatError::UnauditedField { .. }
             | FormatError::InvalidEnumValue { .. }
             | FormatError::LossyConversionBlocked { .. }
             | FormatError::InvalidTargetField { .. }

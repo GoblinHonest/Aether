@@ -63,6 +63,7 @@ pub enum ConversionFieldStatus {
     Native,
     Mapped,
     ExtensionPreserved,
+    Unaudited,
     Unsupported,
     InvalidEnum,
     LossyBlocked,
@@ -144,6 +145,12 @@ pub enum FormatError {
         field: String,
         reason: String,
     },
+    UnauditedField {
+        source_format: String,
+        target_format: String,
+        field: String,
+        reason: String,
+    },
     InvalidEnumValue {
         format: String,
         field: String,
@@ -182,6 +189,17 @@ impl fmt::Display for FormatError {
                 reason,
             } => {
                 write!(f, "unsupported field {field} in {format}: {reason}")
+            }
+            Self::UnauditedField {
+                source_format,
+                target_format,
+                field,
+                reason,
+            } => {
+                write!(
+                    f,
+                    "unaudited field {field} in {source_format} cannot be converted to {target_format}: {reason}"
+                )
             }
             Self::InvalidEnumValue {
                 format,

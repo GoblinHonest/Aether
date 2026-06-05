@@ -9,13 +9,14 @@ Statuses:
 - `native`: emitted as a target-native field without semantic change.
 - `mapped`: converted through canonical/provider-specific mapping.
 - `extension-preserved`: preserved in same-format canonical roundtrip or target-approved extension namespace.
-- `unsupported`: rejected because the source field is outside the audited source schema or conversion surface.
+- `unaudited`: rejected because the source field is not in the audited provider schema inventory for cross-format conversion.
+- `unsupported`: rejected because the request/field shape is outside the supported conversion surface, independent of schema drift.
 - `lossy-blocked`: conversion fails closed.
 - `invalid-enum`: conversion fails closed because a provider enum value is not valid for the target mapping.
 
 Full schema field coverage is tracked in `docs/api/format-field-coverage-matrix.md`. That matrix is generated from the schema inventory in `docs/api/provider-interface-definitions.md` by `python3 docs/api/generate_format_field_coverage.py` and gives every documented OpenAI, Claude, and Gemini schema field a handling status. “Handled” means mapped, same-format/native preserved, extension-preserved, blocked with a structured error, or explicitly marked outside the canonical conversion surface.
 
-Provider schema refresh is not a runtime dependency. Same-format runtime paths do not use this matrix; they bypass canonical conversion. Same-format canonical roundtrip must preserve unrecognized provider fields through provider extension namespaces. Cross-format conversion is capability-based: only explicitly mapped fields are emitted, and newly discovered or unknown provider fields fail closed until a lossless mapping is audited.
+Provider schema refresh is not a runtime dependency. Same-format runtime paths do not use this matrix; they bypass canonical conversion. Same-format canonical roundtrip must preserve unrecognized provider fields through provider extension namespaces. Cross-format conversion is capability-based: only explicitly mapped fields are emitted, and newly discovered or unknown provider fields fail closed with `UnauditedField` until a lossless mapping is audited.
 
 ## Implemented Boundary Changes
 
@@ -25,10 +26,10 @@ Provider schema refresh is not a runtime dependency. Same-format runtime paths d
 | Legacy conversion API | `convert_request` / `convert_response` are retained for migration and may still use legacy context behavior. |
 | Same-format provider path | Bypasses canonical conversion and copies the parsed JSON object before transport edits. |
 | Cross-format same-format-provider path | Uses `convert_request_pure`, then applies model/body/stream edits in transport. |
-| Conversion errors | Added `UnsupportedField`, `InvalidEnumValue`, `LossyConversionBlocked`, and `InvalidTargetField`. |
+| Conversion errors | Added `UnauditedField`, `UnsupportedField`, `InvalidEnumValue`, `LossyConversionBlocked`, and `InvalidTargetField`. |
 | Reporting | Added `ConversionReport` with field statuses. Runtime reports remain conversion-operation oriented; exhaustive nested schema coverage is enforced by `format-field-coverage-matrix.md`. |
 | Source schema coverage | Cross-format request conversion rejects unknown source root fields before emit. Every documented schema field is covered by the field coverage matrix. |
-| Schema drift handling | Official schema changes are detected by regenerating the inventory/matrix. Runtime same-format remains passthrough; cross-format unknowns remain blocked until deliberately mapped. |
+| Schema drift handling | Official schema changes are detected by regenerating the inventory/matrix. Runtime same-format remains passthrough; cross-format unknowns return `UnauditedField` until deliberately mapped. |
 | Tool schema roundtrip | Claude `input_schema` and Gemini `functionDeclarations.parameters` preserve raw same-format schema through provider-specific extensions. |
 | Tool result ids | Chat `tool_call_id`, Responses `call_id`, Claude `tool_use_id`, and Gemini `functionResponse.id` are mapped through canonical tool IDs. |
 
@@ -68,7 +69,7 @@ Provider schema refresh is not a runtime dependency. Same-format runtime paths d
 | `safety_identifier` | OpenAI extension | `safety_identifier` | extension-preserved |
 | `prompt_cache_key` | OpenAI extension | `prompt_cache_key` | extension-preserved |
 | `user` | legacy Chat user field | none | lossy-blocked |
-| unknown top-level fields | source schema guard | none | unsupported |
+| unknown top-level fields | source schema guard | none | unaudited |
 
 ## OpenAI Responses -> OpenAI Chat
 
@@ -105,7 +106,7 @@ Provider schema refresh is not a runtime dependency. Same-format runtime paths d
 | `conversation` | Responses-only | none | lossy-blocked |
 | `background` | Responses-only | none | lossy-blocked |
 | `max_tool_calls` | Responses-only | none | lossy-blocked |
-| unknown top-level fields | source schema guard | none | unsupported |
+| unknown top-level fields | source schema guard | none | unaudited |
 
 ## Claude Messages <-> OpenAI Chat / Responses
 
@@ -218,7 +219,7 @@ Current stream behavior:
 | OpenAI Responses stream target | Canonical `length` and `content_filter` terminal reasons emit `response.incomplete` with `incomplete_details.reason=max_output_tokens` or `content_filter` instead of `response.completed` | mapped |
 | Terminal observer | Unknown provider stream events increment `unknown_event_count`; OpenAI Responses failed events mark terminal error state | mapped |
 | Stream -> sync aggregate | Unknown OpenAI Chat, OpenAI Responses, Claude, and Gemini stream events make the runtime finalize checked path return an error and block `body_json` fallback; legacy public aggregate helpers keep `Option` compatibility | lossy-blocked |
-| Runtime strict fallback guard | `InvalidEnumValue`, `UnsupportedField`, `LossyConversionBlocked`, and `InvalidTargetField` from registry response conversion are not allowed to fall through legacy conversion helpers | lossy-blocked |
+| Runtime strict fallback guard | `UnauditedField`, `InvalidEnumValue`, `UnsupportedField`, `LossyConversionBlocked`, and `InvalidTargetField` from registry response conversion are not allowed to fall through legacy conversion helpers | lossy-blocked |
 | Runtime same-format stream | Same-format stream passthrough remains outside canonical conversion; stream policy edits are transport-layer only | native |
 
 Stream fixture coverage:

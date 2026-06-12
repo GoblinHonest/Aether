@@ -1291,6 +1291,7 @@ impl AppState {
                 let deleted_key_ids = [key_id.to_string()];
                 self.cleanup_deleted_provider_catalog_refs(
                     &transport.provider.id,
+                    false,
                     &[],
                     &deleted_key_ids,
                 )

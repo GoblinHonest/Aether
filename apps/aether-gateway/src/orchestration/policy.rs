@@ -271,7 +271,7 @@ mod tests {
 
     use super::{
         append_local_failover_policy_to_value, local_failover_policy_from_report_context,
-        LocalFailoverPolicy, LocalFailoverRegexRule,
+        local_failover_policy_from_transport, LocalFailoverPolicy, LocalFailoverRegexRule,
     };
     use crate::provider_transport::snapshot::{
         GatewayProviderTransportEndpoint, GatewayProviderTransportKey,

@@ -16,6 +16,7 @@ const CLAUDE_MESSAGES_REQUEST_SOURCE_MARKER: &str = "claude_messages_request";
 const CLAUDE_SYSTEM_SOURCE_MARKER: &str = "claude_system";
 const CLAUDE_THINKING_SOURCE_MARKER: &str = "claude_thinking";
 const CLAUDE_TOOL_RESULT_SOURCE_MARKER: &str = "claude_tool_result";
+const CLAUDE_RAW_SOURCE_MARKER: &str = "claude_raw";
 const OPENAI_THINKING_SOURCE_MARKER: &str = "openai_thinking";
 const OPENAI_CUSTOM_TOOL_CALL_SOURCE_MARKER: &str = "openai_custom_tool_call";
 const OPENAI_OUTPUT_AUDIO_SOURCE_MARKER: &str = "openai_output_audio";
@@ -1483,7 +1484,7 @@ pub(crate) fn claude_block_to_canonical_block(block: &Value) -> Option<Canonical
         _ => Some(CanonicalContentBlock::Unknown {
             raw_type,
             payload: block.clone(),
-            extensions: BTreeMap::new(),
+            extensions: claude_raw_extensions(BTreeMap::new()),
         }),
     }
 }
@@ -1570,7 +1571,7 @@ pub(crate) fn claude_media_block_to_canonical(
                 .unwrap_or_default()
                 .to_string(),
             payload: Value::Object(block.clone()),
-            extensions: BTreeMap::new(),
+            extensions: claude_raw_extensions(BTreeMap::new()),
         }),
     }
 }
@@ -3186,6 +3187,14 @@ fn claude_thinking_extensions(mut extensions: BTreeMap<String, Value>) -> BTreeM
     extensions
 }
 
+fn claude_raw_extensions(mut extensions: BTreeMap<String, Value>) -> BTreeMap<String, Value> {
+    canonical_extension_object_mut(&mut extensions, AETHER_EXTENSION_NAMESPACE).insert(
+        "source".to_string(),
+        Value::String(CLAUDE_RAW_SOURCE_MARKER.to_string()),
+    );
+    extensions
+}
+
 fn openai_thinking_extensions(mut extensions: BTreeMap<String, Value>) -> BTreeMap<String, Value> {
     canonical_extension_object_mut(&mut extensions, AETHER_EXTENSION_NAMESPACE).insert(
         "source".to_string(),
@@ -3214,6 +3223,14 @@ pub(crate) fn is_claude_thinking_block(extensions: &BTreeMap<String, Value>) -> 
         .and_then(|value| value.get("source"))
         .and_then(Value::as_str)
         == Some(CLAUDE_THINKING_SOURCE_MARKER)
+}
+
+fn is_claude_raw_block(extensions: &BTreeMap<String, Value>) -> bool {
+    extensions
+        .get(AETHER_EXTENSION_NAMESPACE)
+        .and_then(|value| value.get("source"))
+        .and_then(Value::as_str)
+        == Some(CLAUDE_RAW_SOURCE_MARKER)
 }
 
 pub(crate) fn is_openai_thinking_block(extensions: &BTreeMap<String, Value>) -> bool {
@@ -5121,6 +5138,11 @@ pub(crate) fn canonical_block_to_claude(
             out.extend(namespace_extension_object(extensions, "claude", &out));
             Some(Some(Value::Object(out)))
         }
+        CanonicalContentBlock::Unknown {
+            payload,
+            extensions,
+            ..
+        } if is_claude_raw_block(extensions) => Some(Some(payload.clone())),
         CanonicalContentBlock::Unknown { .. } => Some(None),
     }
 }
@@ -5642,6 +5664,17 @@ pub(crate) fn claude_usage_to_canonical(value: Option<&Value>) -> Option<Canonic
         .get("cache_creation_input_tokens")
         .and_then(Value::as_u64)
         .unwrap_or(0);
+    let reasoning_tokens = usage
+        .get("output_tokens_details")
+        .and_then(Value::as_object)
+        .and_then(|details| {
+            details
+                .get("thinking_tokens")
+                .or_else(|| details.get("reasoning_tokens"))
+        })
+        .or_else(|| usage.get("reasoning_tokens"))
+        .and_then(Value::as_u64)
+        .unwrap_or(0);
     Some(CanonicalUsage {
         input_tokens,
         input_tokens_include_cache: false,
@@ -5669,9 +5702,11 @@ pub(crate) fn claude_usage_to_canonical(value: Option<&Value>) -> Option<Canonic
                 "cache_read_input_tokens",
                 "cache_creation_input_tokens",
                 "cache_creation",
+                "output_tokens_details",
+                "reasoning_tokens",
             ],
         ),
-        ..CanonicalUsage::default()
+        reasoning_tokens,
     })
 }
 
@@ -5800,6 +5835,11 @@ pub(crate) fn canonical_usage_to_claude(value: &CanonicalUsage) -> Value {
         output["cache_creation"] = json!({
             "ephemeral_5m_input_tokens": value.cache_creation_ephemeral_5m_tokens,
             "ephemeral_1h_input_tokens": value.cache_creation_ephemeral_1h_tokens,
+        });
+    }
+    if value.reasoning_tokens > 0 {
+        output["output_tokens_details"] = json!({
+            "thinking_tokens": value.reasoning_tokens,
         });
     }
     output
@@ -7794,6 +7834,52 @@ mod tests {
     }
 
     #[test]
+    fn claude_request_adapter_preserves_official_raw_content_blocks() {
+        let request = json!({
+            "model": "claude-sonnet-4-5",
+            "messages": [{
+                "role": "assistant",
+                "content": [
+                    {
+                        "type": "server_tool_use",
+                        "id": "srvu_1",
+                        "name": "web_search",
+                        "input": {"query": "rust"}
+                    },
+                    {
+                        "type": "web_search_tool_result",
+                        "tool_use_id": "srvu_1",
+                        "content": [{
+                            "type": "web_search_result",
+                            "title": "Rust",
+                            "url": "https://www.rust-lang.org/",
+                            "encrypted_content": "enc"
+                        }]
+                    }
+                ]
+            }]
+        });
+
+        let canonical = from_claude_to_canonical_request(&request).expect("canonical request");
+        assert_eq!(canonical_request_unknown_block_count(&canonical), 2);
+
+        let rebuilt = canonical_to_claude_request(&canonical, "claude-upstream", false)
+            .expect("claude request");
+        assert_eq!(
+            rebuilt["messages"][1]["content"][0]["type"],
+            "server_tool_use"
+        );
+        assert_eq!(
+            rebuilt["messages"][1]["content"][1]["type"],
+            "web_search_tool_result"
+        );
+        assert_eq!(
+            rebuilt["messages"][1]["content"][1]["content"][0]["encrypted_content"],
+            "enc"
+        );
+    }
+
+    #[test]
     fn canonical_to_openai_chat_request_rejects_unrepresentable_claude_tool_result() {
         let request = json!({
             "model": "claude-sonnet",
@@ -7845,7 +7931,8 @@ mod tests {
                 "input_tokens": 11,
                 "output_tokens": 7,
                 "cache_read_input_tokens": 3,
-                "cache_creation_input_tokens": 2
+                "cache_creation_input_tokens": 2,
+                "output_tokens_details": {"thinking_tokens": 4}
             }
         });
 
@@ -7865,6 +7952,7 @@ mod tests {
         ));
         assert_eq!(canonical.usage.as_ref().unwrap().cache_read_tokens, 3);
         assert_eq!(canonical.usage.as_ref().unwrap().cache_write_tokens, 2);
+        assert_eq!(canonical.usage.as_ref().unwrap().reasoning_tokens, 4);
 
         let rebuilt = canonical_to_claude_response(&canonical);
         assert_eq!(rebuilt["content"][0]["signature"], "sig_123");
@@ -7872,8 +7960,22 @@ mod tests {
         assert_eq!(rebuilt["stop_reason"], "tool_use");
         assert_eq!(rebuilt["usage"]["cache_read_input_tokens"], 3);
         assert_eq!(rebuilt["usage"]["cache_creation_input_tokens"], 2);
+        assert_eq!(
+            rebuilt["usage"]["output_tokens_details"]["thinking_tokens"],
+            4
+        );
+
+        let rebuilt_chat = canonical_to_openai_chat_response(&canonical);
+        assert_eq!(
+            rebuilt_chat["usage"]["completion_tokens_details"]["reasoning_tokens"],
+            4
+        );
 
         let rebuilt_openai = canonical_to_openai_responses_response(&canonical, &json!({}));
+        assert_eq!(
+            rebuilt_openai["usage"]["output_tokens_details"]["reasoning_tokens"],
+            4
+        );
         assert_eq!(rebuilt_openai["usage"]["input_tokens"], 16);
         assert_eq!(
             rebuilt_openai["usage"]["input_tokens_details"]["cached_tokens"],

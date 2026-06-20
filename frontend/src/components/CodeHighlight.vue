@@ -185,7 +185,7 @@ function highlightPlaceholders(html: string): string {
 
 .code-highlight :deep(.hljs-attr),
 .code-highlight :deep(.hljs-attribute) {
-  color: #c96442;
+  color: #1a1a1a;
   font-weight: 500;
 }
 
@@ -209,7 +209,7 @@ function highlightPlaceholders(html: string): string {
 }
 
 .code-highlight :deep(.hljs-section) {
-  color: #cc785c;
+  color: #1a1a1a;
   font-weight: 500;
 }
 
@@ -226,7 +226,7 @@ function highlightPlaceholders(html: string): string {
 
 .code-highlight :deep(.hljs-variable),
 .code-highlight :deep(.hljs-property) {
-  color: #cc785c;
+  color: #1a1a1a;
 }
 
 .code-highlight :deep(.hljs-punctuation) {
@@ -296,7 +296,7 @@ body[theme-mode='dark'] .code-highlight :deep(.hljs-string) {
 .dark .code-highlight :deep(.hljs-attribute),
 body[theme-mode='dark'] .code-highlight :deep(.hljs-attr),
 body[theme-mode='dark'] .code-highlight :deep(.hljs-attribute) {
-  color: #d4a27f;
+  color: #e5e5e5;
   font-weight: 500;
 }
 
@@ -321,13 +321,13 @@ body[theme-mode='dark'] .code-highlight :deep(.hljs-comment) {
 .dark .code-highlight :deep(.hljs-title),
 body[theme-mode='dark'] .code-highlight :deep(.hljs-function),
 body[theme-mode='dark'] .code-highlight :deep(.hljs-title) {
-  color: #d4a27f;
+  color: #e5e5e5;
   font-weight: 500;
 }
 
 .dark .code-highlight :deep(.hljs-section),
 body[theme-mode='dark'] .code-highlight :deep(.hljs-section) {
-  color: #d4a27f;
+  color: #e5e5e5;
   font-weight: 500;
 }
 

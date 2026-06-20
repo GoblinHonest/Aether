@@ -39,7 +39,7 @@ function mountSection() {
   const root = document.createElement('div')
   document.body.appendChild(root)
   const app = createApp(SiteInfoSection, {
-    siteName: 'Aether',
+    siteName: 'ManyCode',
     siteSubtitle: 'AI Gateway',
     loading: false,
     hasChanges: true,

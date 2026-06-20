@@ -24,7 +24,7 @@
           id="site-name"
           :model-value="siteName"
           type="text"
-          placeholder="Aether"
+          placeholder="ManyCode"
           class="mt-1"
           @update:model-value="$emit('update:siteName', $event)"
         />

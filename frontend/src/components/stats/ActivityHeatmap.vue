@@ -4,7 +4,7 @@
     <Teleport to="body">
       <div
         v-if="tooltip.visible && tooltip.day"
-        class="fixed z-50 rounded-lg border border-border/70 bg-background px-3 py-2 text-xs shadow-lg backdrop-blur pointer-events-none"
+        class="fixed z-50 rounded-lg border border-border/70 bg-background px-3 py-2 text-xs backdrop-blur pointer-events-none"
         :style="tooltipStyle"
       >
         <p class="font-medium">
@@ -125,7 +125,7 @@
               >
                 <div
                   v-if="day"
-                  class="rounded-[4px] transition-all duration-200 hover:shadow-lg cursor-pointer cell-emerge"
+                  class="rounded-[4px] transition-all duration-200  cursor-pointer cell-emerge"
                   :style="[cellSquareStyle, getCellStyle(day.requests), getCellAnimationDelay(weekIndex, dayIndex)]"
                   :title="buildTooltip(day)"
                   @mouseenter="handleHover(day, $event)"

@@ -55,7 +55,7 @@
           <template #actions>
             <Button
               size="lg"
-              class="shadow-lg shadow-primary/20"
+              class=""
               @click="openCreateApiKeyDialog"
             >
               <Plus class="mr-2 h-4 w-4" />
@@ -259,7 +259,7 @@
           v-for="apiKey in paginatedApiKeys"
           :key="apiKey.id"
           variant="default"
-          class="group hover:shadow-md hover:border-primary/30 transition-all duration-200"
+          class="group  transition-all duration-200"
         >
           <div class="p-4">
             <!-- 第一行：名称、状态、操作 -->
@@ -555,7 +555,7 @@
           取消
         </Button>
         <Button
-          class="h-11 px-6 shadow-lg shadow-primary/20"
+          class="h-11 px-6 "
           :disabled="creating"
           @click="saveApiKey"
         >
@@ -767,7 +767,7 @@
         </Button>
         <Button
           data-testid="ccswitch-confirm"
-          class="h-10 px-5 shadow-lg shadow-primary/20"
+          class="h-10 px-5 "
           :disabled="ccSwitchConfirmDisabled"
           @click="confirmCcSwitchImport"
         >
@@ -805,7 +805,7 @@
 
       <div class="space-y-5">
         <div class="rounded-lg border border-border/60 bg-muted/30 p-3 text-xs text-muted-foreground">
-          选择要配置的 CLI 和目标系统，Aether 会生成 15 分钟内有效的一次性 install code。页面命令不会包含原始 API Key。
+          选择要配置的 CLI 和目标系统，ManyCode 会生成 15 分钟内有效的一次性 install code。页面命令不会包含原始 API Key。
         </div>
 
         <div class="space-y-2">
@@ -888,7 +888,7 @@
           关闭
         </Button>
         <Button
-          class="h-10 px-5 shadow-lg shadow-primary/20"
+          class="h-10 px-5 "
           :disabled="!installCommand || installLoading"
           @click="copyInstallCommand"
         >
@@ -1025,7 +1025,7 @@ const ccSwitchPlainApiKey = ref('')
 const ccSwitchTargetApp = ref<CcSwitchTargetApp>('claude')
 const ccSwitchProviderName = ref('')
 const ccSwitchProviderNameDirty = ref(false)
-const ccSwitchSiteName = ref('Aether')
+const ccSwitchSiteName = ref('ManyCode')
 const ccSwitchModelIds = reactive<Record<CcSwitchModelFieldKey, string>>({
   default: '',
   haiku: '',
@@ -1084,7 +1084,7 @@ const ccSwitchModelFields = computed<CcSwitchModelField[]>(() => {
 const ccSwitchModelHelpText = computed(() =>
   ccSwitchTargetApp.value === 'claude'
     ? 'Claude Code 会分别写入 Haiku、Sonnet、Opus，Sonnet 同时作为默认模型；模型多时可在下拉中搜索并滚动选择。'
-    : '从 Aether 可用模型中选择，模型多时可在下拉中搜索并滚动选择。',
+    : '从 ManyCode 可用模型中选择，模型多时可在下拉中搜索并滚动选择。',
 )
 
 onMounted(() => {
@@ -1328,7 +1328,7 @@ async function prepareCcSwitchDialog() {
       meApi.getAvailableModels({ limit: 1000 }),
     ])
     ccSwitchBaseUrl.value = clientConfig.base_url
-    ccSwitchSiteName.value = clientConfig.site_name?.trim() || 'Aether'
+    ccSwitchSiteName.value = clientConfig.site_name?.trim() || 'ManyCode'
     if (!ccSwitchProviderNameDirty.value) {
       ccSwitchProviderName.value = defaultCcSwitchProviderName(ccSwitchSiteName.value)
     }

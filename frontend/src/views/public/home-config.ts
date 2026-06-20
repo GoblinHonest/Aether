@@ -103,7 +103,7 @@ export const panelClasses = {
     'flex items-center justify-center rounded-lg border h-7 w-7',
     'border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)]',
     'bg-transparent',
-    'text-[#666663] dark:text-[#f1ead8]',
+    'text-[#666666] dark:text-[#f1ead8]',
     'transition hover:bg-[#f0f0eb] dark:hover:bg-[#3a3731]'
   ].join(' ')
 } as const
@@ -164,8 +164,8 @@ export function getLogoType(section: number): 'claude' | 'openai' | 'gemini' | '
 export function getLogoClass(section: number): string {
   switch (section) {
     case SECTIONS.CLAUDE: return 'text-[#D97757]'
-    case SECTIONS.CODEX: return 'text-[#191919] dark:text-white'
+    case SECTIONS.CODEX: return 'text-[#1a1a1a] dark:text-white'
     case SECTIONS.GEMINI: return '' // Gemini uses gradient
-    default: return 'text-[#191919] dark:text-white'
+    default: return 'text-[#1a1a1a] dark:text-white'
   }
 }

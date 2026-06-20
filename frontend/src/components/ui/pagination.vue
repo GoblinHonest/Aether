@@ -39,7 +39,7 @@
           :variant="page === current ? 'default' : 'outline'"
           size="sm"
           class="h-9 min-w-[36px] px-2"
-          :class="page === current ? 'shadow-sm' : ''"
+          :class="page === current ? '' : ''"
           @click="handlePageChange(page)"
         >
           {{ page }}

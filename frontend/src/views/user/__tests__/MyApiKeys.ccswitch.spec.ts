@@ -98,7 +98,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   meApiMock.getClientConfig.mockResolvedValue({
     base_url: 'https://aether.example.com',
-    site_name: 'Aether Local',
+    site_name: 'ManyCode Local',
   })
   meApiMock.getAvailableModels.mockResolvedValue({
     models: [
@@ -140,7 +140,7 @@ describe('MyApiKeys CC Switch import', () => {
 
     expect(meApiMock.getFullApiKey).not.toHaveBeenCalled()
     expect(document.body.textContent).toContain('导入到 CC Switch')
-    expect(document.querySelector<HTMLInputElement>('[data-testid="ccswitch-provider-name"]')?.value).toBe('Aether Local')
+    expect(document.querySelector<HTMLInputElement>('[data-testid="ccswitch-provider-name"]')?.value).toBe('ManyCode Local')
     expect(document.querySelector<HTMLElement>('[data-testid="ccswitch-model-select-haiku"]')?.textContent).toContain('claude-haiku-4')
     expect(document.querySelector<HTMLElement>('[data-testid="ccswitch-model-select-sonnet"]')?.textContent).toContain('claude-sonnet-4')
     expect(document.querySelector<HTMLElement>('[data-testid="ccswitch-model-select-opus"]')?.textContent).toContain('claude-opus-4')
@@ -155,7 +155,7 @@ describe('MyApiKeys CC Switch import', () => {
     document.querySelector<HTMLButtonElement>('[data-testid="ccswitch-target-codex"]')?.click()
     await flushPromises()
 
-    expect(document.querySelector<HTMLInputElement>('[data-testid="ccswitch-provider-name"]')?.value).toBe('Aether Local')
+    expect(document.querySelector<HTMLInputElement>('[data-testid="ccswitch-provider-name"]')?.value).toBe('ManyCode Local')
     expect(document.querySelector<HTMLElement>('[data-testid="ccswitch-model-select-default"]')?.textContent).toContain('gpt-5')
     expect(document.querySelector<HTMLElement>('[data-testid="ccswitch-model-select-haiku"]')).toBeNull()
     expect(document.querySelector<HTMLElement>('[data-testid="ccswitch-model-select-sonnet"]')).toBeNull()

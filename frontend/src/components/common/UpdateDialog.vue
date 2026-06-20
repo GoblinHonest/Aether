@@ -73,7 +73,7 @@
           >
             发布于 {{ formattedPublishedAt }}
           </div>
-          <div class="mb-2 text-left text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground/80">
+          <div class="mb-2 text-left text-xs font-medium uppercase tracking-normal text-muted-foreground/80">
             更新内容
           </div>
           <!-- eslint-disable vue/no-v-html -->

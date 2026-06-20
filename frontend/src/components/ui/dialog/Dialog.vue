@@ -34,7 +34,7 @@
         >
           <div
             v-if="isOpen"
-            class="relative transform rounded-lg bg-background text-left shadow-2xl transition-all w-full sm:my-8 sm:w-full border border-border pointer-events-auto"
+            class="relative transform rounded-xl bg-background text-left shadow-lg transition-all w-full sm:my-8 sm:w-full border border-[#eee] dark:border-[#222] pointer-events-auto"
             :style="{ zIndex: contentZIndex }"
             :class="maxWidthClass"
             @click.stop

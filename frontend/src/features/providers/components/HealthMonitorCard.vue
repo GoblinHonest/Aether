@@ -198,10 +198,10 @@ async function refreshData() {
   }
 }
 
-function getSuccessRateVariant(rate: number): 'default' | 'secondary' | 'destructive' | 'outline' {
-  if (rate >= 0.95) return 'default'
+function getSuccessRateVariant(rate: number): 'default' | 'secondary' | 'destructive' | 'outline' | 'dark' {
+  if (rate >= 0.95) return 'dark'
   if (rate >= 0.8) return 'secondary'
-  return 'destructive'
+  return 'outline'
 }
 
 watch(lookbackHours, () => {

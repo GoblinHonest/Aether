@@ -240,7 +240,7 @@ const shadows = computed(() => {
             :style="{ backgroundColor: colors.textMuted }"
           />
           <span
-            class="font-sans text-[9px] font-extrabold tracking-[0.2em] uppercase"
+            class="font-sans text-[9px] font-extrabold tracking-normal uppercase"
             :style="{ color: colors.textMuted }"
           >SOURCES</span>
         </div>
@@ -415,7 +415,7 @@ const shadows = computed(() => {
             :style="{ backgroundColor: colors.textMuted }"
           />
           <span
-            class="font-sans text-[9px] font-extrabold tracking-[0.2em] uppercase"
+            class="font-sans text-[9px] font-extrabold tracking-normal uppercase"
             :style="{ color: colors.textMuted }"
           >OUTPUTS</span>
         </div>

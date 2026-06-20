@@ -37,14 +37,14 @@
         v-if="filteredBuiltinTools.length > 0"
         class="mb-8"
       >
-        <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+        <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-normal mb-4">
           内置工具
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           <div
             v-for="tool in filteredBuiltinTools"
             :key="tool.name"
-            class="group relative border rounded-2xl p-6 transition-all duration-200 hover:shadow-lg border-border bg-card hover:border-primary/20 cursor-pointer"
+            class="group relative border rounded-2xl p-6 transition-all duration-200  border-border bg-card hover:border-primary/20 cursor-pointer"
             @click="router.push(tool.href)"
           >
             <div class="flex items-start gap-4 mb-3">
@@ -80,7 +80,7 @@
 
       <!-- 扩展模块 -->
       <div class="mb-4 flex items-center justify-between gap-3">
-        <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+        <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-normal">
           扩展模块
         </h3>
         <Button
@@ -104,11 +104,11 @@
         <div
           v-for="module in filteredModules"
           :key="module.name"
-          class="group relative border rounded-2xl p-6 transition-all duration-200 hover:shadow-lg"
+          class="group relative border rounded-2xl p-6 transition-all duration-200 "
           :class="[
             {
               'bg-muted/40 border-muted': !module.available,
-              'border-primary/40 bg-gradient-to-br from-primary/5 to-primary/10 shadow-sm': module.active,
+              'border-primary/40 bg-gradient-to-br from-primary/5 to-primary/10': module.active,
               'border-border bg-card hover:border-primary/20': !module.active && module.available
             },
             draggedModuleName === module.name ? 'opacity-70 ring-2 ring-primary/30' : '',

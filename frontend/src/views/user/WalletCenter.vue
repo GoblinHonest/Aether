@@ -10,7 +10,7 @@
     <template v-else>
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <Card class="p-5 space-y-2">
-          <div class="text-xs uppercase tracking-wider text-muted-foreground">
+          <div class="text-xs uppercase tracking-normal text-muted-foreground">
             总可用额度
           </div>
           <div class="text-3xl font-bold tabular-nums">
@@ -22,7 +22,7 @@
         </Card>
 
         <Card class="p-5 space-y-3">
-          <div class="text-xs uppercase tracking-wider text-muted-foreground">
+          <div class="text-xs uppercase tracking-normal text-muted-foreground">
             套餐今日额度
           </div>
           <div class="text-2xl font-bold tabular-nums">
@@ -59,7 +59,7 @@
         </Card>
 
         <Card class="p-5 space-y-2">
-          <div class="text-xs uppercase tracking-wider text-muted-foreground">
+          <div class="text-xs uppercase tracking-normal text-muted-foreground">
             钱包余额
           </div>
           <div class="text-2xl font-semibold tabular-nums">
@@ -71,7 +71,7 @@
         </Card>
 
         <Card class="p-5 space-y-2">
-          <div class="text-xs uppercase tracking-wider text-muted-foreground">
+          <div class="text-xs uppercase tracking-normal text-muted-foreground">
             钱包状态
           </div>
           <div class="flex items-center gap-2">

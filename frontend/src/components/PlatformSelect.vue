@@ -236,7 +236,7 @@ onBeforeUnmount(() => {
 
 .platform-select__hint {
   font-size: 0.7rem;
-  color: #91918d;
+  color: #999999;
   white-space: nowrap;
 }
 
@@ -302,7 +302,7 @@ onBeforeUnmount(() => {
 
 .platform-select__option-hint {
   font-size: 0.7rem;
-  color: #91918d;
+  color: #999999;
   white-space: nowrap;
 }
 

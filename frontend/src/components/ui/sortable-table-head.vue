@@ -88,7 +88,7 @@ const filterButtonClass = computed(() => cn(
     : 'text-muted-foreground/60 hover:bg-muted/50 hover:text-foreground',
 ))
 const filterPanelClass = computed(() => cn(
-  'fixed z-[1000] w-64 rounded-md border bg-popover p-3 text-popover-foreground shadow-md outline-none',
+  'fixed z-[1000] w-64 rounded-md border bg-popover p-3 text-popover-foreground outline-none',
   props.filterContentClass,
 ))
 

@@ -125,7 +125,7 @@ const props = withDefaults(
     autoStart: true,
     loop: true,
     loopPause: 600,
-    outlineColor: '#cc785c',
+    outlineColor: '#1a1a1a',
     gradientColor: '#e8a882',
     strokeWidth: 2.5,
     cycleColors: false,

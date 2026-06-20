@@ -238,7 +238,7 @@
                   type="button"
                   class="h-9 rounded-md px-3 text-sm font-medium transition-colors"
                   :class="sortingScope === 'unified'
-                    ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                    ? 'bg-primary/10 text-primary ring-1 ring-border'
                     : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                   @click="setSortingScope('unified')"
                 >
@@ -248,7 +248,7 @@
                   type="button"
                   class="h-9 rounded-md px-3 text-sm font-medium transition-colors"
                   :class="sortingScope === 'per_model'
-                    ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                    ? 'bg-primary/10 text-primary ring-1 ring-border'
                     : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                   @click="setSortingScope('per_model')"
                 >
@@ -279,7 +279,7 @@
                       type="button"
                       class="flex h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium transition-colors"
                       :class="firstStepPriorityMode === 'provider'
-                        ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                        ? 'bg-primary/10 text-primary ring-1 ring-border'
                         : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                       @click="updateFirstStepPriorityMode('provider')"
                     >
@@ -290,7 +290,7 @@
                       type="button"
                       class="flex h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium transition-colors"
                       :class="firstStepPriorityMode === 'global_key'
-                        ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                        ? 'bg-primary/10 text-primary ring-1 ring-border'
                         : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                       @click="updateFirstStepPriorityMode('global_key')"
                     >
@@ -309,7 +309,7 @@
                       type="button"
                       class="h-9 rounded-md px-3 text-sm font-medium transition-colors"
                       :class="firstStepSchedulingMode === mode.value
-                        ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                        ? 'bg-primary/10 text-primary ring-1 ring-border'
                         : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                       @click="updateFirstStepSchedulingMode(mode.value)"
                     >
@@ -345,7 +345,7 @@
                     type="button"
                     class="h-9 rounded-md px-3 font-medium transition-colors"
                     :class="modelFilter === filter.value
-                      ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                      ? 'bg-primary/10 text-primary ring-1 ring-border'
                       : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                     @click="modelFilter = filter.value"
                   >
@@ -488,7 +488,7 @@
                               type="button"
                               class="flex h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium transition-colors"
                               :class="modelPriorityMode(activePerModelPolicy.model) === 'provider'
-                                ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                                ? 'bg-primary/10 text-primary ring-1 ring-border'
                                 : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                               @click="updateModelPriorityMode(activePerModelPolicy.model, 'provider')"
                             >
@@ -499,7 +499,7 @@
                               type="button"
                               class="flex h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium transition-colors"
                               :class="modelPriorityMode(activePerModelPolicy.model) === 'global_key'
-                                ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                                ? 'bg-primary/10 text-primary ring-1 ring-border'
                                 : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                               @click="updateModelPriorityMode(activePerModelPolicy.model, 'global_key')"
                             >
@@ -517,7 +517,7 @@
                               type="button"
                               class="h-9 rounded-md px-3 text-sm font-medium transition-colors"
                               :class="modelSchedulingMode(activePerModelPolicy.model) === mode.value
-                                ? 'bg-primary/10 text-primary shadow-sm ring-1 ring-border'
+                                ? 'bg-primary/10 text-primary ring-1 ring-border'
                                 : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
                               @click="updateModelSchedulingMode(activePerModelPolicy.model, mode.value)"
                             >

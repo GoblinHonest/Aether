@@ -6,7 +6,7 @@ import { BookOpen } from 'lucide-vue-next'
   <div class="space-y-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#cc785c]/10 dark:bg-[#cc785c]/20 border border-[#cc785c]/20 dark:border-[#cc785c]/40 px-3 py-1 text-xs font-medium text-[#cc785c] dark:text-[#d4a27f]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
         <BookOpen class="h-3 w-3" />
         文档核心
       </div>
@@ -14,7 +14,7 @@ import { BookOpen } from 'lucide-vue-next'
         相关概念
       </h1>
       <p class="text-base text-[#666663] dark:text-[#a3a094] max-w-2xl">
-        深入理解 Aether 运行时的核心模块和层级结构。
+        深入理解 ManyCode 运行时的核心模块和层级结构。
       </p>
     </div>
 
@@ -54,7 +54,7 @@ import { BookOpen } from 'lucide-vue-next'
           loading="lazy"
           src="/guide/concepts-create-model.webp"
           alt="创建统一模型"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm mt-4 w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
         >
       </div>
     </section>
@@ -90,7 +90,7 @@ import { BookOpen } from 'lucide-vue-next'
           loading="lazy"
           src="/guide/concepts-add-provider.webp"
           alt="添加提供商"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm mt-4 w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
         >
       </div>
     </section>
@@ -113,13 +113,13 @@ import { BookOpen } from 'lucide-vue-next'
           loading="lazy"
           src="/guide/concepts-add-endpoint-1.webp"
           alt="添加端点选择格式"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
         >
         <img
           loading="lazy"
           src="/guide/concepts-add-endpoint-2.webp"
           alt="端点自定义"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
         >
       </div>
     </section>
@@ -168,13 +168,13 @@ import { BookOpen } from 'lucide-vue-next'
           loading="lazy"
           src="/guide/concepts-add-key-1.webp"
           alt="添加密钥认证"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
         >
         <img
           loading="lazy"
           src="/guide/concepts-add-key-2.webp"
           alt="密钥倍率与优先级"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
         >
       </div>
     </section>
@@ -196,20 +196,20 @@ import { BookOpen } from 'lucide-vue-next'
           loading="lazy"
           src="/guide/concepts-model-perms-1.webp"
           alt="模型权限 1"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
         >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <img
             loading="lazy"
             src="/guide/concepts-model-perms-2.webp"
             alt="模型权限 2"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
           >
           <img
             loading="lazy"
             src="/guide/concepts-model-perms-3.webp"
             alt="模型权限 3"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
           >
         </div>
       </div>
@@ -229,20 +229,20 @@ import { BookOpen } from 'lucide-vue-next'
           loading="lazy"
           src="/guide/concepts-link-model-1.webp"
           alt="关联模型 1"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
         >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <img
             loading="lazy"
             src="/guide/concepts-link-model-2.webp"
             alt="关联模型 2"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
           >
           <img
             loading="lazy"
             src="/guide/concepts-link-model-3.webp"
             alt="关联模型 3"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
           >
         </div>
       </div>
@@ -257,24 +257,24 @@ import { BookOpen } from 'lucide-vue-next'
       <p class="text-sm text-[#666663] dark:text-[#a3a094] mb-4">
         如果该提供商的请求名称并非标准名称，即可通过映射改变在实际请求提供时的模型 id。
       </p>
-      <div class="bg-[#f5f5f0]/80 dark:bg-[rgba(227,224,211,0.05)] p-4 rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.06)] text-sm mb-6">
+      <div class="bg-[#f5f5f0]/80 dark:bg-[rgba(227,224,211,0.05)] p-4 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)] text-sm mb-6">
         <p class="mb-2">
-          <span class="text-[#cc785c] font-medium mr-2">名称修正示例:</span>官方标准名称为 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6</code> ，实际提供商叫 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6-last</code>。
+          <span class="text-[#1a1a1a] font-medium mr-2">名称修正示例:</span>官方标准名称为 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6</code> ，实际提供商叫 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6-last</code>。
         </p>
-        <p><span class="text-[#cc785c] font-medium mr-2">降/升级请求示例:</span>官方标准名称为 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6</code> ，实际请求提供商用 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-sonnet-4-6</code>。</p>
+        <p><span class="text-[#1a1a1a] font-medium mr-2">降/升级请求示例:</span>官方标准名称为 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6</code> ，实际请求提供商用 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-sonnet-4-6</code>。</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <img
           loading="lazy"
           src="/guide/concepts-model-mapping-1.webp"
           alt="模型映射 1"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
         >
         <img
           loading="lazy"
           src="/guide/concepts-model-mapping-2.webp"
           alt="模型映射 2"
-          class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+          class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
         >
       </div>
     </section>
@@ -294,7 +294,7 @@ import { BookOpen } from 'lucide-vue-next'
             loading="lazy"
             src="/guide/concepts-reverse-proxy-codex.webp"
             alt="Codex 反向代理"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full max-w-2xl"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full max-w-2xl"
           >
         </div>
         <div>
@@ -305,7 +305,7 @@ import { BookOpen } from 'lucide-vue-next'
             loading="lazy"
             src="/guide/concepts-reverse-proxy-kiro.webp"
             alt="Krio 反向代理"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full max-w-2xl"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full max-w-2xl"
           >
         </div>
         <div>
@@ -316,7 +316,7 @@ import { BookOpen } from 'lucide-vue-next'
             loading="lazy"
             src="/guide/concepts-reverse-proxy-antigravity.webp"
             alt="Antigravity 反向代理"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full max-w-2xl"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full max-w-2xl"
           >
         </div>
       </div>
@@ -334,7 +334,7 @@ import { BookOpen } from 'lucide-vue-next'
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div class="space-y-4">
-          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.06)] shadow-sm">
+          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               1. 提供商优先
             </h4>
@@ -342,7 +342,7 @@ import { BookOpen } from 'lucide-vue-next'
               按提供商顺序调度，同优先级负载均衡。
             </p>
           </div>
-          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.06)] shadow-sm">
+          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               2. Key优先
             </h4>
@@ -350,7 +350,7 @@ import { BookOpen } from 'lucide-vue-next'
               全局Key统一调度，同优先级负载均衡。
             </p>
           </div>
-          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.06)] shadow-sm">
+          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               3. 缓存亲和模式
             </h4>
@@ -358,7 +358,7 @@ import { BookOpen } from 'lucide-vue-next'
               在Key TTL时间的约束下，优先使用上一次请求使用的Key。
             </p>
           </div>
-          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.06)] shadow-sm">
+          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               4. 负载均衡模式
             </h4>
@@ -367,7 +367,7 @@ import { BookOpen } from 'lucide-vue-next'
               <li>取消全局Key优先级，乱序使用。</li>
             </ul>
           </div>
-          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.06)] shadow-sm">
+          <div class="bg-white/50 dark:bg-white/5 p-4 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               5. 固定顺序模式
             </h4>
@@ -382,13 +382,13 @@ import { BookOpen } from 'lucide-vue-next'
             loading="lazy"
             src="/guide/concepts-priority-1.webp"
             alt="优先级管理 1"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
           >
           <img
             loading="lazy"
             src="/guide/concepts-priority-2.webp"
             alt="优先级管理 2"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
           >
         </div>
       </div>

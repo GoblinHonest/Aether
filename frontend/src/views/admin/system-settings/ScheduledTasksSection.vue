@@ -11,7 +11,7 @@
         <div
           class="group relative rounded-xl border transition-all duration-300"
           :class="task.enabled
-            ? 'border-primary/30 bg-primary/[0.02] shadow-sm shadow-primary/5'
+            ? 'border-primary/30 bg-primary/[0.02]'
             : 'border-border bg-card hover:border-border/80'"
         >
           <div class="flex items-center gap-4 p-4">

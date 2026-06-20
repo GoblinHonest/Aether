@@ -26,7 +26,7 @@ const emit = defineEmits<{
 
 const checkboxClass = computed(() =>
   cn(
-    'h-4 w-4 rounded border-border/60 bg-card/80 text-primary shadow-sm focus:ring-2 focus:ring-primary/40 focus:ring-offset-1 accent-primary',
+    'h-4 w-4 rounded border-border/60 bg-card/80 text-primary focus:ring-2 focus:ring-primary/40 focus:ring-offset-1 accent-primary',
     props.class
   )
 )

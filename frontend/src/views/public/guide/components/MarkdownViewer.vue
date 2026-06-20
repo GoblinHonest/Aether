@@ -63,34 +63,34 @@ onMounted(() => {
 }
 
 .markdown-body {
-  @apply text-[var(--color-text)] font-serif leading-relaxed;
+  @apply text-[var(--color-text)] font-sans leading-relaxed;
 }
 
 .markdown-body h1 {
   @apply text-4xl mb-8 mt-12 font-medium tracking-tight text-[var(--color-text)];
-  font-family: var(--serif);
+  
 }
 
 .markdown-body h2 {
   @apply text-2xl mb-6 mt-12 font-medium tracking-tight text-[var(--color-text)] border-b pb-2;
   border-color: var(--color-border-soft);
-  font-family: var(--serif);
+  
 }
 
 .markdown-body h3 {
   @apply text-xl mb-4 mt-8 font-medium tracking-tight text-[var(--color-text)];
-  font-family: var(--serif);
+  
 }
 
 .markdown-body p {
   @apply mb-4 text-[1.05rem] opacity-90;
-  font-family: var(--serif);
+  
 }
 
 .markdown-body ul, 
 .markdown-body ol {
   @apply pl-6 mb-6 opacity-90 space-y-2 text-[1.05rem];
-  font-family: var(--serif);
+  
 }
 
 .markdown-body ul {
@@ -103,7 +103,7 @@ onMounted(() => {
 
 .markdown-body blockquote {
   @apply border-l-4 pl-4 italic opacity-80 mb-6;
-  border-color: var(--book-cloth);
+  border-color: #eee;
   background: var(--color-background-soft);
   @apply py-2 rounded-r-lg;
 }
@@ -114,7 +114,7 @@ onMounted(() => {
   background: var(--color-background-soft);
   border: 1px solid var(--color-border-soft);
   font-family: var(--monospace) !important;
-  box-shadow: var(--shadow-sm);
+  
 }
 
 .markdown-body code {
@@ -124,7 +124,7 @@ onMounted(() => {
 .markdown-body :not(pre) > code {
   @apply px-1.5 py-0.5 rounded text-sm;
   background: var(--color-background-soft);
-  color: var(--book-cloth);
+  color: #1a1a1a;
   font-family: var(--monospace) !important;
   border: 1px solid var(--color-border-soft);
 }
@@ -151,7 +151,7 @@ onMounted(() => {
 
 /* Links */
 .markdown-body a {
-  @apply text-[var(--book-cloth)] underline decoration-dashed underline-offset-4 transition-all;
+  @apply text-[#1a1a1a] underline decoration-dashed underline-offset-4 transition-all;
 }
 
 .markdown-body a:hover {
@@ -160,7 +160,7 @@ onMounted(() => {
 
 /* Images */
 .markdown-body img {
-  @apply max-w-full rounded-xl border object-contain mx-auto mb-6 shadow-sm;
+  @apply max-w-full rounded-xl border object-contain mx-auto mb-6;
   border-color: var(--color-border-soft);
   max-height: 600px;
 }

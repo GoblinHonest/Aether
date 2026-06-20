@@ -75,7 +75,7 @@
             <Button
               v-if="canManageTokens"
               size="lg"
-              class="shadow-lg shadow-primary/20"
+              class=""
               @click="openCreateDialog"
             >
               <Plus class="mr-2 h-4 w-4" />
@@ -281,7 +281,7 @@
           v-for="token in paginatedTokens"
           :key="token.id"
           variant="default"
-          class="group hover:shadow-md hover:border-primary/30 transition-all duration-200"
+          class="group  transition-all duration-200"
         >
           <div class="p-4">
             <!-- 第一行：名称、状态、操作 -->
@@ -569,7 +569,7 @@
           取消
         </Button>
         <Button
-          class="h-11 px-6 shadow-lg shadow-primary/20"
+          class="h-11 px-6 "
           :disabled="saving || !isFormValid"
           @click="saveToken"
         >

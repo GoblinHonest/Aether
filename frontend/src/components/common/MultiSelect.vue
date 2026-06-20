@@ -65,7 +65,7 @@
             :checked="isAllSelected"
             :indeterminate="isPartiallySelected"
             aria-label="全选"
-            class="h-4 w-4 shrink-0 cursor-pointer rounded border-border/60 bg-card/80 text-primary shadow-sm accent-primary focus:ring-2 focus:ring-primary/40 focus:ring-offset-1"
+            class="h-4 w-4 shrink-0 cursor-pointer rounded border-border/60 bg-card/80 text-primary accent-primary focus:ring-2 focus:ring-primary/40 focus:ring-offset-1"
             @click.stop
             @change="toggleAll"
           >
@@ -84,7 +84,7 @@
           <input
             type="checkbox"
             :checked="true"
-            class="h-4 w-4 shrink-0 cursor-pointer rounded border-border/60 bg-card/80 text-primary shadow-sm accent-primary focus:ring-2 focus:ring-primary/40 focus:ring-offset-1"
+            class="h-4 w-4 shrink-0 cursor-pointer rounded border-border/60 bg-card/80 text-primary accent-primary focus:ring-2 focus:ring-primary/40 focus:ring-offset-1"
             @click.stop
             @change="remove(item)"
           >
@@ -101,7 +101,7 @@
           <input
             type="checkbox"
             :checked="modelValue.includes(item.value)"
-            class="h-4 w-4 shrink-0 cursor-pointer rounded border-border/60 bg-card/80 text-primary shadow-sm accent-primary focus:ring-2 focus:ring-primary/40 focus:ring-offset-1"
+            class="h-4 w-4 shrink-0 cursor-pointer rounded border-border/60 bg-card/80 text-primary accent-primary focus:ring-2 focus:ring-primary/40 focus:ring-offset-1"
             @click.stop
             @change="toggle(item.value)"
           >

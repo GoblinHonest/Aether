@@ -1010,7 +1010,7 @@
 
               <div class="grid gap-3 sm:grid-cols-2">
                 <div class="rounded-xl border border-border/60 p-3">
-                  <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     归属
                   </div>
                   <div class="mt-1 text-sm font-medium">
@@ -1028,7 +1028,7 @@
                   </div>
                 </div>
                 <div class="rounded-xl border border-border/60 p-3">
-                  <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     余额变化
                   </div>
                   <div class="mt-1 text-sm font-medium tabular-nums">
@@ -1046,7 +1046,7 @@
 
               <div class="grid gap-3 sm:grid-cols-2">
                 <div class="rounded-xl border border-border/60 p-3">
-                  <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     关联类型
                   </div>
                   <div class="mt-1 text-sm font-medium break-all">
@@ -1054,7 +1054,7 @@
                   </div>
                 </div>
                 <div class="rounded-xl border border-border/60 p-3">
-                  <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     交易ID
                   </div>
                   <div class="mt-1 text-sm font-mono break-all">
@@ -1068,7 +1068,7 @@
                 class="grid gap-3 sm:grid-cols-2"
               >
                 <div class="rounded-xl border border-border/60 p-3">
-                  <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     支付方式
                   </div>
                   <div class="mt-1 text-sm font-medium">
@@ -1077,7 +1077,7 @@
                   </div>
                 </div>
                 <div class="rounded-xl border border-border/60 p-3">
-                  <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     充值订单号
                   </div>
                   <div class="mt-1 text-sm font-mono break-all">
@@ -1088,7 +1088,7 @@
               </div>
 
               <div class="rounded-xl border border-border/60 p-3">
-                <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                   操作用户
                 </div>
                 <div class="mt-1 text-sm font-medium">
@@ -1106,7 +1106,7 @@
               </div>
 
               <div class="rounded-xl border border-border/60 p-3">
-                <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                   说明
                 </div>
                 <div class="mt-1 text-sm text-foreground whitespace-pre-wrap break-words">
@@ -1156,7 +1156,7 @@
               <div class="rounded-2xl border border-border/60 bg-muted/30 p-4">
                 <div class="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                       归属
                     </div>
                     <div class="mt-1 text-sm font-medium">
@@ -1167,7 +1167,7 @@
                     </div>
                   </div>
                   <div>
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                       金额
                     </div>
                     <div class="mt-1 text-sm font-semibold tabular-nums">
@@ -1175,7 +1175,7 @@
                     </div>
                   </div>
                   <div>
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                       退款模式
                     </div>
                     <div class="mt-1 text-sm">
@@ -1183,7 +1183,7 @@
                     </div>
                   </div>
                   <div>
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                       状态
                     </div>
                     <div class="mt-1">
@@ -1193,7 +1193,7 @@
                     </div>
                   </div>
                   <div class="sm:col-span-2">
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                       申请原因
                     </div>
                     <div class="mt-1 text-sm text-foreground whitespace-pre-wrap break-words">
@@ -1204,7 +1204,7 @@
                     v-if="currentRefund.failure_reason"
                     class="sm:col-span-2"
                   >
-                    <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                       失败原因
                     </div>
                     <div class="mt-1 text-sm text-rose-600 whitespace-pre-wrap break-words">

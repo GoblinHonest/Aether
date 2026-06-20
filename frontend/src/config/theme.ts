@@ -8,64 +8,63 @@
 /**
  * 颜色系统
  *
- * 项目使用书本纸张主题色:
- * - book-cloth: 书籍封面布料色 (#cc785c / #d4a27f)
- * - kraft: 牛皮纸色 (#b97847 / #c9a26f)
- * - manilla: 马尼拉纸色 (#e8ddc5 / #d4c5a9)
- * - cloud: 云白色 (#f5f3ed / #2a2723)
+ * MiMo 纯黑白单色设计体系:
+ * - primary: 纯黑 (#1a1a1a / #e5e5e5)
+ * - secondary: 中灰 (#666666 / #999999)
+ * - accent: 浅灰 (#f5f5f5 / #1a1a1a)
  */
 export const themeColors = {
   // 主色调
   primary: {
-    light: '#cc785c',      // book-cloth light
-    dark: '#d4a27f',       // book-cloth dark
+    light: '#1a1a1a',
+    dark: '#e5e5e5',
     hover: {
-      light: '#b86d52',
-      dark: '#c29470'
+      light: '#333333',
+      dark: '#cccccc'
     }
   },
 
   // 次要色调
   secondary: {
-    light: '#b97847',      // kraft light
-    dark: '#c9a26f',       // kraft dark
+    light: '#666666',
+    dark: '#999999',
     hover: {
-      light: '#a56a3f',
-      dark: '#b8915e'
+      light: '#555555',
+      dark: '#888888'
     }
   },
 
   // 强调色
   accent: {
-    light: '#e8ddc5',      // manilla light
-    dark: '#d4c5a9',       // manilla dark
+    light: '#f5f5f5',
+    dark: '#1a1a1a',
   },
 
   // 背景色
   background: {
     light: {
-      base: '#fafaf7',     // cloud light
+      base: '#ffffff',
       elevated: '#ffffff',
-      muted: '#f5f3ed'
+      muted: '#fafafa'
     },
     dark: {
-      base: '#191714',     // cloud dark
-      elevated: '#262624',
-      muted: '#2a2723'
+      base: '#0a0a0a',
+      elevated: '#111111',
+      muted: '#1a1a1a'
     }
   },
 
   // 边框色
   border: {
     light: {
-      default: '#e5e4df',
-      hover: 'rgba(204, 120, 92, 0.3)',
-      focus: 'rgba(204, 120, 92, 0.4)'
+      default: '#eeeeee',
+      hover: 'rgba(26, 26, 26, 0.15)',
+      focus: 'rgba(26, 26, 26, 0.25)'
     },
     dark: {
-      default: 'rgba(227, 224, 211, 0.12)',
-      hover: 'rgba(212, 162, 127, 0.4)',
-      focus: 'rgba(212, 162, 127, 0.5)'
+      default: 'rgba(255, 255, 255, 0.08)',
+      hover: 'rgba(255, 255, 255, 0.15)',
+      focus: 'rgba(255, 255, 255, 0.25)'
     }
   },
 

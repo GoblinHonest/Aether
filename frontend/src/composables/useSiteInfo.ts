@@ -7,8 +7,8 @@ interface SiteInfo {
 }
 
 // 模块级缓存，所有组件共享同一份数据
-const siteName = ref('Aether')
-const siteSubtitle = ref('AI Gateway')
+const siteName = ref('ManyCode')
+const siteSubtitle = ref('AI API Gateway')
 const loaded = ref(false)
 let fetchPromise: Promise<void> | null = null
 

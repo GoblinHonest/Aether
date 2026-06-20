@@ -196,7 +196,7 @@
             type="button"
             class="rounded-xl border p-4 text-left transition-all duration-200"
             :class="redactionConfig.cache_ttl_seconds === option.value
-              ? 'border-primary bg-primary/10 text-primary shadow-sm'
+              ? 'border-primary bg-primary/10 text-primary'
               : 'border-border bg-card/70 text-muted-foreground hover:border-primary/50 hover:text-foreground'"
             @click="redactionConfig.cache_ttl_seconds = option.value"
           >

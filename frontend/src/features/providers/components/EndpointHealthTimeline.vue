@@ -72,7 +72,7 @@ const segments = computed(() => {
   // 无数据时显示空白格子
   if (events.length === 0) {
     return Array.from({ length: gridCount }, () => ({
-      color: 'bg-gray-300 dark:bg-gray-600',
+      color: 'bg-[#eee] dark:bg-[#333]',
       tooltip: '暂无请求记录'
     }))
   }
@@ -102,7 +102,7 @@ const segments = computed(() => {
 
     if (cellEvents.length === 0) {
       result.push({
-        color: 'bg-gray-300 dark:bg-gray-600',
+        color: 'bg-[#eee] dark:bg-[#333]',
         tooltip: `${formatTimestamp(cellStartTime.toISOString())} - ${formatTimestamp(cellEndTime.toISOString())}\n暂无请求记录`
       })
       continue
@@ -124,14 +124,14 @@ const segments = computed(() => {
     let color: string
     if (failedCount > 0) {
       const failRate = failedCount / total
-      color = failRate > 0.5 ? 'bg-red-500' : 'bg-red-400/80'
+      color = failRate > 0.5 ? 'bg-[#ccc] dark:bg-[#444]' : 'bg-[#aaa] dark:bg-[#555]'
     } else if (successCount > 0) {
       const successRate = successCount / total
-      color = successRate > 0.7 ? 'bg-green-500/80' : 'bg-green-400/80'
+      color = successRate > 0.7 ? 'bg-[#1a1a1a] dark:bg-[#e5e5e5]' : 'bg-[#666] dark:bg-[#999]'
     } else if (skippedCount > 0) {
-      color = 'bg-amber-400/80'
+      color = 'bg-[#999] dark:bg-[#666]'
     } else {
-      color = 'bg-gray-300 dark:bg-gray-600'
+      color = 'bg-[#eee] dark:bg-[#333]'
     }
 
     const firstTime = formatTimestamp(cellEvents[0]?.timestamp)
@@ -147,15 +147,15 @@ const segments = computed(() => {
 function getStatusColor(status: string) {
   switch (status) {
     case 'success':
-      return 'bg-green-500/80 dark:bg-green-400/90'
+      return 'bg-[#1a1a1a] dark:bg-[#e5e5e5]'
     case 'failed':
-      return 'bg-red-500/80 dark:bg-red-400/90'
+      return 'bg-[#ccc] dark:bg-[#444]'
     case 'skipped':
-      return 'bg-amber-400/80 dark:bg-amber-300/80'
+      return 'bg-[#999] dark:bg-[#666]'
     case 'started':
-      return 'bg-blue-400/80 dark:bg-blue-300/80'
+      return 'bg-[#666] dark:bg-[#999]'
     default:
-      return 'bg-muted/50 dark:bg-muted/20'
+      return 'bg-[#eee] dark:bg-[#333]'
   }
 }
 
@@ -241,13 +241,13 @@ function buildUsageTimelineSegments(
 function getHealthTimelineColor(status: string) {
   switch (status) {
     case 'healthy':
-      return 'bg-green-500/80 dark:bg-green-400/90'
+      return 'bg-[#1a1a1a] dark:bg-[#e5e5e5]'
     case 'warning':
-      return 'bg-amber-400/80 dark:bg-amber-300/80'
+      return 'bg-[#999] dark:bg-[#666]'
     case 'unhealthy':
-      return 'bg-red-500/80 dark:bg-red-400/90'
+      return 'bg-[#ccc] dark:bg-[#444]'
     default:
-      return 'bg-gray-300 dark:bg-gray-600'
+      return 'bg-[#eee] dark:bg-[#333]'
   }
 }
 

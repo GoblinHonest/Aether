@@ -6,11 +6,11 @@
     <div class="space-y-6">
       <!-- Logo 和标题 -->
       <div class="flex flex-col items-center text-center">
-        <div class="mb-4 rounded-3xl border border-primary/30 dark:border-[#cc785c]/30 bg-primary/5 dark:bg-transparent p-4 shadow-inner shadow-white/40 dark:shadow-[#cc785c]/10">
+        <div class="mb-4">
           <img
-            src="/aether_adaptive.svg"
+            src="/IMG_20260619_184826.png"
             alt="Logo"
-            class="h-16 w-16"
+            class="h-12 w-auto"
           >
         </div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">

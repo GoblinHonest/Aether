@@ -52,7 +52,7 @@
       <template v-else>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
           <Card class="p-5">
-            <div class="text-xs uppercase tracking-wider text-muted-foreground">
+            <div class="text-xs uppercase tracking-normal text-muted-foreground">
               网关状态
             </div>
             <div class="mt-3 flex items-center gap-3">
@@ -63,7 +63,7 @@
             </div>
           </Card>
           <Card class="p-5">
-            <div class="text-xs uppercase tracking-wider text-muted-foreground">
+            <div class="text-xs uppercase tracking-normal text-muted-foreground">
               退款能力
             </div>
             <div class="mt-3 flex items-center gap-3">
@@ -77,7 +77,7 @@
             </div>
           </Card>
           <Card class="p-5">
-            <div class="text-xs uppercase tracking-wider text-muted-foreground">
+            <div class="text-xs uppercase tracking-normal text-muted-foreground">
               用户退款
             </div>
             <div class="mt-3 flex items-center gap-3">
@@ -92,7 +92,7 @@
             </div>
           </Card>
           <Card class="p-5">
-            <div class="text-xs uppercase tracking-wider text-muted-foreground">
+            <div class="text-xs uppercase tracking-normal text-muted-foreground">
               密钥状态
             </div>
             <div class="mt-3">
@@ -102,7 +102,7 @@
             </div>
           </Card>
           <Card class="p-5">
-            <div class="text-xs uppercase tracking-wider text-muted-foreground">
+            <div class="text-xs uppercase tracking-normal text-muted-foreground">
               汇率
             </div>
             <div class="mt-2 text-2xl font-semibold tabular-nums">

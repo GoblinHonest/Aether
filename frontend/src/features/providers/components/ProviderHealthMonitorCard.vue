@@ -321,15 +321,15 @@ function getHealthLabel(item: HealthMonitorItem) {
 
 function getHealthBadgeVariant(item: HealthMonitorItem): 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning' | 'dark' {
   if (item.total_attempts <= 0) return 'outline'
-  if (item.success_rate >= 0.95) return 'success'
-  if (item.success_rate >= 0.8) return 'warning'
-  return 'destructive'
+  if (item.success_rate >= 0.95) return 'dark'
+  if (item.success_rate >= 0.8) return 'secondary'
+  return 'outline'
 }
 
 function getSuccessRateClass(rate: number) {
-  if (rate >= 0.95) return 'text-green-600 dark:text-green-400'
-  if (rate >= 0.8) return 'text-amber-600 dark:text-amber-400'
-  return 'text-red-600 dark:text-red-400'
+  if (rate >= 0.95) return 'text-[#1a1a1a] dark:text-[#e5e5e5]'
+  if (rate >= 0.8) return 'text-[#666] dark:text-[#999]'
+  return 'text-[#999] dark:text-[#666]'
 }
 
 function getProviderMetaText(provider: ProviderStatusMonitor) {
@@ -369,13 +369,13 @@ function timelineSegments(item: ModelStatusMonitor | ProviderStatusMonitor) {
 function getTimelineColor(status: string) {
   switch (status) {
     case 'healthy':
-      return 'bg-green-500/85 dark:bg-green-400/90'
+      return 'bg-[#1a1a1a] dark:bg-[#e5e5e5]'
     case 'warning':
-      return 'bg-amber-400/85 dark:bg-amber-300/85'
+      return 'bg-[#999] dark:bg-[#666]'
     case 'unhealthy':
-      return 'bg-red-500/85 dark:bg-red-400/90'
+      return 'bg-[#ccc] dark:bg-[#444]'
     default:
-      return 'bg-gray-300 dark:bg-gray-600'
+      return 'bg-[#eee] dark:bg-[#333]'
   }
 }
 

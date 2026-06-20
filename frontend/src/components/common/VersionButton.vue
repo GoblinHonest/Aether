@@ -32,7 +32,7 @@
             <div class="text-xs font-semibold text-foreground">
               版本信息
             </div>
-            <div class="mt-0.5 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+            <div class="mt-0.5 text-[10px] uppercase tracking-normal text-muted-foreground">
               System version
             </div>
           </div>

@@ -8,9 +8,9 @@
       <!-- Logo 和标题 -->
       <div class="flex flex-col items-center text-center mb-8">
         <img
-          src="/aether_adaptive.svg"
+          src="/IMG_20260619_184826.png"
           :alt="siteName"
-          class="h-16 w-16 mb-4"
+          class="h-12 w-auto mb-4"
         >
         <h2 class="text-2xl font-semibold text-foreground">
           登录到 {{ siteName }}

@@ -32,55 +32,6 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/guide',
-    component: () => importWithRetry(() => import('@/views/public/guide/GuideLayout.vue')),
-    meta: { requiresAuth: false },
-    children: [
-      {
-        path: '',
-        name: 'GuideOverview',
-        component: () => importWithRetry(() => import('@/views/public/guide/Overview.vue')),
-        meta: { requiresAuth: false }
-      },
-      {
-        path: 'architecture',
-        name: 'GuideArchitecture',
-        component: () => importWithRetry(() => import('@/views/public/guide/ArchitectureGuide.vue')),
-        meta: { requiresAuth: false }
-      },
-      {
-        path: 'concepts',
-        name: 'GuideConcepts',
-        component: () => importWithRetry(() => import('@/views/public/guide/ConceptsGuide.vue')),
-        meta: { requiresAuth: false }
-      },
-      {
-        path: 'strategy',
-        name: 'GuideStrategy',
-        component: () => importWithRetry(() => import('@/views/public/guide/StrategyGuide.vue')),
-        meta: { requiresAuth: false }
-      },
-      {
-        path: 'advanced',
-        name: 'GuideAdvanced',
-        component: () => importWithRetry(() => import('@/views/public/guide/AdvancedGuide.vue')),
-        meta: { requiresAuth: false }
-      },
-      {
-        path: 'faq',
-        name: 'GuideFaq',
-        component: () => importWithRetry(() => import('@/views/public/guide/GuideFaq.vue')),
-        meta: { requiresAuth: false }
-      },
-      {
-        path: 'modules',
-        name: 'GuideModules',
-        component: () => importWithRetry(() => import('@/views/public/guide/ModulesGuide.vue')),
-        meta: { requiresAuth: false }
-      }
-    ]
-  },
-  {
     path: '/logo-demo',
     name: 'LogoColorDemo',
     component: () => importWithRetry(() => import('@/views/public/LogoColorDemo.vue')),

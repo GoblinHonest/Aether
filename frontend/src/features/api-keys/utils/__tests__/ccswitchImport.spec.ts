@@ -31,18 +31,18 @@ const baseInput = {
   baseUrl: 'https://aether.example.com',
   apiKey: 'sk-user-live-1',
   apiKeyName: 'primary',
-  siteName: 'Aether Local',
+  siteName: 'ManyCode Local',
   modelId: 'gpt-5',
 }
 
 describe('ccswitchImport', () => {
   it('encodes UTF-8 text as base64url without padding', () => {
-    const encoded = base64UrlEncodeUtf8('Aether 中文+/=')
+    const encoded = base64UrlEncodeUtf8('ManyCode 中文+/=')
 
     expect(encoded).not.toContain('+')
     expect(encoded).not.toContain('/')
     expect(encoded).not.toContain('=')
-    expect(new TextDecoder().decode(Uint8Array.from(atob(`${encoded}${'='.repeat((4 - (encoded.length % 4)) % 4)}`.replace(/-/g, '+').replace(/_/g, '/')), char => char.charCodeAt(0)))).toBe('Aether 中文+/=')
+    expect(new TextDecoder().decode(Uint8Array.from(atob(`${encoded}${'='.repeat((4 - (encoded.length % 4)) % 4)}`.replace(/-/g, '+').replace(/_/g, '/')), char => char.charCodeAt(0)))).toBe('ManyCode 中文+/=')
   })
 
   it('builds a Claude Code import URL with separate Claude model env fields', () => {
@@ -58,7 +58,7 @@ describe('ccswitchImport', () => {
 
     expect(params.get('resource')).toBe('provider')
     expect(params.get('app')).toBe('claude')
-    expect(params.get('name')).toBe('Aether Local')
+    expect(params.get('name')).toBe('ManyCode Local')
     expect(params.get('icon')).toBe('claude')
     expect(params.get('enabled')).toBe('true')
     expect(params.get('configFormat')).toBe('json')
@@ -138,7 +138,7 @@ describe('ccswitchImport', () => {
       models: [{ id: 'gpt-5', name: 'gpt-5' }],
     }],
     ['hermes', {
-      name: 'Aether Local',
+      name: 'ManyCode Local',
       base_url: 'https://aether.example.com/v1',
       api_key: 'sk-user-live-1',
       api_mode: 'chat_completions',

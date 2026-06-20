@@ -13,7 +13,7 @@ const props = defineProps<Props>()
 
 const triggerClass = computed(() =>
   cn(
-    'flex h-11 w-full items-center justify-between rounded-2xl border border-border/60 bg-card/80 px-4 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/60 disabled:cursor-not-allowed disabled:opacity-50 text-foreground cursor-pointer backdrop-blur transition-all',
+    'flex h-11 w-full items-center justify-between rounded-2xl border border-border/60 bg-card/80 px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/60 disabled:cursor-not-allowed disabled:opacity-50 text-foreground cursor-pointer backdrop-blur transition-all',
     props.class
   )
 )

@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-[#fafaf7] dark:bg-[#191714] p-8">
+  <div class="min-h-screen bg-[#ffffff] dark:bg-[#0a0a0a] p-8">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-3xl font-bold text-center mb-2 text-[#191919] dark:text-white">
+      <h1 class="text-3xl font-bold text-center mb-2 text-[#1a1a1a] dark:text-white">
         Logo 颜色方案对比
       </h1>
-      <p class="text-center text-[#666663] dark:text-gray-400 mb-8">
+      <p class="text-center text-[#666666] dark:text-gray-400 mb-8">
         点击任意方案可以放大预览
       </p>
 
@@ -13,7 +13,7 @@
         <div
           v-for="(scheme, index) in colorSchemes"
           :key="index"
-          class="relative bg-white dark:bg-[#262624] rounded-2xl p-6 border border-[#e5e4df] dark:border-[rgba(227,224,211,0.16)] cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02]"
+          class="relative bg-white dark:bg-[#262624] rounded-2xl p-6 border border-[#e5e4df] dark:border-[rgba(227,224,211,0.16)] cursor-pointer transition-all  hover:scale-[1.02]"
           :class="{ 'ring-2 ring-primary': selectedScheme === index }"
           @click="selectScheme(index)"
         >
@@ -84,19 +84,19 @@
                 class="w-8 h-8 rounded-full border-2 border-white shadow"
                 :style="{ backgroundColor: scheme.primary }"
               />
-              <span class="text-xs text-[#666663] dark:text-gray-400 mt-1">{{ scheme.primary }}</span>
+              <span class="text-xs text-[#666666] dark:text-gray-400 mt-1">{{ scheme.primary }}</span>
             </div>
             <div class="flex flex-col items-center">
               <div
                 class="w-8 h-8 rounded-full border-2 border-white shadow"
                 :style="{ backgroundColor: scheme.secondary }"
               />
-              <span class="text-xs text-[#666663] dark:text-gray-400 mt-1">{{ scheme.secondary }}</span>
+              <span class="text-xs text-[#666666] dark:text-gray-400 mt-1">{{ scheme.secondary }}</span>
             </div>
           </div>
 
           <!-- Description -->
-          <p class="text-center text-sm text-[#666663] dark:text-gray-400 mt-3">
+          <p class="text-center text-sm text-[#666666] dark:text-gray-400 mt-3">
             {{ scheme.description }}
           </p>
         </div>
@@ -114,7 +114,7 @@
             @click.stop
           >
             <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-[#191919] dark:text-white">
+              <h2 class="text-xl font-bold text-[#1a1a1a] dark:text-white">
                 {{ colorSchemes[selectedScheme].name }}
               </h2>
               <button
@@ -160,7 +160,7 @@
                   class="w-6 h-6 rounded-full border-2 border-white shadow"
                   :style="{ backgroundColor: colorSchemes[selectedScheme].primary }"
                 />
-                <span class="text-sm font-mono text-[#666663] dark:text-gray-400">
+                <span class="text-sm font-mono text-[#666666] dark:text-gray-400">
                   {{ colorSchemes[selectedScheme].primary }}
                 </span>
               </div>
@@ -169,7 +169,7 @@
                   class="w-6 h-6 rounded-full border-2 border-white shadow"
                   :style="{ backgroundColor: colorSchemes[selectedScheme].secondary }"
                 />
-                <span class="text-sm font-mono text-[#666663] dark:text-gray-400">
+                <span class="text-sm font-mono text-[#666666] dark:text-gray-400">
                   {{ colorSchemes[selectedScheme].secondary }}
                 </span>
               </div>
@@ -192,7 +192,7 @@
       <div class="mt-8 text-center">
         <RouterLink
           to="/"
-          class="inline-flex items-center gap-2 px-4 py-2 text-[#666663] dark:text-gray-400 hover:text-[#191919] dark:hover:text-white transition"
+          class="inline-flex items-center gap-2 px-4 py-2 text-[#666666] dark:text-gray-400 hover:text-[#1a1a1a] dark:hover:text-white transition"
         >
           <svg
             class="w-4 h-4"
@@ -226,7 +226,7 @@ const fullPath = AETHER_FULL_PATH
 const colorSchemes = [
   {
     name: '当前配色 - 暖橙',
-    primary: '#cc785c',
+    primary: '#1a1a1a',
     secondary: '#e8a882',
     description: '温暖的赤陶色，亲和力强'
   },

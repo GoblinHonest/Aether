@@ -6,7 +6,7 @@ import { Settings } from 'lucide-vue-next'
   <div class="space-y-12 pb-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#cc785c]/10 dark:bg-[#cc785c]/20 border border-[#cc785c]/20 dark:border-[#cc785c]/40 px-3 py-1 text-xs font-medium text-[#cc785c] dark:text-[#d4a27f]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
         <Settings class="h-3 w-3" />
         高级使用
       </div>
@@ -14,7 +14,7 @@ import { Settings } from 'lucide-vue-next'
         高级功能
       </h1>
       <p class="text-base text-[#666663] dark:text-[#a3a094] max-w-2xl">
-        解锁 Aether 的自定义请求修改、智能转换机制以及进阶配置。
+        解锁 ManyCode 的自定义请求修改、智能转换机制以及进阶配置。
       </p>
     </div>
 
@@ -79,7 +79,7 @@ import { Settings } from 'lucide-vue-next'
       </ul>
     </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 pt-8 border-t border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 pt-8 border-t border-[#eee] dark:border-[rgba(255,255,255,0.08)]">
       <!-- 6. 余额监控 -->
       <section
         id="balance-monitor"

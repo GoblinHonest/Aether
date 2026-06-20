@@ -398,7 +398,7 @@
               </TableCell>
               <TableCell class="py-4">
                 <div class="flex items-center gap-3">
-                  <Avatar class="h-10 w-10 ring-2 ring-background shadow-md">
+                  <Avatar class="h-10 w-10 ring-2 ring-background ">
                     <AvatarFallback class="bg-primary text-sm font-bold text-white">
                       {{ user.username.charAt(0).toUpperCase() }}
                     </AvatarFallback>
@@ -644,7 +644,7 @@
                   :disabled="selectAllFiltered || usersStore.loading"
                   @update:checked="(checked) => toggleOne(user.id, checked === true)"
                 />
-                <Avatar class="h-10 w-10 ring-2 ring-background shadow-md flex-shrink-0">
+                <Avatar class="h-10 w-10 ring-2 ring-background  flex-shrink-0">
                   <AvatarFallback class="bg-primary text-sm font-bold text-white">
                     {{ user.username.charAt(0).toUpperCase() }}
                   </AvatarFallback>
@@ -896,8 +896,8 @@
       <template #header>
         <div class="border-b border-border px-6 py-4">
           <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-kraft/10">
-              <PackageCheck class="h-5 w-5 text-kraft" />
+            <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#f5f5f5]">
+              <PackageCheck class="h-5 w-5 text-[#999]" />
             </div>
             <div class="min-w-0 flex-1">
               <h3 class="text-lg font-semibold leading-tight text-foreground">
@@ -1063,8 +1063,8 @@
       <template #header>
         <div class="border-b border-border px-6 py-4">
           <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-kraft/10 flex-shrink-0">
-              <Key class="h-5 w-5 text-kraft" />
+            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#f5f5f5] flex-shrink-0">
+              <Key class="h-5 w-5 text-[#999]" />
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="text-lg font-semibold text-foreground leading-tight">
@@ -1236,8 +1236,8 @@
       <template #header>
         <div class="border-b border-border px-6 py-4">
           <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-kraft/10 flex-shrink-0">
-              <Key class="h-5 w-5 text-kraft" />
+            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#f5f5f5] flex-shrink-0">
+              <Key class="h-5 w-5 text-[#999]" />
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="text-lg font-semibold text-foreground leading-tight">

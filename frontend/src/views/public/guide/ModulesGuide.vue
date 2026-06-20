@@ -7,7 +7,7 @@ import { panelClasses } from './guide-config'
   <div class="space-y-12 pb-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#cc785c]/10 dark:bg-[#cc785c]/20 border border-[#cc785c]/20 dark:border-[#cc785c]/40 px-3 py-1 text-xs font-medium text-[#cc785c] dark:text-[#d4a27f]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
         <Blocks class="h-3 w-3" />
         系统扩展
       </div>
@@ -15,7 +15,7 @@ import { panelClasses } from './guide-config'
         模块管理
       </h1>
       <p class="text-base text-[#666663] dark:text-[#a3a094] max-w-2xl">
-        Aether 提供高可插入的模块化管理机制，帮助连接外部服务和授权系统。
+        ManyCode 提供高可插入的模块化管理机制，帮助连接外部服务和授权系统。
       </p>
     </div>
 

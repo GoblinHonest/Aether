@@ -20,7 +20,7 @@ const copiedStep = ref<string | null>(null)
 const productionSteps = [
   {
     title: '克隆代码',
-    code: 'git clone https://github.com/fawney19/Aether.git\ncd Aether',
+    code: 'git clone https://github.com/fawney19/ManyCode.git\ncd ManyCode',
     icon: Code
   },
   {
@@ -78,15 +78,15 @@ function copyStep(stepId: string, code: string) {
   <div class="space-y-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#cc785c]/10 dark:bg-[#cc785c]/20 border border-[#cc785c]/20 dark:border-[#cc785c]/40 px-3 py-1 text-xs font-medium text-[#cc785c] dark:text-[#d4a27f]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
         <Zap class="h-3 w-3" />
-        Aether 官方文档
+        ManyCode 官方文档
       </div>
       <h1 class="text-3xl font-bold text-[#262624] dark:text-[#f1ead8]">
         快速开始
       </h1>
-      <p class="text-base text-[#666663] dark:text-[#a3a094] max-w-2xl">
-        本文档将引导您完成 Aether 的项目部署、配置以及反向代理等高级特性的使用。
+      <p class="text-base text-[#666666] dark:text-[#a3a094] max-w-2xl">
+        本文档将引导您完成 ManyCode 的项目部署、配置以及反向代理等高级特性的使用。
       </p>
     </div>
 
@@ -102,7 +102,7 @@ function copyStep(stepId: string, code: string) {
         class="mt-6"
       >
         <!-- Tab 切换 -->
-        <div class="flex border-b border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] px-5">
+        <div class="flex border-b border-[#eee] dark:border-[rgba(255,255,255,0.08)] px-5">
           <button
             v-for="(tab, idx) in [
               { icon: Container, label: 'Docker 预构建镜像' },
@@ -111,8 +111,8 @@ function copyStep(stepId: string, code: string) {
             :key="idx"
             class="flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px hover:text-[#262624] dark:hover:text-[#f1ead8]"
             :class="activeDeployTab === idx
-              ? 'border-[#cc785c] text-[#cc785c] dark:text-[#d4a27f]'
-              : 'border-transparent text-[#666663] dark:text-[#a3a094]'"
+              ? 'border-[#1a1a1a] text-[#1a1a1a] dark:text-[#e5e5e5]'
+              : 'border-transparent text-[#666666] dark:text-[#a3a094]'"
             @click="activeDeployTab = idx"
           >
             <component
@@ -131,11 +131,11 @@ function copyStep(stepId: string, code: string) {
           <div
             v-for="(step, idx) in productionSteps"
             :key="idx"
-            class="group rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] overflow-hidden transition-colors"
+            class="group rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] overflow-hidden transition-colors"
             :class="step.optional ? 'border-dashed opacity-80' : ''"
           >
             <div class="flex items-center gap-3 px-4 py-3">
-              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#cc785c] text-white">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#1a1a1a] text-white">
                 {{ idx + 1 }}
               </span>
               <div class="flex-1 min-w-0">
@@ -143,18 +143,18 @@ function copyStep(stepId: string, code: string) {
                   <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">{{ step.title }}</span>
                   <span
                     v-if="step.optional"
-                    class="text-[10px] px-1.5 py-0.5 rounded-full bg-[#e5e4df] dark:bg-[rgba(227,224,211,0.12)] text-[#666663] dark:text-[#a3a094]"
+                    class="text-[10px] px-1.5 py-0.5 rounded-full bg-[#e5e4df] dark:bg-[rgba(255,255,255,0.08)] text-[#666666] dark:text-[#a3a094]"
                   >
                     可选
                   </span>
                 </div>
                 <span
                   v-if="step.note"
-                  class="text-xs text-[#91918d] dark:text-[#a3a094]/80"
+                  class="text-xs text-[#999999] dark:text-[#a3a094]/80"
                 >{{ step.note }}</span>
               </div>
               <button
-                class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-[#666663] dark:text-[#a3a094] hover:bg-[#f0f0eb] dark:hover:bg-[#3a3731] transition-colors shrink-0"
+                class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-[#666666] dark:text-[#a3a094] hover:bg-[#f0f0eb] dark:hover:bg-[#3a3731] transition-colors shrink-0"
                 @click="copyStep(`prod-${idx}`, step.code)"
               >
                 <Check
@@ -168,7 +168,7 @@ function copyStep(stepId: string, code: string) {
                 {{ copiedStep === `prod-${idx}` ? '已复制' : '复制' }}
               </button>
             </div>
-            <pre class="px-4 pb-3 text-[13px] font-mono text-[#262624] dark:text-[#f1ead8] overflow-x-auto leading-relaxed border-t border-[#e5e4df]/50 dark:border-[rgba(227,224,211,0.06)] pt-3 mx-4 mb-1"><code>{{ step.code }}</code></pre>
+            <pre class="px-4 pb-3 text-[13px] font-mono text-[#262624] dark:text-[#f1ead8] overflow-x-auto leading-relaxed border-t border-[#eee]/50 dark:border-[rgba(227,224,211,0.06)] pt-3 mx-4 mb-1"><code>{{ step.code }}</code></pre>
           </div>
         </div>
 
@@ -180,10 +180,10 @@ function copyStep(stepId: string, code: string) {
           <div
             v-for="(step, idx) in developmentSteps"
             :key="idx"
-            class="group rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] overflow-hidden transition-colors"
+            class="group rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] overflow-hidden transition-colors"
           >
             <div class="flex items-center gap-3 px-4 py-3">
-              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#cc785c] text-white">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#1a1a1a] text-white">
                 {{ idx + 1 }}
               </span>
               <div class="flex-1 min-w-0">
@@ -192,11 +192,11 @@ function copyStep(stepId: string, code: string) {
                 </div>
                 <span
                   v-if="step.note"
-                  class="text-xs text-[#91918d] dark:text-[#a3a094]/80"
+                  class="text-xs text-[#999999] dark:text-[#a3a094]/80"
                 >{{ step.note }}</span>
               </div>
               <button
-                class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-[#666663] dark:text-[#a3a094] hover:bg-[#f0f0eb] dark:hover:bg-[#3a3731] transition-colors shrink-0"
+                class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs text-[#666666] dark:text-[#a3a094] hover:bg-[#f0f0eb] dark:hover:bg-[#3a3731] transition-colors shrink-0"
                 @click="copyStep(`dev-${idx}`, step.code)"
               >
                 <Check
@@ -210,7 +210,7 @@ function copyStep(stepId: string, code: string) {
                 {{ copiedStep === `dev-${idx}` ? '已复制' : '复制' }}
               </button>
             </div>
-            <pre class="px-4 pb-3 text-[13px] font-mono text-[#262624] dark:text-[#f1ead8] overflow-x-auto leading-relaxed border-t border-[#e5e4df]/50 dark:border-[rgba(227,224,211,0.06)] pt-3 mx-4 mb-1"><code>{{ step.code }}</code></pre>
+            <pre class="px-4 pb-3 text-[13px] font-mono text-[#262624] dark:text-[#f1ead8] overflow-x-auto leading-relaxed border-t border-[#eee]/50 dark:border-[rgba(227,224,211,0.06)] pt-3 mx-4 mb-1"><code>{{ step.code }}</code></pre>
           </div>
         </div>
       </div>
@@ -231,7 +231,7 @@ function copyStep(stepId: string, code: string) {
             loading="lazy"
             src="/guide/quickstart-create-model.webp"
             alt="创建统一模型"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm mt-4 w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
           >
         </div>
 
@@ -241,7 +241,7 @@ function copyStep(stepId: string, code: string) {
             loading="lazy"
             src="/guide/quickstart-add-provider.webp"
             alt="添加提供商"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm mt-4 w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
           >
         </div>
 
@@ -252,13 +252,13 @@ function copyStep(stepId: string, code: string) {
               loading="lazy"
               src="/guide/quickstart-add-endpoint-1.webp"
               alt="添加端点 1"
-              class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+              class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
             >
             <img
               loading="lazy"
               src="/guide/quickstart-add-endpoint-2.webp"
               alt="添加端点 2"
-              class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+              class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
             >
           </div>
         </div>
@@ -269,7 +269,7 @@ function copyStep(stepId: string, code: string) {
             loading="lazy"
             src="/guide/quickstart-add-key.webp"
             alt="添加密钥"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm mt-4 w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
           >
         </div>
 
@@ -280,13 +280,13 @@ function copyStep(stepId: string, code: string) {
               loading="lazy"
               src="/guide/quickstart-link-model-1.webp"
               alt="关联全局模型 1"
-              class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+              class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
             >
             <img
               loading="lazy"
               src="/guide/quickstart-link-model-2.webp"
               alt="关联全局模型 2"
-              class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm w-full"
+              class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
             >
           </div>
         </div>
@@ -297,7 +297,7 @@ function copyStep(stepId: string, code: string) {
             loading="lazy"
             src="/guide/quickstart-model-mapping.webp"
             alt="模型映射"
-            class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm mt-4 w-full"
+            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
           >
         </div>
       </div>
@@ -311,7 +311,7 @@ function copyStep(stepId: string, code: string) {
       <h2>3. 反向代理</h2>
       <p>添加提供商时, 提供商类型选择对应类型即可, 反向代理默认开启提供商级格式转换。</p>
 
-      <ul class="list-decimal pl-5 space-y-4 mt-4 text-[#666663] dark:text-[#a3a094]">
+      <ul class="list-decimal pl-5 space-y-4 mt-4 text-[#666666] dark:text-[#a3a094]">
         <li>
           <span class="font-medium text-[#262624] dark:text-[#f1ead8]">Codex</span>
           <ul class="list-disc pl-5 mt-2 space-y-1">
@@ -330,7 +330,7 @@ function copyStep(stepId: string, code: string) {
                 :class="[panelClasses.commandPanel]"
                 class="mt-3"
               >
-                <div class="px-4 py-2 border-b border-[#e5e4df]/50 dark:border-[rgba(227,224,211,0.06)] bg-[#f5f5f0]/50 dark:bg-[rgba(227,224,211,0.05)] text-xs text-[#91918d] dark:text-[#a3a094]/70">
+                <div class="px-4 py-2 border-b border-[#eee]/50 dark:border-[rgba(227,224,211,0.06)] bg-[#f5f5f0]/50 dark:bg-[rgba(227,224,211,0.05)] text-xs text-[#999999] dark:text-[#a3a094]/70">
                   Social 格式要求
                 </div>
                 <pre class="px-4 py-3 text-[13px] font-mono text-[#262624] dark:text-[#f1ead8] overflow-x-auto m-0 bg-transparent"><code>{
@@ -341,7 +341,7 @@ function copyStep(stepId: string, code: string) {
                 :class="[panelClasses.commandPanel]"
                 class="mt-3"
               >
-                <div class="px-4 py-2 border-b border-[#e5e4df]/50 dark:border-[rgba(227,224,211,0.06)] bg-[#f5f5f0]/50 dark:bg-[rgba(227,224,211,0.05)] text-xs text-[#91918d] dark:text-[#a3a094]/70">
+                <div class="px-4 py-2 border-b border-[#eee]/50 dark:border-[rgba(227,224,211,0.06)] bg-[#f5f5f0]/50 dark:bg-[rgba(227,224,211,0.05)] text-xs text-[#999999] dark:text-[#a3a094]/70">
                   IDC 格式要求
                 </div>
                 <pre class="px-4 py-3 text-[13px] font-mono text-[#262624] dark:text-[#f1ead8] overflow-x-auto m-0 bg-transparent"><code>{
@@ -367,7 +367,7 @@ function copyStep(stepId: string, code: string) {
         loading="lazy"
         src="/guide/quickstart-reverse-proxy.webp"
         alt="反向代理配置示例"
-        class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm mt-6 w-full max-w-2xl"
+        class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-6 w-full max-w-2xl"
       >
     </section>
 
@@ -379,7 +379,7 @@ function copyStep(stepId: string, code: string) {
       <h2>4. 异步任务</h2>
       <p>需要有提供商端点支持。</p>
       
-      <ul class="list-decimal pl-5 mt-4 text-[#666663] dark:text-[#a3a094] space-y-1">
+      <ul class="list-decimal pl-5 mt-4 text-[#666666] dark:text-[#a3a094] space-y-1">
         <li><span class="font-medium text-[#262624] dark:text-[#f1ead8]">Veo</span></li>
         <li><span class="font-medium text-[#262624] dark:text-[#f1ead8]">Sora</span></li>
       </ul>
@@ -394,28 +394,26 @@ function copyStep(stepId: string, code: string) {
 
       <div class="space-y-6 mt-6">
         <div>
-          <h3>1. Aether-Proxy</h3>
+          <h3>1. ManyCode-Proxy</h3>
           <p>Rust实现, 超小资源占有, 适合性能低的VPS直接使用。</p>
           <a
-            href="https://github.com/fawney19/Aether/tree/main/aether-tunnel"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-[#cc785c] dark:text-[#d4a27f] hover:underline mt-2 inline-block"
+            href="#"
+            class="text-[#1a1a1a] dark:text-[#e5e5e5] hover:underline mt-2 inline-block"
           >
-            GitHub 仓库 >
+            了解更多 >
           </a>
         </div>
 
         <div>
           <h3>2. 代理节点</h3>
-          <p>在模块管理中，开启代理模块后可以添加和使用代理功能，包括手动添加和 Aether-Proxy 自动连接。</p>
+          <p>在模块管理中，开启代理模块后可以添加和使用代理功能，包括手动添加和 ManyCode-Proxy 自动连接。</p>
         </div>
 
         <div>
           <h3>3. 多级代理</h3>
-          <p>优先级：<span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#cc785c]/10 px-2 py-0.5 rounded">Key代理</span> > <span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#cc785c]/10 px-2 py-0.5 rounded">提供商代理</span> > <span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#cc785c]/10 px-2 py-0.5 rounded">全局代理</span></p>
+          <p>优先级：<span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#1a1a1a]/10 px-2 py-0.5 rounded">Key代理</span> > <span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#1a1a1a]/10 px-2 py-0.5 rounded">提供商代理</span> > <span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#1a1a1a]/10 px-2 py-0.5 rounded">全局代理</span></p>
           
-          <ul class="list-decimal pl-5 mt-4 space-y-2 text-[#666663] dark:text-[#a3a094]">
+          <ul class="list-decimal pl-5 mt-4 space-y-2 text-[#666666] dark:text-[#a3a094]">
             <li>全局代理 - 系统配置</li>
             <li>提供商代理 - 提供商配置</li>
             <li>Key代理 - Key配置</li>

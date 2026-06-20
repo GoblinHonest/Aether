@@ -6,7 +6,7 @@ import { Target } from 'lucide-vue-next'
   <div class="space-y-12 pb-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#cc785c]/10 dark:bg-[#cc785c]/20 border border-[#cc785c]/20 dark:border-[#cc785c]/40 px-3 py-1 text-xs font-medium text-[#cc785c] dark:text-[#d4a27f]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
         <Target class="h-3 w-3" />
         调度与策略
       </div>
@@ -14,7 +14,7 @@ import { Target } from 'lucide-vue-next'
         关键策略
       </h1>
       <p class="text-base text-[#666663] dark:text-[#a3a094] max-w-2xl">
-        了解 Aether 内部的日志记录、智能调度模式以及服务限制策略。
+        了解 ManyCode 内部的日志记录、智能调度模式以及服务限制策略。
       </p>
     </div>
 
@@ -27,9 +27,9 @@ import { Target } from 'lucide-vue-next'
         在系统设置中，您可以修改请求体记录详情等级，以便于调试和审计。
       </p>
       
-      <div class="overflow-hidden rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] bg-white dark:bg-[#191714] shadow-sm max-w-2xl">
+      <div class="overflow-hidden rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] bg-white dark:bg-[#0a0a0a] max-w-2xl">
         <table class="w-full text-sm text-left">
-          <thead class="bg-[#f5f5f0] dark:bg-[rgba(227,224,211,0.05)] border-b border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)]">
+          <thead class="bg-[#f5f5f0] dark:bg-[rgba(227,224,211,0.05)] border-b border-[#eee] dark:border-[rgba(255,255,255,0.08)]">
             <tr>
               <th
                 scope="col"
@@ -47,7 +47,7 @@ import { Target } from 'lucide-vue-next'
           </thead>
           <tbody class="divide-y divide-[#e5e4df] dark:divide-[rgba(227,224,211,0.06)]">
             <tr class="hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-              <td class="px-6 py-4 font-mono font-medium text-[#cc785c] dark:text-[#d4a27f]">
+              <td class="px-6 py-4 font-mono font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
                 Base
               </td>
               <td class="px-6 py-4 text-[#666663] dark:text-[#a3a094]">
@@ -55,7 +55,7 @@ import { Target } from 'lucide-vue-next'
               </td>
             </tr>
             <tr class="hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-              <td class="px-6 py-4 font-mono font-medium text-[#cc785c] dark:text-[#d4a27f]">
+              <td class="px-6 py-4 font-mono font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
                 Headers
               </td>
               <td class="px-6 py-4 text-[#666663] dark:text-[#a3a094]">
@@ -63,7 +63,7 @@ import { Target } from 'lucide-vue-next'
               </td>
             </tr>
             <tr class="hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b-0">
-              <td class="px-6 py-4 font-mono font-medium text-[#cc785c] dark:text-[#d4a27f]">
+              <td class="px-6 py-4 font-mono font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
                 Full
               </td>
               <td class="px-6 py-4 text-[#666663] dark:text-[#a3a094]">
@@ -78,7 +78,7 @@ import { Target } from 'lucide-vue-next'
         loading="lazy"
         src="/guide/strategy-request-logging.webp"
         alt="请求体记录设置"
-        class="rounded-xl border border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)] shadow-sm mt-6 w-full max-w-3xl"
+        class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-6 w-full max-w-3xl"
       >
     </section>
 

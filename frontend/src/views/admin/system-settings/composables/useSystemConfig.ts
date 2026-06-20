@@ -120,7 +120,7 @@ const CONFIG_KEYS = [
 function createDefaultConfig(): SystemConfig {
   return {
     // 站点信息
-    site_name: 'Aether',
+    site_name: 'ManyCode',
     site_subtitle: 'AI Gateway',
     // 网络代理
     system_proxy_node_id: null,

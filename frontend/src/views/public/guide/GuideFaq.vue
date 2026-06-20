@@ -26,15 +26,15 @@ const toggleFaq = (index: number) => {
   <div class="space-y-12 pb-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#cc785c]/10 dark:bg-[#cc785c]/20 border border-[#cc785c]/20 dark:border-[#cc785c]/40 px-3 py-1 text-xs font-medium text-[#cc785c] dark:text-[#d4a27f]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
         <HelpCircle class="h-3 w-3" />
         答疑解惑
       </div>
       <h1 class="text-3xl font-bold text-[#262624] dark:text-[#f1ead8]">
         常见问题
       </h1>
-      <p class="text-base text-[#666663] dark:text-[#a3a094] max-w-2xl">
-        在使用 Aether 过程中遇到的常见问题与排错指南。
+      <p class="text-base text-[#666666] dark:text-[#a3a094] max-w-2xl">
+        在使用 ManyCode 过程中遇到的常见问题与排错指南。
       </p>
     </div>
 
@@ -43,7 +43,7 @@ const toggleFaq = (index: number) => {
         <div
           v-for="(faq, index) in faqs"
           :key="faq.id"
-          class="bg-white/50 dark:bg-white/5 border border-[#e5e4df] dark:border-[rgba(227,224,211,0.06)] rounded-xl overflow-hidden shadow-sm transition-all"
+          class="bg-white/50 dark:bg-white/5 border border-[#eee] dark:border-[rgba(227,224,211,0.06)] rounded-xl overflow-hidden transition-all"
         >
           <button
             class="w-full flex items-center justify-between p-5 text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
@@ -53,14 +53,14 @@ const toggleFaq = (index: number) => {
               {{ faq.question }}
             </h3>
             <ChevronRight
-              class="w-5 h-5 text-[#91918d] dark:text-[#a3a094] transition-transform duration-200"
-              :class="{ 'rotate-90 text-[#cc785c]': faq.isOpen }"
+              class="w-5 h-5 text-[#999999] dark:text-[#a3a094] transition-transform duration-200"
+              :class="{ 'rotate-90 text-[#1a1a1a]': faq.isOpen }"
             />
           </button>
           
           <div
             v-show="faq.isOpen"
-            class="px-5 pb-5 pt-0 text-sm text-[#666663] dark:text-[#a3a094] leading-relaxed border-t border-[#e5e4df]/50 dark:border-[rgba(227,224,211,0.06)] mt-2"
+            class="px-5 pb-5 pt-0 text-sm text-[#666666] dark:text-[#a3a094] leading-relaxed border-t border-[#eee]/50 dark:border-[rgba(227,224,211,0.06)] mt-2"
           >
             <div class="pt-4">
               {{ faq.answer }}

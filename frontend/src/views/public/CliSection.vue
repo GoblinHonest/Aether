@@ -21,7 +21,7 @@
 
         <!-- Title -->
         <h2
-          class="text-4xl md:text-5xl font-bold text-[#191919] dark:text-white mb-6 transition-all duration-700"
+          class="text-4xl md:text-5xl font-bold text-[#1a1a1a] dark:text-white mb-6 transition-all duration-700"
           :style="titleStyle"
         >
           {{ title }}
@@ -29,7 +29,7 @@
 
         <!-- Description -->
         <p
-          class="text-lg text-[#666663] dark:text-[#c9c3b4] mb-4 transition-all duration-700"
+          class="text-lg text-[#666666] dark:text-[#c9c3b4] mb-4 transition-all duration-700"
           :style="descStyle"
         >
           {{ description }}
@@ -81,7 +81,7 @@
           >
             <div :class="panelClasses.panelHeader">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-[#666663] dark:text-[#c9c3b4]">
+                <span class="text-xs font-medium text-[#666666] dark:text-[#c9c3b4]">
                   {{ config.path }}
                 </span>
                 <button

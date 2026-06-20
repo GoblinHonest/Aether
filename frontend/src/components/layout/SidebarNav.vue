@@ -12,7 +12,7 @@
         :class="index > 0 ? 'pt-1' : ''"
       >
         <span class="text-[10px] font-medium text-muted-foreground/50 font-mono tabular-nums">{{ String(index + 1).padStart(2, '0') }}</span>
-        <span class="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-[0.1em]">{{ group.title }}</span>
+        <span class="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-normal">{{ group.title }}</span>
       </div>
 
       <!-- Links -->

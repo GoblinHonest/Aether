@@ -32,10 +32,10 @@ const handleClick = () => {
 
 const triggerClass = computed(() => {
   return cn(
-    'relative z-10 inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+    'relative z-10 inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors cursor-pointer focus-visible:outline-none',
     isActive.value
-      ? 'text-foreground font-semibold'
-      : 'text-muted-foreground hover:text-foreground',
+      ? 'text-[#1a1a1a] dark:text-[#e5e5e5] font-medium'
+      : 'text-[#999] hover:text-[#1a1a1a] dark:hover:text-[#e5e5e5]',
     props.class
   )
 })

@@ -17,7 +17,7 @@ describe('useSiteInfo', () => {
   it('loads public site info', async () => {
     apiClientMocks.get.mockResolvedValue({
       data: {
-        site_name: 'Custom Aether',
+        site_name: 'Custom ManyCode',
         site_subtitle: 'Gateway',
       },
     })
@@ -26,7 +26,7 @@ describe('useSiteInfo', () => {
     const { siteName, siteSubtitle, refreshSiteInfo } = useSiteInfo()
     await refreshSiteInfo()
 
-    expect(siteName.value).toBe('Custom Aether')
+    expect(siteName.value).toBe('Custom ManyCode')
     expect(siteSubtitle.value).toBe('Gateway')
   })
 })

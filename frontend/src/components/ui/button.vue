@@ -39,7 +39,7 @@ const buttonClass = computed(() => {
     outline:
       'border border-border/60 bg-card/60 text-foreground hover:border-primary/60 hover:text-primary hover:bg-primary/10 backdrop-blur transition-all',
     secondary:
-      'bg-secondary text-secondary-foreground shadow-inner hover:bg-secondary/80',
+      'bg-secondary text-secondary-foreground hover:bg-secondary/80',
     ghost: 'hover:bg-accent hover:text-accent-foreground',
     link: 'text-primary underline-offset-4 hover:underline',
   }

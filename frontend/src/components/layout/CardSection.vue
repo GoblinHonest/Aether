@@ -62,7 +62,7 @@ const cardClasses = computed(() => {
   const classes = []
 
   if (props.variant === 'elevated') {
-    classes.push('shadow-md')
+    classes.push('')
   } else if (props.variant === 'glass') {
     classes.push('surface-glass')
   }

@@ -5,11 +5,7 @@
     :sidebar-class="sidebarClasses"
     :content-class="contentClasses"
   >
-    <!-- GLOBAL TEXTURE (Paper Noise) -->
-    <div
-      class="absolute inset-0 pointer-events-none z-0 opacity-[0.03] mix-blend-multiply fixed"
-      :style="{ backgroundImage: `url(\&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\&quot;)` }"
-    />
+    <!-- GLOBAL TEXTURE (removed for MiMo clean design) -->
 
     <template #notice>
       <div class="flex w-full max-w-3xl items-center justify-between rounded-3xl bg-orange-500 px-6 py-3 text-white shadow-2xl ring-1 ring-white/30">
@@ -37,13 +33,13 @@
         >
           <HeaderLogo
             size="h-9 w-9"
-            class-name="text-[#191919] dark:text-white"
+            class-name="text-[#1a1a1a] dark:text-white"
           />
           <div class="flex flex-col justify-center">
-            <h1 class="text-lg font-bold text-[#191919] dark:text-white leading-none">
+            <h1 class="text-lg font-bold text-[#1a1a1a] dark:text-white leading-none">
               {{ siteName }}
             </h1>
-            <span class="text-[10px] text-[#91918d] dark:text-muted-foreground leading-none mt-1.5 font-medium tracking-wide">{{ siteSubtitle }}</span>
+            <span class="text-[10px] text-[#999999] dark:text-muted-foreground leading-none mt-1.5 font-medium tracking-wide">{{ siteSubtitle }}</span>
           </div>
         </RouterLink>
       </div>
@@ -58,10 +54,10 @@
       </div>
 
       <!-- FOOTER (Profile) -->
-      <div class="p-4 border-t border-[#3d3929]/5 dark:border-white/5">
+      <div class="p-4 border-t border-[#000]/5 dark:border-white/8">
         <div class="flex items-center justify-between p-2 rounded-xl">
           <div class="flex items-center gap-3 min-w-0">
-            <div class="w-8 h-8 rounded-full bg-[#f0f0eb] dark:bg-white/10 border border-black/5 flex items-center justify-center text-xs font-bold text-[#3d3929] dark:text-[#d4a27f] shrink-0">
+            <div class="w-8 h-8 rounded-full bg-[#f5f5f5] dark:bg-white/10 border border-black/5 flex items-center justify-center text-xs font-bold text-[#1a1a1a] dark:text-[#e5e5e5] shrink-0">
               {{ authStore.user?.username?.substring(0, 2).toUpperCase() }}
             </div>
             <div class="flex flex-col min-w-0">
@@ -102,13 +98,13 @@
             >
               <HeaderLogo
                 size="h-9 w-9"
-                class-name="text-[#191919] dark:text-white"
+                class-name="text-[#1a1a1a] dark:text-white"
               />
               <div class="flex flex-col justify-center">
-                <h1 class="text-lg font-bold text-[#191919] dark:text-white leading-none">
+                <h1 class="text-lg font-bold text-[#1a1a1a] dark:text-white leading-none">
                   {{ siteName }}
                 </h1>
-                <span class="text-[10px] text-[#91918d] dark:text-muted-foreground leading-none mt-1.5 font-medium tracking-wide">{{ siteSubtitle }}</span>
+                <span class="text-[10px] text-[#999999] dark:text-muted-foreground leading-none mt-1.5 font-medium tracking-wide">{{ siteSubtitle }}</span>
               </div>
             </RouterLink>
 
@@ -200,7 +196,7 @@
                 >
                   <div
                     v-if="group.title"
-                    class="text-[10px] font-semibold text-[#91918d] dark:text-muted-foreground uppercase tracking-wider mb-2"
+                    class="text-[10px] font-semibold text-[#999999] dark:text-muted-foreground uppercase tracking-normal mb-2"
                   >
                     {{ group.title }}
                   </div>
@@ -211,8 +207,8 @@
                       :to="item.href"
                       class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
                       :class="isNavActive(item.href)
-                        ? 'bg-[#cc785c]/10 dark:bg-[#cc785c]/20 text-[#cc785c] dark:text-[#d4a27f]'
-                        : 'text-[#666663] dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#191919] dark:hover:text-white'"
+                        ? 'bg-[#1a1a1a]/8 dark:bg-white/8 text-[#1a1a1a] dark:text-[#e5e5e5]'
+                        : 'text-[#666666] dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#1a1a1a] dark:hover:text-white'"
                       @mouseenter="prefetchNavigationItem(item.href)"
                       @focus="prefetchNavigationItem(item.href)"
                       @pointerdown="prefetchNavigationItem(item.href)"
@@ -229,15 +225,15 @@
               </div>
 
               <!-- User Section -->
-              <div class="mt-4 pt-4 border-t border-[#cc785c]/10 dark:border-[rgba(227,224,211,0.12)]">
+              <div class="mt-4 pt-4 border-t border-[#1a1a1a]/8 dark:border-[rgba(255,255,255,0.08)]">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-8 h-8 rounded-full bg-[#f0f0eb] dark:bg-white/10 border border-black/5 flex items-center justify-center text-xs font-bold text-[#3d3929] dark:text-[#d4a27f] shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-[#f5f5f5] dark:bg-white/10 border border-black/5 flex items-center justify-center text-xs font-bold text-[#1a1a1a] dark:text-[#e5e5e5] shrink-0">
                       {{ authStore.user?.username?.substring(0, 2).toUpperCase() }}
                     </div>
                     <div class="flex flex-col min-w-0">
-                      <span class="text-sm font-semibold leading-none truncate text-[#191919] dark:text-white">{{ authStore.user?.username }}</span>
-                      <span class="text-[10px] text-[#91918d] dark:text-muted-foreground leading-none mt-1">{{ currentRoleLabel }}</span>
+                      <span class="text-sm font-semibold leading-none truncate text-[#1a1a1a] dark:text-white">{{ authStore.user?.username }}</span>
+                      <span class="text-[10px] text-[#999999] dark:text-muted-foreground leading-none mt-1">{{ currentRoleLabel }}</span>
                     </div>
                   </div>
                   <div class="flex items-center gap-1">
@@ -263,7 +259,7 @@
       </header>
 
       <!-- Desktop Page Header -->
-      <header class="hidden lg:flex h-16 px-8 items-center justify-between shrink-0 border-b border-[#3d3929]/5 dark:border-white/5 sticky top-0 z-40 backdrop-blur-md bg-[#faf9f5]/90 dark:bg-[#191714]/90">
+      <header class="hidden lg:flex h-16 px-8 items-center justify-between shrink-0 border-b border-[#000]/5 dark:border-white/8 sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#0a0a0a]/90">
         <div class="flex flex-col gap-0.5">
           <div class="flex items-center gap-2 text-sm text-muted-foreground">
             <template
@@ -343,16 +339,6 @@
               class="h-4 w-4"
             />
           </button>
-          <!-- GitHub Link -->
-          <a
-            href="https://github.com/fawney19/Aether"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition"
-            title="GitHub 仓库"
-          >
-            <GithubIcon class="h-4 w-4" />
-          </a>
         </div>
       </header>
     </template>
@@ -484,7 +470,6 @@ import {
   type LucideIcon,
 } from 'lucide-vue-next'
 
-import GithubIcon from '@/components/icons/GithubIcon.vue'
 import { BUILTIN_TOOL_BREADCRUMBS } from '@/config/builtin-tools'
 import { prefetchAdminNavigationTarget } from '@/utils/adminNavigationPrefetch'
 import { sanitizeMarkdown } from '@/utils/sanitize'
@@ -933,7 +918,7 @@ function showDebugUpdateDialog() {
     current_version: currentVersion,
     latest_version: 'v0.7.0-rc99',
     has_update: true,
-    release_url: 'https://github.com/fawney19/Aether/releases',
+    release_url: '',
     release_notes: [
       "### What's Changed",
       '- 调整版本更新提示样式',
@@ -956,7 +941,7 @@ function showDebugVersionStatus(hasUpdate = true) {
     current_version: currentVersion,
     latest_version: hasUpdate ? 'v0.7.0-rc99' : currentVersion,
     has_update: hasUpdate,
-    release_url: hasUpdate ? 'https://github.com/fawney19/Aether/releases' : null,
+    release_url: hasUpdate ? '' : null,
     release_notes: hasUpdate
       ? [
         "### What's Changed",
@@ -1283,11 +1268,11 @@ const breadcrumbs = computed((): BreadcrumbItem[] => {
 // Styling Classes (Editorial)
 const sidebarClasses = computed(() => {
     // Fixed width, border right, background match
-    return `w-[260px] flex flex-col hidden lg:flex border-r border-[#3d3929]/5 dark:border-white/5 bg-[#faf9f5] dark:bg-[#1e1c19] h-screen sticky top-0`
+    return `w-[260px] flex flex-col hidden lg:flex border-r border-[#000]/5 dark:border-white/8 bg-white dark:bg-[#111111] h-screen sticky top-0`
 })
 
 const contentClasses = computed(() => {
-    return `flex-1 min-w-0 bg-[#faf9f5] dark:bg-[#191714] text-[#3d3929] dark:text-[#d4a27f]`
+    return `flex-1 min-w-0 bg-white dark:bg-[#0a0a0a] text-[#1a1a1a] dark:text-[#e5e5e5]`
 })
 
 const mainClasses = computed(() => {

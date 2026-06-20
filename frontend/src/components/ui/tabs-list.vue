@@ -169,11 +169,10 @@ onUnmounted(() => {
   height: 2.5rem;
   align-items: center;
   justify-content: center;
-  border-radius: 0.5rem;
-  background-color: hsl(var(--muted) / 0.3);
+  border-radius: 0.75rem;
+  background-color: #f5f5f5;
   padding: 0.25rem;
-  color: hsl(var(--muted-foreground));
-  border: 1px solid hsl(var(--border) / 0.6);
+  color: #999;
 }
 
 .tabs-indicator {
@@ -182,27 +181,19 @@ onUnmounted(() => {
   top: 0.25rem;
   bottom: 0.25rem;
   left: 0;
-  border-radius: 0.375rem;
-  background: linear-gradient(
-    180deg,
-    hsl(var(--background)),
-    hsl(var(--background) / 0.95)
-  );
-  border: 1px solid hsl(var(--border));
-  box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #eee;
   pointer-events: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  .tabs-indicator {
-    background: linear-gradient(
-      180deg,
-      hsl(var(--accent)),
-      hsl(var(--accent) / 0.95)
-    );
-    border-color: hsl(var(--border) / 0.8);
-  }
+:is(.dark) .tabs-list {
+  background-color: #1a1a1a;
+  color: #999;
+}
+
+:is(.dark) .tabs-indicator {
+  background: #111;
+  border-color: #333;
 }
 </style>

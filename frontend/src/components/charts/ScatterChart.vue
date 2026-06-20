@@ -3,7 +3,7 @@
     <canvas ref="chartRef" />
     <div
       v-if="crosshairStats"
-      class="absolute top-2 right-2 bg-gray-800/90 text-gray-100 px-3 py-2 rounded-lg text-sm shadow-lg border border-gray-600"
+      class="absolute top-2 right-2 bg-gray-800/90 text-gray-100 px-3 py-2 rounded-lg text-sm border border-gray-600"
     >
       <div class="font-medium text-yellow-400">
         Y = {{ crosshairStats.yValue.toFixed(1) }} 分钟

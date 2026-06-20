@@ -1,6 +1,6 @@
 <template>
-  <main class="min-h-screen bg-[#faf9f5] text-[#3d3929] dark:bg-[#191714] dark:text-[#e3e0d3]">
-    <header class="border-b border-[#3d3929]/10 dark:border-white/10">
+  <main class="min-h-screen bg-[#ffffff] text-[#1a1a1a] dark:bg-[#0a0a0a] dark:text-[#e3e0d3]">
+    <header class="border-b border-[#1a1a1a]/10 dark:border-white/10">
       <div class="mx-auto flex max-w-4xl items-center justify-between px-5 py-4">
         <RouterLink
           to="/"
@@ -8,7 +8,7 @@
         >
           <HeaderLogo
             size="h-9 w-9"
-            class-name="text-[#191919] dark:text-white"
+            class-name="text-[#1a1a1a] dark:text-white"
           />
           <div>
             <div class="text-sm font-semibold">

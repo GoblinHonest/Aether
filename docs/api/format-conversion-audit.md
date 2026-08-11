@@ -9,14 +9,14 @@ Statuses:
 - `native`: emitted as a target-native field without semantic change.
 - `mapped`: converted through canonical/provider-specific mapping.
 - `extension-preserved`: preserved in same-format canonical roundtrip or target-approved extension namespace.
-- `unaudited`: rejected because the source field is not in the audited provider schema inventory for cross-format conversion.
+- `unaudited`: source field is not in the audited provider schema inventory; tolerated (dropped from the cross-format target) and reported, not a hard error.
 - `unsupported`: rejected because the request/field shape is outside the supported conversion surface, independent of schema drift.
 - `lossy-blocked`: conversion fails closed.
 - `invalid-enum`: conversion fails closed because a provider enum value is not valid for the target mapping.
 
 Full schema field coverage is tracked in `docs/api/format-field-coverage-matrix.md`. That matrix is generated from the schema inventory in `docs/api/provider-interface-definitions.md` by `python3 docs/api/generate_format_field_coverage.py` and gives every documented OpenAI, Claude, and Gemini schema field a handling status. “Handled” means mapped, same-format/native preserved, extension-preserved, blocked with a structured error, or explicitly marked outside the canonical conversion surface.
 
-Provider schema refresh is not a runtime dependency. Same-format runtime paths do not use this matrix; they bypass canonical conversion. Same-format canonical roundtrip must preserve unrecognized provider fields through provider extension namespaces. Cross-format conversion is capability-based: only explicitly mapped fields are emitted, and newly discovered or unknown provider fields fail closed with `UnauditedField` until a lossless mapping is audited.
+Provider schema refresh is not a runtime dependency. Same-format runtime paths do not use this matrix; they bypass canonical conversion. Same-format canonical roundtrip must preserve unrecognized provider fields through provider extension namespaces. Cross-format conversion is capability-based: only explicitly mapped fields are emitted, and newly discovered or unknown provider fields are tolerated (dropped and reported as `unaudited`) instead of failing the request. Known-but-unmapped audited fields still fail closed with `LossyConversionBlocked` until a lossless mapping is audited.
 
 ## Implemented Boundary Changes
 
@@ -28,8 +28,8 @@ Provider schema refresh is not a runtime dependency. Same-format runtime paths d
 | Cross-format same-format-provider path | Uses `convert_request_pure`, then applies model/body/stream edits in transport. |
 | Conversion errors | Added `UnauditedField`, `UnsupportedField`, `InvalidEnumValue`, `LossyConversionBlocked`, and `InvalidTargetField`. |
 | Reporting | Added `ConversionReport` with field statuses. Runtime reports remain conversion-operation oriented; exhaustive nested schema coverage is enforced by `format-field-coverage-matrix.md`. |
-| Source schema coverage | Cross-format request conversion rejects unknown source root fields before emit. Every documented schema field is covered by the field coverage matrix. |
-| Schema drift handling | Official schema changes are detected by regenerating the inventory/matrix. Runtime same-format remains passthrough; cross-format unknowns return `UnauditedField` until deliberately mapped. |
+| Source schema coverage | Cross-format request conversion tolerates unknown source root fields (dropped and reported as `unaudited`). Every documented schema field is covered by the field coverage matrix. |
+| Schema drift handling | Official schema changes are detected by regenerating the inventory/matrix. Runtime same-format remains passthrough; cross-format unknowns are tolerated (dropped and reported as `unaudited`) until deliberately mapped. |
 | Tool schema roundtrip | Claude `input_schema` and Gemini `functionDeclarations.parameters` preserve raw same-format schema through provider-specific extensions. |
 | Tool result ids | Chat `tool_call_id`, Responses `call_id`, Claude `tool_use_id`, and Gemini `functionResponse.id` are mapped through canonical tool IDs. |
 
@@ -69,7 +69,7 @@ Provider schema refresh is not a runtime dependency. Same-format runtime paths d
 | `safety_identifier` | OpenAI extension | `safety_identifier` | extension-preserved |
 | `prompt_cache_key` | OpenAI extension | `prompt_cache_key` | extension-preserved |
 | `user` | legacy Chat user field | none | lossy-blocked |
-| unknown top-level fields | source schema guard | none | unaudited |
+| unknown top-level fields | tolerated & dropped | none | unaudited |
 
 ## OpenAI Responses -> OpenAI Chat
 
@@ -106,11 +106,11 @@ Provider schema refresh is not a runtime dependency. Same-format runtime paths d
 | `conversation` | Responses-only | none | lossy-blocked |
 | `background` | Responses-only | none | lossy-blocked |
 | `max_tool_calls` | Responses-only | none | lossy-blocked |
-| unknown top-level fields | source schema guard | none | unaudited |
+| unknown top-level fields | tolerated & dropped | none | unaudited |
 
 ## Claude Messages <-> OpenAI Chat / Responses
 
-Claude to OpenAI Chat, Claude to OpenAI Responses, and the reverse directions are included in the field coverage matrix. Runtime strict guards cover request root fields, provider extension namespaces, thinking/cache/tool-result hazards, and target generation-field gaps. Fields without a lossless target equivalent fail closed instead of being dropped.
+Claude to OpenAI Chat, Claude to OpenAI Responses, and the reverse directions are included in the field coverage matrix. Runtime strict guards cover provider extension namespaces, thinking/cache/tool-result hazards, and target generation-field gaps. Known audited fields without a lossless target equivalent fail closed instead of being dropped; un-audited unknown fields are tolerated and dropped.
 
 High-risk fields:
 

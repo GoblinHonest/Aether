@@ -322,7 +322,6 @@ fn validate_request_conversion(
     if is_rerank_format(source) || is_rerank_format(target) {
         return validate_rerank_request_conversion(source, target, request);
     }
-    validate_known_standard_request_root_fields(source, target, body)?;
     validate_cross_format_generation_target(source, target, request)?;
     validate_openai_reasoning_effort(source, target, body)?;
     match (source, target) {
@@ -384,28 +383,6 @@ fn validate_response_content_has_no_unknown_blocks(
                 ),
             });
         }
-    }
-    Ok(())
-}
-
-fn validate_known_standard_request_root_fields(
-    source: FormatId,
-    target: FormatId,
-    body: &Value,
-) -> Result<(), FormatError> {
-    let Some(object) = body.as_object() else {
-        return Ok(());
-    };
-    for key in object.keys() {
-        if standard_request_root_field_is_audited(source, key) {
-            continue;
-        }
-        return Err(FormatError::UnauditedField {
-            source_format: source.as_str().to_string(),
-            target_format: target.as_str().to_string(),
-            field: key.clone(),
-            reason: "source request root field is not in the audited provider schema for cross-format conversion".to_string(),
-        });
     }
     Ok(())
 }
@@ -796,6 +773,9 @@ fn validate_request_extension_namespace(
             {
                 continue;
             }
+            if request_extension_key_is_unknown_for_source(source, location, key) {
+                continue;
+            }
             return Err(FormatError::LossyConversionBlocked {
                 source_format: source.as_str().to_string(),
                 target_format: target.as_str().to_string(),
@@ -806,6 +786,17 @@ fn validate_request_extension_namespace(
         }
     }
     Ok(())
+}
+
+/// True when the extension key is a field Aether has never audited for the
+/// source format. These are tolerated (dropped on emit) rather than blocking
+/// cross-format conversion, so an unknown vendor/future field does not fail the
+/// whole request. Known-but-unmapped audited fields still fail closed.
+fn request_extension_key_is_unknown_for_source(source: FormatId, location: &str, key: &str) -> bool {
+    if location == "request" {
+        return !standard_request_root_field_is_audited(source, key);
+    }
+    true
 }
 
 fn request_extension_key_is_cross_format_safe(
@@ -2257,8 +2248,12 @@ fn build_request_conversion_report(
                 ConversionFieldStatus::Native
             } else if request_field_has_known_mapping(source_format, target_format, key.as_str()) {
                 ConversionFieldStatus::Mapped
-            } else {
+            } else if normalize_known_format(source_format).is_some_and(|source| {
+                standard_request_root_field_is_audited(source, key.as_str())
+            }) {
                 ConversionFieldStatus::ExtensionPreserved
+            } else {
+                ConversionFieldStatus::Unaudited
             };
             report.record(key.clone(), status, None);
         }
@@ -2488,11 +2483,11 @@ fn normalize_known_format(format: &str) -> Option<FormatId> {
 
 #[cfg(test)]
 mod tests {
-    use serde_json::json;
+    use serde_json::{json, Value};
 
     use super::{
         convert_request, convert_request_pure, convert_request_pure_with_context,
-        convert_response_pure, FormatContext,
+        convert_response_pure, ConversionFieldStatus, FormatContext,
     };
     use crate::formats::id::FormatId;
 
@@ -3083,27 +3078,51 @@ mod tests {
     }
 
     #[test]
-    fn pure_cross_format_rejects_unknown_source_root_field() {
+    fn pure_cross_format_tolerates_unknown_source_root_field() {
         let body = json!({
             "model": "gpt-source",
             "messages": [{"role": "user", "content": "hello"}],
             "future_field": true
         });
 
-        let error = convert_request_pure("openai:chat", "gemini:generate_content", &body)
-            .expect_err("unknown source root field should fail closed");
+        let converted = convert_request_pure("openai:chat", "gemini:generate_content", &body)
+            .expect("unknown source root field should be tolerated and dropped");
 
-        assert!(matches!(
-            error,
-            super::FormatError::UnauditedField {
-                ref source_format,
-                ref target_format,
-                ref field,
-                ..
-            } if source_format == "openai:chat"
-                && target_format == "gemini:generate_content"
-                && field == "future_field"
-        ));
+        assert!(
+            !converted.value.as_object().unwrap().contains_key("future_field"),
+            "unknown source root field should not leak into the target body"
+        );
+        assert!(converted.report.fields.iter().any(|record| {
+            record.field == "future_field" && record.status == ConversionFieldStatus::Unaudited
+        }));
+    }
+
+    #[test]
+    fn pure_cross_format_tolerates_unknown_nested_extension_field() {
+        let body = json!({
+            "model": "gpt-source",
+            "messages": [{
+                "role": "user",
+                "content": "hello",
+                "vendor_flag": {"enabled": true}
+            }]
+        });
+
+        let converted = convert_request_pure("openai:chat", "claude:messages", &body)
+            .expect("unknown nested extension field should be tolerated and dropped");
+
+        assert!(
+            converted
+                .value
+                .as_object()
+                .unwrap()
+                .get("messages")
+                .and_then(Value::as_array)
+                .unwrap()
+                .iter()
+                .all(|message| !message.as_object().unwrap().contains_key("vendor_flag")),
+            "unknown nested extension field should not leak into the target body"
+        );
     }
 
     #[test]

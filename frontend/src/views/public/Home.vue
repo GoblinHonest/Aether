@@ -125,12 +125,14 @@ import { useAuthStore } from '@/stores/auth'
 import { useDarkMode } from '@/composables/useDarkMode'
 import { useClipboard } from '@/composables/useClipboard'
 import { useSiteInfo } from '@/composables/useSiteInfo'
+
 import LoginDialog from '@/features/auth/components/LoginDialog.vue'
 
 const authStore = useAuthStore()
 const { isDark, toggleDarkMode } = useDarkMode()
 const { copyToClipboard } = useClipboard()
 const { siteName, siteSubtitle } = useSiteInfo()
+
 
 const showLogin = ref(false)
 const activeTab = ref('curl')

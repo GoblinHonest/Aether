@@ -9,12 +9,14 @@ use aether_data_contracts::repository::global_models::{
     StoredAdminProviderModel, UpsertAdminProviderModelRecord,
 };
 use aether_data_contracts::repository::provider_catalog::{
-    StoredProviderCatalogEndpoint, StoredProviderCatalogKey, StoredProviderCatalogProvider,
+    ProviderCatalogUpstreamMetadataNamespaceUpdate, StoredProviderCatalogEndpoint,
+    StoredProviderCatalogKey, StoredProviderCatalogProvider,
 };
 use aether_data_contracts::repository::quota::StoredProviderQuotaSnapshot;
 use aether_model_fetch::{
-    aggregate_models_for_cache, fetch_models_from_transports, merge_upstream_metadata,
-    model_fetch_interval_minutes, ModelFetchAssociationStore, ModelFetchTransportRuntime,
+    aggregate_models_for_cache, build_antigravity_load_code_assist_plan,
+    fetch_models_from_transports, merge_upstream_metadata, model_fetch_interval_minutes,
+    ModelFetchAssociationStore, ModelFetchTransportRuntime,
 };
 use aether_scheduler_core::SchedulerAffinityTarget;
 use async_trait::async_trait;
@@ -23,7 +25,7 @@ use tracing::{debug, warn};
 
 use super::{AppState, GatewayError};
 use crate::clock::current_unix_secs;
-use crate::model_fetch::ModelFetchRuntimeState;
+use crate::model_fetch::{CodexCatalogRuntime, ModelFetchRuntimeState};
 use crate::provider_transport::{GatewayProviderTransportSnapshot, LocalResolvedOAuthRequestAuth};
 use crate::request_candidate_runtime::{
     RequestCandidateRuntimeCapabilityReader, RequestCandidateRuntimeReader,
@@ -32,7 +34,112 @@ use crate::request_candidate_runtime::{
 use crate::scheduler::state::SchedulerRuntimeState;
 use crate::{execution_runtime, provider_transport};
 
+const MODEL_FETCH_RESPONSE_BODY_LIMIT_BYTES: usize = 8 * 1024 * 1024;
+
 impl AppState {
+    pub(crate) async fn hydrate_antigravity_project_metadata_for_transport(
+        &self,
+        transport: &GatewayProviderTransportSnapshot,
+    ) -> Option<GatewayProviderTransportSnapshot> {
+        if !provider_transport::antigravity::is_antigravity_provider_transport(transport) {
+            return None;
+        }
+        if matches!(
+            provider_transport::antigravity::resolve_local_antigravity_request_auth(transport),
+            provider_transport::antigravity::AntigravityRequestAuthSupport::Supported(_)
+        ) {
+            return Some(transport.clone());
+        }
+
+        let plan = match build_antigravity_load_code_assist_plan(self, transport).await {
+            Ok(plan) => plan,
+            Err(err) => {
+                warn!(
+                    provider_id = %transport.provider.id,
+                    endpoint_id = %transport.endpoint.id,
+                    key_id = %transport.key.id,
+                    error = %err,
+                    "antigravity project metadata hydration failed"
+                );
+                return None;
+            }
+        };
+        let result =
+            match execution_runtime::execute_execution_runtime_sync_plan(self, None, &plan).await {
+                Ok(result) => result,
+                Err(err) => {
+                    warn!(
+                        provider_id = %transport.provider.id,
+                        endpoint_id = %transport.endpoint.id,
+                        key_id = %transport.key.id,
+                        error = ?err,
+                        "antigravity project metadata hydration request failed"
+                    );
+                    return None;
+                }
+            };
+        if !(200..300).contains(&result.status_code) {
+            warn!(
+                provider_id = %transport.provider.id,
+                endpoint_id = %transport.endpoint.id,
+                key_id = %transport.key.id,
+                status_code = result.status_code,
+                "antigravity project metadata hydration returned non-success status"
+            );
+            return None;
+        }
+        let Some(project_id) = result
+            .body
+            .as_ref()
+            .and_then(|body| body.json_body.as_ref())
+            .and_then(extract_antigravity_load_code_assist_project_id)
+        else {
+            warn!(
+                provider_id = %transport.provider.id,
+                endpoint_id = %transport.endpoint.id,
+                key_id = %transport.key.id,
+                "antigravity project metadata hydration response missing project"
+            );
+            return None;
+        };
+        let upstream_metadata = serde_json::json!({
+            "antigravity": {
+                "project_id": project_id,
+                "updated_at": current_unix_secs(),
+            }
+        });
+        let merged_metadata =
+            merge_upstream_metadata(transport.key.upstream_metadata.as_ref(), &upstream_metadata);
+
+        let mut hydrated = transport.clone();
+        hydrated.key.upstream_metadata = Some(merged_metadata.clone());
+        if !matches!(
+            provider_transport::antigravity::resolve_local_antigravity_request_auth(&hydrated),
+            provider_transport::antigravity::AntigravityRequestAuthSupport::Supported(_)
+        ) {
+            return None;
+        }
+
+        if let Err(err) = self
+            .update_provider_catalog_key_upstream_metadata(
+                &transport.key.id,
+                Some(&merged_metadata),
+                Some(current_unix_secs()),
+            )
+            .await
+        {
+            warn!(
+                provider_id = %transport.provider.id,
+                endpoint_id = %transport.endpoint.id,
+                key_id = %transport.key.id,
+                error = ?err,
+                "antigravity project metadata hydration could not persist metadata"
+            );
+        }
+
+        Some(hydrated)
+    }
+
     pub(crate) async fn hydrate_gemini_cli_project_metadata_for_transport(
         &self,
         transport: &GatewayProviderTransportSnapshot,
@@ -87,6 +194,30 @@ impl AppState {
 
         Some(hydrated)
     }
+}
+
+fn extract_antigravity_load_code_assist_project_id(value: &Value) -> Option<String> {
+    let raw = value
+        .get("cloudaicompanionProject")
+        .or_else(|| value.get("cloudAiCompanionProject"))?;
+    if let Some(project_id) = raw
+        .as_str()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        return Some(project_id.to_string());
+    }
+    raw.as_object()
+        .and_then(|object| {
+            object
+                .get("id")
+                .or_else(|| object.get("project_id"))
+                .or_else(|| object.get("projectId"))
+        })
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(ToOwned::to_owned)
 }
 
 #[async_trait]
@@ -145,9 +276,87 @@ impl ModelFetchTransportRuntime for AppState {
         &self,
         plan: &ExecutionPlan,
     ) -> Result<ExecutionResult, String> {
-        execution_runtime::execute_execution_runtime_sync_plan(self, None, plan)
+        let bounded_plan = execution_runtime::transport::with_upstream_response_body_limit(
+            plan,
+            MODEL_FETCH_RESPONSE_BODY_LIMIT_BYTES,
+        );
+        execution_runtime::execute_execution_runtime_sync_plan(self, None, &bounded_plan)
             .await
             .map_err(GatewayError::into_message)
+    }
+}
+
+#[async_trait]
+impl CodexCatalogRuntime for AppState {
+    fn codex_catalog_runtime_state(&self) -> &aether_runtime_state::RuntimeState {
+        self.runtime_state.as_ref()
+    }
+
+    async fn read_codex_catalog_transport_snapshot(
+        &self,
+        provider_id: &str,
+        endpoint_id: &str,
+        key_id: &str,
+    ) -> Result<Option<GatewayProviderTransportSnapshot>, String> {
+        self.read_provider_transport_snapshot(provider_id, endpoint_id, key_id)
+            .await
+            .map_err(GatewayError::into_message)
+    }
+
+    async fn read_codex_catalog_credential_scope_strong(
+        &self,
+        provider_id: &str,
+        key_id: &str,
+    ) -> Result<Option<String>, String> {
+        let Some(key) = self
+            .list_provider_catalog_keys_by_ids_strong(&[key_id.to_string()])
+            .await
+            .map_err(GatewayError::into_message)?
+            .into_iter()
+            .find(|key| key.id == key_id && key.provider_id == provider_id && key.is_active)
+        else {
+            return Ok(None);
+        };
+
+        if let Some(scope) =
+            crate::model_fetch::codex_catalog_credential_scope_from_stored_key(&key, None, None)
+        {
+            return Ok(Some(scope));
+        }
+
+        let decrypted_auth_config = match key.encrypted_auth_config.as_deref() {
+            Some(ciphertext) => Some(
+                crate::handlers::shared::decrypt_catalog_secret_with_fallbacks(
+                    self.encryption_key(),
+                    ciphertext,
+                )
+                .ok_or_else(|| {
+                    "Codex catalog auth config could not be verified for credential fencing"
+                        .to_string()
+                })?,
+            ),
+            None => None,
+        };
+        let decrypted_api_key = match key.encrypted_api_key.as_deref() {
+            Some(ciphertext) => Some(
+                crate::handlers::shared::decrypt_catalog_secret_with_fallbacks(
+                    self.encryption_key(),
+                    ciphertext,
+                )
+                .ok_or_else(|| {
+                    "Codex catalog API key could not be verified for credential fencing".to_string()
+                })?,
+            ),
+            None => None,
+        };
+
+        Ok(
+            crate::model_fetch::codex_catalog_credential_scope_from_stored_key(
+                &key,
+                decrypted_auth_config.as_deref(),
+                decrypted_api_key.as_deref(),
+            ),
+        )
     }
 }
 
@@ -191,11 +400,66 @@ impl ModelFetchRuntimeState for AppState {
         execution_runtime::execute_execution_runtime_sync_plan(self, None, plan).await
     }
 
-    async fn update_provider_catalog_key(
+    async fn read_recent_codex_catalog_client_version(
         &self,
-        key: &StoredProviderCatalogKey,
+        provider_id: &str,
+        key_id: &str,
+    ) -> Option<String> {
+        let credential_scope =
+            <AppState as CodexCatalogRuntime>::read_codex_catalog_credential_scope_strong(
+                self,
+                provider_id,
+                key_id,
+            )
+            .await
+            .ok()
+            .flatten()?;
+        crate::model_fetch::read_recent_codex_catalog_client_version(
+            self.runtime_state.as_ref(),
+            provider_id,
+            key_id,
+            &credential_scope,
+        )
+        .await
+    }
+
+    async fn update_provider_catalog_key_model_fetch_state(
+        &self,
+        key_id: &str,
+        allowed_models: Option<&Value>,
+        last_models_fetch_at_unix_secs: Option<u64>,
+        last_models_fetch_error: Option<&str>,
+        updated_at_unix_secs: Option<u64>,
     ) -> Result<(), GatewayError> {
-        AppState::update_provider_catalog_key(self, key).await?;
+        AppState::update_provider_catalog_key_model_fetch_state(
+            self,
+            key_id,
+            allowed_models,
+            last_models_fetch_at_unix_secs,
+            last_models_fetch_error,
+            updated_at_unix_secs,
+        )
+        .await?;
+        Ok(())
+    }
+
+    async fn update_provider_catalog_key_model_fetch_success(
+        &self,
+        key_id: &str,
+        allowed_models: Option<&Value>,
+        last_models_fetch_at_unix_secs: u64,
+        upstream_metadata_updates: &[ProviderCatalogUpstreamMetadataNamespaceUpdate],
+        updated_at_unix_secs: Option<u64>,
+    ) -> Result<(), GatewayError> {
+        AppState::update_provider_catalog_key_model_fetch_success(
+            self,
+            key_id,
+            allowed_models,
+            last_models_fetch_at_unix_secs,
+            upstream_metadata_updates,
+            updated_at_unix_secs,
+        )
+        .await?;
         Ok(())
     }
 
@@ -205,8 +469,11 @@ impl ModelFetchRuntimeState for AppState {
         key_id: &str,
         cached_models: &[Value],
     ) {
-        let Ok(serialized) = serde_json::to_string(&aggregate_models_for_cache(cached_models))
-        else {
+        let models = aggregate_models_for_cache(cached_models);
+        if models.is_empty() {
+            return;
+        }
+        let Ok(serialized) = serde_json::to_string(&models) else {
             return;
         };
         let cache_key = format!("upstream_models:{provider_id}:{key_id}");
@@ -324,6 +591,20 @@ impl RequestCandidateRuntimeWriter for AppState {
     ) -> Result<Option<StoredRequestCandidate>, GatewayError> {
         AppState::upsert_request_candidate(self, candidate).await
     }
+
+    async fn enqueue_request_candidate_status(
+        &self,
+        candidate: UpsertRequestCandidateRecord,
+    ) -> Result<Option<()>, GatewayError> {
+        AppState::enqueue_request_candidate_status(self, candidate).await
+    }
+
+    fn try_enqueue_request_candidate_status(
+        &self,
+        candidate: UpsertRequestCandidateRecord,
+    ) -> Result<(), UpsertRequestCandidateRecord> {
+        AppState::try_enqueue_request_candidate_status(self, candidate)
+    }
 }
 
 #[async_trait]
@@ -398,11 +679,5 @@ impl SchedulerRuntimeState for AppState {
             max_entries,
             expected_epoch,
         )
-    }
-
-    async fn read_scheduler_ordering_config(
-        &self,
-    ) -> Result<crate::scheduler::config::SchedulerOrderingConfig, GatewayError> {
-        crate::scheduler::config::read_scheduler_ordering_config(self).await
     }
 }

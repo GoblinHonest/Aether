@@ -2,6 +2,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use aether_contracts::{ExecutionPlan, ExecutionResult, RequestBody};
+use aether_provider_transport::antigravity::{
+    resolve_local_antigravity_request_auth, AntigravityRequestAuthSupport,
+};
 use aether_provider_transport::{
     is_vertex_api_key_transport_context, resolve_transport_execution_timeouts,
     resolve_transport_profile, GatewayProviderTransportSnapshot,
@@ -17,12 +20,15 @@ use serde_json::{json, Value};
 use sha2::Sha256;
 
 use crate::logic::{
-    aggregate_models_for_cache, extract_error_message, parse_models_response_page,
-    parse_windsurf_model_configs_response, preset_models_for_provider,
+    aggregate_models_for_cache, codex_model_identity, extract_error_message,
+    merge_codex_models_preserving_cards, parse_codex_models_response_page,
+    parse_models_response_page, parse_windsurf_model_configs_response, preset_models_for_provider,
+    project_codex_models_for_legacy_cache,
 };
 use crate::transport::{
-    build_antigravity_fetch_available_models_plan, build_gemini_cli_load_code_assist_plan,
-    build_kiro_list_available_models_plan, build_standard_models_fetch_execution_plan,
+    build_antigravity_fetch_available_models_plan, build_antigravity_load_code_assist_plan,
+    build_gemini_cli_load_code_assist_plan, build_kiro_list_available_models_plan,
+    build_standard_models_fetch_execution_plan_for_client_version,
     build_vertex_models_fetch_execution_plan, build_windsurf_model_configs_execution_plan,
     ModelFetchTransportRuntime,
 };
@@ -41,10 +47,53 @@ const GOOGLE_CLOUD_PLATFORM_SCOPE: &str = "https://www.googleapis.com/auth/cloud
 #[derive(Debug, Clone, PartialEq)]
 pub struct ModelsFetchOutcome {
     pub fetched_model_ids: Vec<String>,
+    /// Provider response cards. Versioned Codex catalogs remain byte-for-byte opaque here.
     pub cached_models: Vec<Value>,
+    /// Provider cards projected into Aether's legacy admin/runtime-cache shape.
+    pub legacy_models: Vec<Value>,
     pub errors: Vec<String>,
     pub has_success: bool,
     pub upstream_metadata: Option<Value>,
+    pub etag: Option<String>,
+    pub upstream_status: Option<u16>,
+}
+
+#[derive(Debug)]
+struct ConsistentValue<T> {
+    value: Option<T>,
+    observed: bool,
+    consistent: bool,
+}
+
+impl<T> Default for ConsistentValue<T> {
+    fn default() -> Self {
+        Self {
+            value: None,
+            observed: false,
+            consistent: true,
+        }
+    }
+}
+
+impl<T: PartialEq> ConsistentValue<T> {
+    fn observe(&mut self, candidate: Option<T>) {
+        if !self.observed {
+            self.consistent = candidate.is_some();
+            self.value = candidate;
+            self.observed = true;
+            return;
+        }
+        if self.value.as_ref() != candidate.as_ref() {
+            self.consistent = false;
+            self.value = None;
+        }
+    }
+
+    fn finish(self) -> Option<T> {
+        (self.observed && self.consistent)
+            .then_some(self.value)
+            .flatten()
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -85,8 +134,16 @@ pub async fn fetch_models_from_transports(
     runtime: &(impl ModelFetchTransportRuntime + ?Sized),
     transports: &[GatewayProviderTransportSnapshot],
 ) -> Result<ModelsFetchOutcome, String> {
+    fetch_models_from_transports_for_client_version(runtime, transports, None).await
+}
+
+pub async fn fetch_models_from_transports_for_client_version(
+    runtime: &(impl ModelFetchTransportRuntime + ?Sized),
+    transports: &[GatewayProviderTransportSnapshot],
+    codex_client_version: Option<&str>,
+) -> Result<ModelsFetchOutcome, String> {
     let strategy = select_model_fetch_strategy(transports)?;
-    execute_model_fetch_strategy(runtime, transports, strategy).await
+    execute_model_fetch_strategy(runtime, transports, strategy, codex_client_version).await
 }
 
 fn select_model_fetch_strategy(
@@ -155,6 +212,7 @@ async fn execute_model_fetch_strategy(
     runtime: &(impl ModelFetchTransportRuntime + ?Sized),
     transports: &[GatewayProviderTransportSnapshot],
     strategy: SelectedModelFetchStrategy,
+    codex_client_version: Option<&str>,
 ) -> Result<ModelsFetchOutcome, String> {
     let Some(first_transport) = transports.first() else {
         return Err("No transport snapshots available for models fetch".to_string());
@@ -167,7 +225,13 @@ async fn execute_model_fetch_strategy(
             true,
         )),
         ModelFetchStrategyKind::StandardTransport => {
-            fetch_standard_models(runtime, transports).await
+            fetch_standard_models(
+                runtime,
+                transports,
+                strategy.provider_id(),
+                codex_client_version,
+            )
+            .await
         }
         ModelFetchStrategyKind::Vertex => fetch_vertex_models(runtime, transports).await,
         ModelFetchStrategyKind::Antigravity => {
@@ -189,58 +253,125 @@ async fn execute_model_fetch_strategy(
 async fn fetch_standard_models(
     runtime: &(impl ModelFetchTransportRuntime + ?Sized),
     transports: &[GatewayProviderTransportSnapshot],
+    provider_type: &str,
+    codex_client_version: Option<&str>,
 ) -> Result<ModelsFetchOutcome, String> {
     let mut all_models = Vec::new();
+    let mut successful_codex_catalogs = Vec::<(String, Vec<Value>)>::new();
     let mut errors = Vec::new();
     let mut has_success = false;
+    let mut etag = ConsistentValue::default();
+    let mut upstream_status = ConsistentValue::default();
+    let is_codex = provider_type.trim().eq_ignore_ascii_case("codex");
 
     for transport in transports {
-        match fetch_standard_models_for_transport(runtime, transport).await {
+        match fetch_standard_models_for_transport(runtime, transport, codex_client_version).await {
             Ok(outcome) => {
-                all_models.extend(outcome.cached_models);
+                all_models.extend(outcome.cached_models.iter().cloned());
+                if is_codex && outcome.has_success {
+                    successful_codex_catalogs
+                        .push((transport.endpoint.api_format.clone(), outcome.cached_models));
+                }
                 has_success |= outcome.has_success;
+                if outcome.has_success {
+                    etag.observe(outcome.etag);
+                    upstream_status.observe(outcome.upstream_status);
+                }
             }
-            Err(err) => errors.push(format!("{}: {err}", transport.endpoint.api_format.trim())),
+            Err((err, status)) => {
+                upstream_status.observe(status);
+                errors.push(format!("{}: {err}", transport.endpoint.api_format.trim()));
+            }
         }
     }
 
-    let merged_models = aggregate_models_for_cache(&all_models);
-    Ok(build_success_outcome(merged_models, None, has_success).with_errors(errors))
+    let merged_models = if is_codex {
+        merge_codex_models_preserving_cards(&all_models)?
+    } else {
+        aggregate_models_for_cache(&all_models)
+    };
+    let codex_model_ids = is_codex.then(|| collect_codex_model_ids(&merged_models));
+    let upstream_metadata =
+        crate::logic::model_catalog_upstream_metadata(provider_type, &merged_models);
+    let mut outcome = build_success_outcome(merged_models, upstream_metadata, has_success);
+    if let Some(model_ids) = codex_model_ids {
+        outcome.fetched_model_ids = model_ids;
+        outcome.legacy_models = project_codex_models_for_legacy_cache(
+            successful_codex_catalogs
+                .iter()
+                .map(|(api_format, models)| (api_format.as_str(), models.as_slice())),
+        );
+    }
+    Ok(outcome
+        .with_errors(errors)
+        .with_etag(etag.finish())
+        .with_upstream_status(upstream_status.finish()))
 }
 
 async fn fetch_standard_models_for_transport(
     runtime: &(impl ModelFetchTransportRuntime + ?Sized),
     transport: &GatewayProviderTransportSnapshot,
-) -> Result<ModelsFetchOutcome, String> {
+    codex_client_version: Option<&str>,
+) -> Result<ModelsFetchOutcome, (String, Option<u16>)> {
     let mut all_models = Vec::new();
     let mut seen_ids = BTreeSet::new();
     let mut next_after_id = None;
     let mut has_success = false;
+    let mut etag = ConsistentValue::default();
+    let mut upstream_status = ConsistentValue::default();
+    let is_codex = transport
+        .provider
+        .provider_type
+        .trim()
+        .eq_ignore_ascii_case("codex");
 
     for _ in 0..20 {
-        let plan = build_standard_models_fetch_execution_plan(
+        let plan = build_standard_models_fetch_execution_plan_for_client_version(
             runtime,
             transport,
             next_after_id.as_deref(),
+            codex_client_version,
         )
-        .await?;
-        let result = runtime.execute_model_fetch_execution_plan(&plan).await?;
-        let body_json = execution_result_json_body(&result)?;
-        let parsed = parse_models_response_page(&transport.endpoint.api_format, &body_json)?;
+        .await
+        .map_err(|err| (err, None))?;
+        let result = runtime
+            .execute_model_fetch_execution_plan(&plan)
+            .await
+            .map_err(|err| (err, None))?;
+        upstream_status.observe(Some(result.status_code));
+        let body_json =
+            execution_result_json_body(&result).map_err(|err| (err, Some(result.status_code)))?;
+        let parsed = if is_codex {
+            parse_codex_models_response_for_request(
+                &transport.endpoint.api_format,
+                &body_json,
+                codex_client_version,
+            )
+        } else {
+            parse_models_response_page(&transport.endpoint.api_format, &body_json)
+        }
+        .map_err(|err| (err, Some(result.status_code)))?;
+        etag.observe(execution_result_header(&result, "etag"));
         has_success = true;
-        for model in parsed.cached_models {
-            let Some(model_id) = model
-                .get("id")
-                .and_then(Value::as_str)
-                .map(str::trim)
-                .filter(|value| !value.is_empty())
-            else {
-                continue;
-            };
-            if !seen_ids.insert(model_id.to_string()) {
-                continue;
+        if is_codex {
+            // Preserve every opaque card until the catalog-wide merge can distinguish exact
+            // duplicates from conflicting `id`/`slug` identities across endpoint transports.
+            all_models.extend(parsed.cached_models);
+        } else {
+            for model in parsed.cached_models {
+                let Some(model_id) = model
+                    .get("id")
+                    .and_then(Value::as_str)
+                    .map(str::trim)
+                    .filter(|value| !value.is_empty())
+                else {
+                    continue;
+                };
+                if !seen_ids.insert(model_id.to_string()) {
+                    continue;
+                }
+                all_models.push(model);
             }
-            all_models.push(model);
         }
 
         let Some(next_cursor) = parsed
@@ -254,32 +385,40 @@ async fn fetch_standard_models_for_transport(
         next_after_id = Some(next_cursor);
     }
 
-    Ok(build_success_outcome(all_models, None, has_success))
+    Ok(build_success_outcome(all_models, None, has_success)
+        .with_etag(etag.finish())
+        .with_upstream_status(upstream_status.finish()))
+}
+
+fn parse_codex_models_response_for_request(
+    endpoint_api_format: &str,
+    body: &Value,
+    codex_client_version: Option<&str>,
+) -> Result<crate::logic::ModelsFetchPage, String> {
+    if codex_client_version.is_none()
+        && (body.is_array() || body.get("data").and_then(Value::as_array).is_some())
+    {
+        return parse_models_response_page(endpoint_api_format, body);
+    }
+    parse_codex_models_response_page(body)
 }
 
 async fn fetch_antigravity_models(
     runtime: &(impl ModelFetchTransportRuntime + ?Sized),
     transport: &GatewayProviderTransportSnapshot,
 ) -> Result<ModelsFetchOutcome, String> {
-    let auth_config = transport_auth_config(transport);
-    let project_id = auth_config
-        .as_ref()
-        .and_then(|value| value.get("project_id"))
-        .and_then(Value::as_str)
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-        .ok_or_else(|| "antigravity: missing auth_config.project_id (please re-auth)".to_string())?
-        .to_string();
+    let (project_id, hydrated_transport, project_metadata) =
+        resolve_or_hydrate_antigravity_project(runtime, transport).await?;
 
     let mut errors = Vec::new();
     for base_url in [
-        ANTIGRAVITY_SANDBOX_BASE_URL,
         ANTIGRAVITY_DAILY_BASE_URL,
         ANTIGRAVITY_PROD_BASE_URL,
+        ANTIGRAVITY_SANDBOX_BASE_URL,
     ] {
         let plan = match build_antigravity_fetch_available_models_plan(
             runtime,
-            transport,
+            &hydrated_transport,
             base_url,
             &project_id,
         )
@@ -300,6 +439,9 @@ async fn fetch_antigravity_models(
         if (200..300).contains(&result.status_code) {
             let body_json = execution_result_json_body_allow_empty(&result)?;
             let (models, metadata) = parse_antigravity_models_response(&body_json)?;
+            let metadata = metadata
+                .map(|metadata| attach_antigravity_project_metadata(metadata, &project_id))
+                .or(project_metadata.clone());
             return Ok(build_success_outcome(models, metadata, true));
         }
 
@@ -314,10 +456,81 @@ async fn fetch_antigravity_models(
     Ok(ModelsFetchOutcome {
         fetched_model_ids: Vec::new(),
         cached_models: Vec::new(),
+        legacy_models: Vec::new(),
         errors,
         has_success: false,
         upstream_metadata: None,
+        etag: None,
+        upstream_status: None,
     })
+}
+
+async fn resolve_or_hydrate_antigravity_project(
+    runtime: &(impl ModelFetchTransportRuntime + ?Sized),
+    transport: &GatewayProviderTransportSnapshot,
+) -> Result<(String, GatewayProviderTransportSnapshot, Option<Value>), String> {
+    if let Some(project_id) = resolve_antigravity_project_id_from_transport(transport) {
+        let metadata = Some(build_antigravity_project_metadata(&project_id));
+        return Ok((project_id, transport.clone(), metadata));
+    }
+
+    let plan = build_antigravity_load_code_assist_plan(runtime, transport).await?;
+    let result = runtime.execute_model_fetch_execution_plan(&plan).await?;
+    if !(200..300).contains(&result.status_code) {
+        return Err(format!(
+            "antigravity: loadCodeAssist failed: {}",
+            execution_result_error_message(&result)
+        ));
+    }
+    let body_json = execution_result_json_body_allow_empty(&result)?;
+    let project_id = extract_cloud_ai_companion_project_id(&body_json)
+        .ok_or_else(|| "antigravity: loadCodeAssist response missing project_id".to_string())?;
+    let metadata = build_antigravity_project_metadata(&project_id);
+    let mut hydrated_transport = transport.clone();
+    hydrated_transport.key.upstream_metadata = Some(metadata.clone());
+
+    Ok((project_id, hydrated_transport, Some(metadata)))
+}
+
+fn resolve_antigravity_project_id_from_transport(
+    transport: &GatewayProviderTransportSnapshot,
+) -> Option<String> {
+    match resolve_local_antigravity_request_auth(transport) {
+        AntigravityRequestAuthSupport::Supported(auth) => Some(auth.project_id),
+        AntigravityRequestAuthSupport::Unsupported(_) => None,
+    }
+}
+
+fn build_antigravity_project_metadata(project_id: &str) -> Value {
+    json!({
+        "antigravity": {
+            "project_id": project_id,
+            "updated_at": now_unix_secs(),
+        }
+    })
+}
+
+fn attach_antigravity_project_metadata(mut metadata: Value, project_id: &str) -> Value {
+    let Value::Object(root) = &mut metadata else {
+        return build_antigravity_project_metadata(project_id);
+    };
+    let antigravity = root
+        .entry("antigravity".to_string())
+        .or_insert_with(|| json!({}));
+    let Some(object) = antigravity.as_object_mut() else {
+        *antigravity = json!({
+            "project_id": project_id,
+            "updated_at": now_unix_secs(),
+        });
+        return metadata;
+    };
+    object
+        .entry("project_id".to_string())
+        .or_insert_with(|| Value::String(project_id.to_string()));
+    object
+        .entry("updated_at".to_string())
+        .or_insert_with(|| Value::from(now_unix_secs()));
+    metadata
 }
 
 async fn fetch_gemini_cli_models(
@@ -340,8 +553,8 @@ async fn fetch_gemini_cli_models(
                             provider_meta.insert(key.to_string(), value);
                         }
                     }
-                    if let Some(project_id) =
-                        extract_gemini_cli_project_id(&body_json).or_else(|| {
+                    if let Some(project_id) = extract_cloud_ai_companion_project_id(&body_json)
+                        .or_else(|| {
                             transport_auth_config(transport)
                                 .and_then(|value| value.get("project_id").cloned())
                                 .and_then(|value| value.as_str().map(ToOwned::to_owned))
@@ -426,9 +639,12 @@ async fn fetch_vertex_api_key_models(
         return Ok(ModelsFetchOutcome {
             fetched_model_ids: Vec::new(),
             cached_models: Vec::new(),
+            legacy_models: Vec::new(),
             errors: vec!["vertex_ai(api_key): missing api key".to_string()],
             has_success: false,
             upstream_metadata: None,
+            etag: None,
+            upstream_status: None,
         });
     }
 
@@ -483,9 +699,12 @@ async fn fetch_vertex_api_key_models(
     Ok(ModelsFetchOutcome {
         fetched_model_ids: Vec::new(),
         cached_models: Vec::new(),
+        legacy_models: Vec::new(),
         errors,
         has_success,
         upstream_metadata: None,
+        etag: None,
+        upstream_status: None,
     })
 }
 
@@ -498,9 +717,12 @@ async fn fetch_vertex_service_account_models(
         return Ok(ModelsFetchOutcome {
             fetched_model_ids: Vec::new(),
             cached_models: Vec::new(),
+            legacy_models: Vec::new(),
             errors: vec!["vertex_ai(service_account): missing auth_config".to_string()],
             has_success: false,
             upstream_metadata: None,
+            etag: None,
+            upstream_status: None,
         });
     };
     let token = exchange_vertex_service_account_token(runtime, &transports[0], auth_config).await?;
@@ -566,9 +788,12 @@ async fn fetch_vertex_service_account_models(
     Ok(ModelsFetchOutcome {
         fetched_model_ids: Vec::new(),
         cached_models: Vec::new(),
+        legacy_models: Vec::new(),
         errors,
         has_success,
         upstream_metadata: None,
+        etag: None,
+        upstream_status: None,
     })
 }
 
@@ -752,8 +977,18 @@ fn execution_result_json_body_allow_empty(result: &ExecutionResult) -> Result<Va
         .ok_or_else(|| "models fetch response body is missing JSON payload".to_string())
 }
 
-fn execution_result_error_message(result: &ExecutionResult) -> String {
+fn execution_result_header(result: &ExecutionResult, name: &str) -> Option<String> {
     result
+        .headers
+        .iter()
+        .find(|(header_name, _)| header_name.eq_ignore_ascii_case(name))
+        .map(|(_, value)| value.trim())
+        .filter(|value| !value.is_empty())
+        .map(ToOwned::to_owned)
+}
+
+fn execution_result_error_message(result: &ExecutionResult) -> String {
+    let detail = result
         .body
         .as_ref()
         .and_then(|body| body.json_body.as_ref())
@@ -763,8 +998,14 @@ fn execution_result_error_message(result: &ExecutionResult) -> String {
                 let message = error.message.trim();
                 (!message.is_empty()).then_some(message.to_string())
             })
-        })
-        .unwrap_or_else(|| format!("HTTP {}: upstream request failed", result.status_code))
+        });
+    match detail {
+        Some(detail) if !(200..300).contains(&result.status_code) => {
+            format!("HTTP {}: {detail}", result.status_code)
+        }
+        Some(detail) => detail,
+        None => format!("HTTP {}: upstream request failed", result.status_code),
+    }
 }
 
 fn parse_antigravity_models_response(body: &Value) -> Result<(Vec<Value>, Option<Value>), String> {
@@ -777,7 +1018,7 @@ fn parse_antigravity_models_response(body: &Value) -> Result<(Vec<Value>, Option
     let mut quota_by_model = serde_json::Map::new();
     for (model_id, model_data) in models_object {
         let model_id = model_id.trim();
-        if model_id.is_empty() || ANTIGRAVITY_BLOCKED_MODELS.contains(&model_id) {
+        if !antigravity_model_id_is_routable(model_id) {
             continue;
         }
         let model_object = model_data.as_object().cloned().unwrap_or_default();
@@ -796,7 +1037,9 @@ fn parse_antigravity_models_response(body: &Value) -> Result<(Vec<Value>, Option
         }));
 
         let quota_payload = build_antigravity_quota_payload(model_object.get("quotaInfo"));
-        quota_by_model.insert(model_id.to_string(), Value::Object(quota_payload));
+        if !quota_payload.is_empty() {
+            quota_by_model.insert(model_id.to_string(), Value::Object(quota_payload));
+        }
     }
 
     let upstream_metadata = (!quota_by_model.is_empty()).then(|| {
@@ -809,6 +1052,14 @@ fn parse_antigravity_models_response(body: &Value) -> Result<(Vec<Value>, Option
     });
 
     Ok((models, upstream_metadata))
+}
+
+pub fn antigravity_model_id_is_routable(model_id: &str) -> bool {
+    let model_id = model_id.trim();
+    !model_id.is_empty()
+        && !ANTIGRAVITY_BLOCKED_MODELS
+            .iter()
+            .any(|blocked| blocked.eq_ignore_ascii_case(model_id))
 }
 
 fn parse_kiro_available_models_response(
@@ -900,31 +1151,37 @@ fn infer_kiro_model_owner(model_id: &str) -> &'static str {
 }
 
 fn build_antigravity_quota_payload(quota_info: Option<&Value>) -> serde_json::Map<String, Value> {
-    let quota_info = quota_info.and_then(Value::as_object);
+    let Some(quota_info) = quota_info.and_then(Value::as_object) else {
+        return serde_json::Map::new();
+    };
     let reset_time = quota_info
-        .and_then(|value| value.get("resetTime"))
+        .get("resetTime")
         .and_then(Value::as_str)
         .map(str::trim)
         .filter(|value| !value.is_empty())
         .map(ToOwned::to_owned);
     let remaining_fraction = quota_info
-        .and_then(|value| value.get("remainingFraction"))
-        .and_then(Value::as_f64);
+        .get("remainingFraction")
+        .and_then(|value| {
+            value.as_f64().or_else(|| {
+                value
+                    .as_str()
+                    .map(str::trim)
+                    .filter(|value| !value.is_empty())
+                    .and_then(|value| value.parse::<f64>().ok())
+            })
+        })
+        .filter(|value| value.is_finite())
+        .map(|value| value.clamp(0.0, 1.0));
 
     let mut payload = serde_json::Map::new();
-    match remaining_fraction {
-        Some(remaining_fraction) => {
-            let used_percent = ((1.0 - remaining_fraction) * 100.0).clamp(0.0, 100.0);
-            payload.insert(
-                "remaining_fraction".to_string(),
-                Value::from(remaining_fraction),
-            );
-            payload.insert("used_percent".to_string(), Value::from(used_percent));
-        }
-        None => {
-            payload.insert("remaining_fraction".to_string(), Value::from(0.0));
-            payload.insert("used_percent".to_string(), Value::from(100.0));
-        }
+    if let Some(remaining_fraction) = remaining_fraction {
+        let used_percent = (1.0 - remaining_fraction) * 100.0;
+        payload.insert(
+            "remaining_fraction".to_string(),
+            Value::from(remaining_fraction),
+        );
+        payload.insert("used_percent".to_string(), Value::from(used_percent));
     }
     if let Some(reset_time) = reset_time {
         payload.insert("reset_time".to_string(), Value::String(reset_time));
@@ -1162,12 +1419,16 @@ fn build_success_outcome(
     upstream_metadata: Option<Value>,
     has_success: bool,
 ) -> ModelsFetchOutcome {
+    let legacy_models = cached_models.clone();
     ModelsFetchOutcome {
         fetched_model_ids: collect_model_ids(&cached_models),
         cached_models,
+        legacy_models,
         errors: Vec::new(),
         has_success,
         upstream_metadata,
+        etag: None,
+        upstream_status: None,
     }
 }
 
@@ -1188,6 +1449,16 @@ fn collect_model_ids(models: &[Value]) -> Vec<String> {
         }
     }
     ids
+}
+
+fn collect_codex_model_ids(models: &[Value]) -> Vec<String> {
+    let mut seen = BTreeSet::new();
+    models
+        .iter()
+        .filter_map(codex_model_identity)
+        .filter(|model_id| seen.insert((*model_id).to_string()))
+        .map(ToOwned::to_owned)
+        .collect()
 }
 
 fn transport_auth_config(transport: &GatewayProviderTransportSnapshot) -> Option<Value> {
@@ -1300,8 +1571,10 @@ fn extract_gemini_cli_tier_metadata(body: &Value, key: &str) -> Option<Value> {
     (!out.is_empty()).then_some(Value::Object(out))
 }
 
-fn extract_gemini_cli_project_id(body: &Value) -> Option<String> {
-    let raw = body.get("cloudaicompanionProject")?;
+fn extract_cloud_ai_companion_project_id(body: &Value) -> Option<String> {
+    let raw = body
+        .get("cloudaicompanionProject")
+        .or_else(|| body.get("cloudAiCompanionProject"))?;
     if let Some(value) = raw.as_str() {
         let value = value.trim();
         if !value.is_empty() {
@@ -1325,11 +1598,23 @@ fn now_unix_secs() -> u64 {
 
 trait OutcomeExt {
     fn with_errors(self, errors: Vec<String>) -> Self;
+    fn with_etag(self, etag: Option<String>) -> Self;
+    fn with_upstream_status(self, upstream_status: Option<u16>) -> Self;
 }
 
 impl OutcomeExt for ModelsFetchOutcome {
     fn with_errors(mut self, errors: Vec<String>) -> Self {
         self.errors = errors;
+        self
+    }
+
+    fn with_etag(mut self, etag: Option<String>) -> Self {
+        self.etag = etag;
+        self
+    }
+
+    fn with_upstream_status(mut self, upstream_status: Option<u16>) -> Self {
+        self.upstream_status = upstream_status;
         self
     }
 }
@@ -1349,10 +1634,11 @@ mod tests {
 
     use super::{
         build_vertex_google_list_url, build_vertex_service_account_list_url,
+        parse_antigravity_models_response, parse_codex_models_response_for_request,
         select_model_fetch_strategy, ModelFetchStrategy, ModelFetchStrategyKind,
     };
-    use crate::fetch_models_from_transports;
     use crate::transport::ModelFetchTransportRuntime;
+    use crate::{fetch_models_from_transports, fetch_models_from_transports_for_client_version};
 
     type RouteResult = Result<(u16, Value), String>;
     type ModelFetchRoute = (String, RouteResult);
@@ -1361,9 +1647,15 @@ mod tests {
         executed_urls: Arc<Mutex<Vec<String>>>,
         response_body: Value,
         status_code: u16,
+        response_headers: BTreeMap<String, String>,
     }
 
     struct RoutingTestRuntime {
+        executed_urls: Arc<Mutex<Vec<String>>>,
+        routes: Vec<ModelFetchRoute>,
+    }
+
+    struct OAuthRoutingTestRuntime {
         executed_urls: Arc<Mutex<Vec<String>>>,
         routes: Vec<ModelFetchRoute>,
     }
@@ -1397,7 +1689,8 @@ mod tests {
                 request_id: plan.request_id.clone(),
                 candidate_id: plan.candidate_id.clone(),
                 status_code: self.status_code,
-                headers: BTreeMap::new(),
+                headers: self.response_headers.clone(),
+                response_observation: None,
                 body: Some(ResponseBody {
                     json_body: Some(self.response_body.clone()),
                     body_bytes_b64: None,
@@ -1449,6 +1742,64 @@ mod tests {
                 candidate_id: plan.candidate_id.clone(),
                 status_code,
                 headers: BTreeMap::new(),
+                response_observation: None,
+                body: Some(ResponseBody {
+                    json_body: Some(response_body),
+                    body_bytes_b64: None,
+                }),
+                telemetry: None,
+                error: None,
+            })
+        }
+    }
+
+    #[async_trait]
+    impl ModelFetchTransportRuntime for OAuthRoutingTestRuntime {
+        async fn resolve_local_oauth_request_auth(
+            &self,
+            _transport: &GatewayProviderTransportSnapshot,
+        ) -> Result<Option<aether_provider_transport::LocalResolvedOAuthRequestAuth>, String>
+        {
+            Ok(Some(
+                aether_provider_transport::LocalResolvedOAuthRequestAuth::Header {
+                    name: "authorization".to_string(),
+                    value: "Bearer oauth-token".to_string(),
+                },
+            ))
+        }
+
+        async fn resolve_model_fetch_proxy(
+            &self,
+            _transport: &GatewayProviderTransportSnapshot,
+        ) -> Option<aether_contracts::ProxySnapshot> {
+            None
+        }
+
+        async fn execute_model_fetch_execution_plan(
+            &self,
+            plan: &aether_contracts::ExecutionPlan,
+        ) -> Result<ExecutionResult, String> {
+            self.executed_urls
+                .lock()
+                .expect("executed_urls lock")
+                .push(plan.url.clone());
+            let Some((_, route_result)) = self
+                .routes
+                .iter()
+                .find(|(url_part, _)| plan.url.contains(url_part))
+            else {
+                return Err(format!("unexpected models fetch URL {}", plan.url));
+            };
+            let (status_code, response_body) = match route_result {
+                Ok((status_code, response_body)) => (*status_code, response_body.clone()),
+                Err(err) => return Err(err.clone()),
+            };
+            Ok(ExecutionResult {
+                request_id: plan.request_id.clone(),
+                candidate_id: plan.candidate_id.clone(),
+                status_code,
+                headers: BTreeMap::new(),
+                response_observation: None,
                 body: Some(ResponseBody {
                     json_body: Some(response_body),
                     body_bytes_b64: None,
@@ -1530,6 +1881,16 @@ mod tests {
         transport
     }
 
+    fn sample_codex_transport_for_base(
+        endpoint_id: &str,
+        base_url: &str,
+    ) -> GatewayProviderTransportSnapshot {
+        let mut transport = sample_codex_transport();
+        transport.endpoint.id = endpoint_id.to_string();
+        transport.endpoint.base_url = base_url.to_string();
+        transport
+    }
+
     fn sample_kiro_transport() -> GatewayProviderTransportSnapshot {
         let mut transport = sample_custom_aiplatform_transport();
         transport.provider.provider_type = "kiro".to_string();
@@ -1562,6 +1923,18 @@ mod tests {
         transport.endpoint.base_url = "https://cloudcode-pa.googleapis.com".to_string();
         transport.key.auth_type = "bearer".to_string();
         transport.key.decrypted_api_key = "gemini-cli-access-token".to_string();
+        transport
+    }
+
+    fn sample_antigravity_transport_without_project() -> GatewayProviderTransportSnapshot {
+        let mut transport = sample_custom_aiplatform_transport();
+        transport.provider.provider_type = "antigravity".to_string();
+        transport.provider.name = "Antigravity".to_string();
+        transport.endpoint.base_url = "https://daily-cloudcode-pa.googleapis.com".to_string();
+        transport.key.auth_type = "oauth".to_string();
+        transport.key.decrypted_api_key = "__placeholder__".to_string();
+        transport.key.decrypted_auth_config =
+            Some(r#"{"provider_type":"antigravity","refresh_token":"rt"}"#.to_string());
         transport
     }
 
@@ -1612,6 +1985,30 @@ mod tests {
     }
 
     #[test]
+    fn unversioned_codex_parser_accepts_top_level_openai_compatible_array() {
+        let parsed = parse_codex_models_response_for_request(
+            "openai:responses",
+            &json!([{"id": "gpt-array-compatible"}]),
+            None,
+        )
+        .expect("unversioned admin fetch should retain the top-level array fallback");
+
+        assert_eq!(parsed.fetched_model_ids, vec!["gpt-array-compatible"]);
+        assert_eq!(
+            parsed.cached_models[0]["api_formats"],
+            json!(["openai:responses"])
+        );
+
+        let error = parse_codex_models_response_for_request(
+            "openai:responses",
+            &json!([{"id": "gpt-array-compatible"}]),
+            Some("0.145.2"),
+        )
+        .expect_err("versioned catalogs must use the opaque models-array schema");
+        assert!(error.contains("missing models array"));
+    }
+
+    #[test]
     fn strategy_selection_uses_preset_catalog_for_claude_code() {
         let mut transport = sample_custom_aiplatform_transport();
         transport.provider.provider_type = "claude_code".to_string();
@@ -1653,6 +2050,7 @@ mod tests {
                 }]
             }),
             status_code: 200,
+            response_headers: BTreeMap::new(),
         };
         let outcome =
             fetch_models_from_transports(&runtime, &[sample_custom_aiplatform_transport()])
@@ -1725,6 +2123,7 @@ mod tests {
             vec!["responses-only", "shared-model"]
         );
         assert_eq!(outcome.cached_models.len(), 2);
+        assert_eq!(outcome.legacy_models, outcome.cached_models);
         assert_eq!(outcome.errors.len(), 1);
         assert!(outcome.errors[0].contains("connection reset"));
         let shared_model = outcome
@@ -1854,22 +2253,335 @@ mod tests {
             executed_urls: Arc::clone(&executed_urls),
             response_body: json!({
                 "models": [{
-                    "id": "gpt-5.4-upstream"
+                    "id": "gpt-5.6-future",
+                    "slug": "gpt-5.6-future",
+                    "api_format": "opaque-future-field",
+                    "default_reasoning_level": "high",
+                    "supported_reasoning_levels": [{"effort": "high"}],
+                    "future_capability": {"mode": "preserve-me"}
                 }]
             }),
             status_code: 200,
+            response_headers: BTreeMap::from([(
+                "ETag".to_string(),
+                "\"codex-models-0.145.2\"".to_string(),
+            )]),
         };
-        let outcome = fetch_models_from_transports(&runtime, &[sample_codex_transport()])
-            .await
-            .expect("models fetch should succeed");
+        let outcome = fetch_models_from_transports_for_client_version(
+            &runtime,
+            &[sample_codex_transport()],
+            Some("0.145.2"),
+        )
+        .await
+        .expect("models fetch should succeed");
 
         let urls = executed_urls.lock().expect("executed_urls lock");
         assert_eq!(
             urls.as_slice(),
-            &["https://chatgpt.com/backend-api/codex/models?client_version=0.128.0-alpha.1"]
+            &["https://chatgpt.com/backend-api/codex/models?client_version=0.145.2"]
         );
-        assert_eq!(outcome.fetched_model_ids, vec!["gpt-5.4-upstream"]);
+        assert_eq!(outcome.etag.as_deref(), Some("\"codex-models-0.145.2\""));
+        assert_eq!(outcome.upstream_status, Some(200));
+        assert_eq!(outcome.fetched_model_ids, vec!["gpt-5.6-future"]);
         assert_eq!(outcome.cached_models.len(), 1);
+        assert_eq!(
+            outcome.cached_models[0]["api_format"],
+            "opaque-future-field"
+        );
+        assert!(outcome.cached_models[0].get("api_formats").is_none());
+        assert_eq!(outcome.legacy_models.len(), 1);
+        assert_eq!(outcome.legacy_models[0]["id"], "gpt-5.6-future");
+        assert_eq!(
+            outcome.legacy_models[0]["api_formats"],
+            json!(["openai:responses"])
+        );
+        assert_eq!(
+            outcome.legacy_models[0]["api_format"],
+            "opaque-future-field"
+        );
+        let card = &outcome
+            .upstream_metadata
+            .as_ref()
+            .expect("Codex model catalog metadata")["codex_models"]["cards"]["gpt-5.6-future"];
+        assert_eq!(card["default_reasoning_level"], "high");
+        assert_eq!(card["future_capability"]["mode"], "preserve-me");
+    }
+
+    #[tokio::test]
+    async fn codex_transport_reports_slug_only_ids_without_rewriting_opaque_cards() {
+        let executed_urls = Arc::new(Mutex::new(Vec::new()));
+        let card = json!({
+            "slug": "gpt-slug-only-future",
+            "model_messages": {"instructions_template": "Slug-only instructions"},
+            "future_capability": {"opaque": true}
+        });
+        let runtime = TestRuntime {
+            executed_urls,
+            response_body: json!({"models": [card.clone()]}),
+            status_code: 200,
+            response_headers: BTreeMap::new(),
+        };
+
+        let outcome = fetch_models_from_transports_for_client_version(
+            &runtime,
+            &[sample_codex_transport()],
+            Some("0.145.2"),
+        )
+        .await
+        .expect("slug-only Codex card should fetch");
+
+        assert_eq!(outcome.fetched_model_ids, vec!["gpt-slug-only-future"]);
+        assert_eq!(outcome.cached_models, vec![card]);
+        assert!(outcome.cached_models[0].get("id").is_none());
+        assert_eq!(outcome.legacy_models[0]["id"], "gpt-slug-only-future");
+        assert_eq!(
+            outcome.legacy_models[0]["api_formats"],
+            json!(["openai:responses"])
+        );
+        assert_eq!(
+            outcome.legacy_models[0]["future_capability"]["opaque"],
+            true
+        );
+    }
+
+    #[tokio::test]
+    async fn codex_legacy_projection_merges_only_formats_from_successful_transports() {
+        let executed_urls = Arc::new(Mutex::new(Vec::new()));
+        let card = json!({
+            "slug": "gpt-multi-format-future",
+            "api_format": "opaque-upstream-protocol",
+            "future_capability": {"opaque": true}
+        });
+        let runtime = RoutingTestRuntime {
+            executed_urls,
+            routes: vec![
+                (
+                    "chat.example.com/backend-api/codex/models".to_string(),
+                    Ok((200, json!({"models": [card.clone()]}))),
+                ),
+                (
+                    "responses.example.com/backend-api/codex/models".to_string(),
+                    Ok((200, json!({"models": [card.clone()]}))),
+                ),
+                (
+                    "compact.example.com/backend-api/codex/models".to_string(),
+                    Err("compact endpoint unavailable".to_string()),
+                ),
+            ],
+        };
+        let mut chat = sample_codex_transport_for_base(
+            "endpoint-chat",
+            "https://chat.example.com/backend-api/codex",
+        );
+        chat.endpoint.api_format = "openai:chat".to_string();
+        let responses = sample_codex_transport_for_base(
+            "endpoint-responses",
+            "https://responses.example.com/backend-api/codex",
+        );
+        let mut compact = sample_codex_transport_for_base(
+            "endpoint-compact",
+            "https://compact.example.com/backend-api/codex",
+        );
+        compact.endpoint.api_format = "openai:responses:compact".to_string();
+
+        let outcome = fetch_models_from_transports_for_client_version(
+            &runtime,
+            &[chat, responses, compact],
+            Some("0.145.2"),
+        )
+        .await
+        .expect("successful endpoint catalogs should survive a sibling failure");
+
+        assert_eq!(outcome.cached_models, vec![card]);
+        assert_eq!(outcome.legacy_models.len(), 1);
+        assert_eq!(
+            outcome.legacy_models[0]["api_formats"],
+            json!(["openai:chat", "openai:responses"])
+        );
+        assert_eq!(
+            outcome.legacy_models[0]["api_format"],
+            "opaque-upstream-protocol"
+        );
+        assert_eq!(outcome.errors.len(), 1);
+        assert!(outcome.errors[0].contains("compact endpoint unavailable"));
+    }
+
+    #[tokio::test]
+    async fn unversioned_codex_admin_fetch_keeps_openai_compatible_data_fallback() {
+        let executed_urls = Arc::new(Mutex::new(Vec::new()));
+        let runtime = TestRuntime {
+            executed_urls,
+            response_body: json!({
+                "data": [{
+                    "id": "gpt-legacy-compatible",
+                    "future_capability": {"preserved": true}
+                }]
+            }),
+            status_code: 200,
+            response_headers: BTreeMap::new(),
+        };
+
+        let outcome = fetch_models_from_transports(&runtime, &[sample_codex_transport()])
+            .await
+            .expect("unversioned admin fetch should retain the generic parser fallback");
+
+        assert!(outcome.has_success);
+        assert_eq!(outcome.fetched_model_ids, vec!["gpt-legacy-compatible"]);
+        assert_eq!(outcome.cached_models[0]["id"], "gpt-legacy-compatible");
+        assert_eq!(
+            outcome.legacy_models[0]["api_formats"],
+            json!(["openai:responses"])
+        );
+    }
+
+    #[tokio::test]
+    async fn versioned_codex_catalog_does_not_accept_openai_compatible_data_fallback() {
+        let executed_urls = Arc::new(Mutex::new(Vec::new()));
+        let runtime = TestRuntime {
+            executed_urls,
+            response_body: json!({"data": [{"id": "gpt-not-an-opaque-card"}]}),
+            status_code: 200,
+            response_headers: BTreeMap::new(),
+        };
+
+        let outcome = fetch_models_from_transports_for_client_version(
+            &runtime,
+            &[sample_codex_transport()],
+            Some("0.145.2"),
+        )
+        .await
+        .expect("transport failures are returned as observable outcomes");
+
+        assert!(!outcome.has_success);
+        assert!(outcome.cached_models.is_empty());
+        assert!(outcome.legacy_models.is_empty());
+        assert_eq!(outcome.errors.len(), 1);
+        assert!(outcome.errors[0].contains("missing models array"));
+    }
+
+    #[tokio::test]
+    async fn codex_transport_merges_exact_duplicate_cards_across_endpoints() {
+        let executed_urls = Arc::new(Mutex::new(Vec::new()));
+        let card = json!({
+            "id": "gpt-exact-duplicate",
+            "slug": "gpt-exact-duplicate",
+            "model_messages": {"instructions_template": "Opaque instructions"},
+            "future_capability": {"opaque": true}
+        });
+        let runtime = RoutingTestRuntime {
+            executed_urls,
+            routes: vec![
+                (
+                    "first.example.com/backend-api/codex/models".to_string(),
+                    Ok((200, json!({"models": [card.clone()]}))),
+                ),
+                (
+                    "second.example.com/backend-api/codex/models".to_string(),
+                    Ok((200, json!({"models": [card.clone()]}))),
+                ),
+            ],
+        };
+        let transports = vec![
+            sample_codex_transport_for_base(
+                "endpoint-first",
+                "https://first.example.com/backend-api/codex",
+            ),
+            sample_codex_transport_for_base(
+                "endpoint-second",
+                "https://second.example.com/backend-api/codex",
+            ),
+        ];
+
+        let outcome =
+            fetch_models_from_transports_for_client_version(&runtime, &transports, Some("0.145.2"))
+                .await
+                .expect("exact duplicate endpoint catalogs should merge");
+
+        assert!(outcome.has_success);
+        assert!(outcome.errors.is_empty());
+        assert_eq!(outcome.fetched_model_ids, vec!["gpt-exact-duplicate"]);
+        assert_eq!(outcome.cached_models, vec![card]);
+    }
+
+    #[tokio::test]
+    async fn codex_transport_rejects_cross_identity_conflicts_across_endpoints() {
+        let executed_urls = Arc::new(Mutex::new(Vec::new()));
+        let runtime = RoutingTestRuntime {
+            executed_urls,
+            routes: vec![
+                (
+                    "first.example.com/backend-api/codex/models".to_string(),
+                    Ok((
+                        200,
+                        json!({
+                            "models": [{
+                                "id": "gpt-id-one",
+                                "slug": "gpt-cross-identity",
+                                "future_capability": {"source": "first"}
+                            }]
+                        }),
+                    )),
+                ),
+                (
+                    "second.example.com/backend-api/codex/models".to_string(),
+                    Ok((
+                        200,
+                        json!({
+                            "models": [{
+                                "id": "gpt-cross-identity",
+                                "slug": "gpt-slug-two",
+                                "future_capability": {"source": "second"}
+                            }]
+                        }),
+                    )),
+                ),
+            ],
+        };
+        let transports = vec![
+            sample_codex_transport_for_base(
+                "endpoint-first",
+                "https://first.example.com/backend-api/codex",
+            ),
+            sample_codex_transport_for_base(
+                "endpoint-second",
+                "https://second.example.com/backend-api/codex",
+            ),
+        ];
+
+        let error =
+            fetch_models_from_transports_for_client_version(&runtime, &transports, Some("0.145.2"))
+                .await
+                .expect_err("conflicting endpoint catalogs must fail");
+
+        assert!(error.contains("conflicting cards"));
+        assert!(error.contains("gpt-cross-identity"));
+    }
+
+    #[tokio::test]
+    async fn codex_transport_reports_non_success_upstream_status() {
+        let executed_urls = Arc::new(Mutex::new(Vec::new()));
+        let runtime = TestRuntime {
+            executed_urls,
+            response_body: json!({
+                "error": { "message": "temporarily unavailable" }
+            }),
+            status_code: 503,
+            response_headers: BTreeMap::new(),
+        };
+
+        let outcome = fetch_models_from_transports_for_client_version(
+            &runtime,
+            &[sample_codex_transport()],
+            Some("0.145.2"),
+        )
+        .await
+        .expect("models fetch should return an observable failed outcome");
+
+        assert!(!outcome.has_success);
+        assert_eq!(outcome.upstream_status, Some(503));
+        assert_eq!(outcome.etag, None);
+        assert_eq!(outcome.errors.len(), 1);
+        assert!(outcome.errors[0].contains("HTTP 503: temporarily unavailable"));
     }
 
     #[tokio::test]
@@ -1895,6 +2607,7 @@ mod tests {
                 }
             }),
             status_code: 200,
+            response_headers: BTreeMap::new(),
         };
         let outcome = fetch_models_from_transports(&runtime, &[sample_gemini_cli_transport()])
             .await
@@ -1934,6 +2647,120 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn antigravity_model_fetch_hydrates_project_from_prod_load_code_assist() {
+        let executed_urls = Arc::new(Mutex::new(Vec::new()));
+        let runtime = OAuthRoutingTestRuntime {
+            executed_urls: Arc::clone(&executed_urls),
+            routes: vec![
+                (
+                    "https://cloudcode-pa.googleapis.com/v1internal:loadCodeAssist".to_string(),
+                    Ok((
+                        200,
+                        json!({
+                            "cloudaicompanionProject": {
+                                "id": "project-from-antigravity-load"
+                            }
+                        }),
+                    )),
+                ),
+                (
+                    "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels"
+                        .to_string(),
+                    Ok((
+                        200,
+                        json!({
+                            "models": {
+                                "chat_12345": {
+                                    "displayName": "Antigravity Chat",
+                                    "quotaInfo": {
+                                        "remainingFraction": 0.75
+                                    }
+                                }
+                            }
+                        }),
+                    )),
+                ),
+            ],
+        };
+
+        let outcome = fetch_models_from_transports(
+            &runtime,
+            &[sample_antigravity_transport_without_project()],
+        )
+        .await
+        .expect("antigravity models fetch should hydrate project and succeed");
+
+        let urls = executed_urls.lock().expect("executed_urls lock");
+        assert_eq!(
+            urls.as_slice(),
+            &[
+                "https://cloudcode-pa.googleapis.com/v1internal:loadCodeAssist",
+                "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
+            ]
+        );
+        assert_eq!(outcome.fetched_model_ids, vec!["chat_12345"]);
+        assert_eq!(
+            outcome
+                .upstream_metadata
+                .as_ref()
+                .and_then(|value| value.pointer("/antigravity/project_id")),
+            Some(&json!("project-from-antigravity-load"))
+        );
+        assert_eq!(
+            outcome
+                .upstream_metadata
+                .as_ref()
+                .and_then(|value| value
+                    .pointer("/antigravity/quota_by_model/chat_12345/remaining_fraction")),
+            Some(&json!(0.75))
+        );
+    }
+
+    #[test]
+    fn antigravity_models_without_explicit_quota_are_not_marked_exhausted() {
+        let (models, metadata) = parse_antigravity_models_response(&json!({
+            "models": {
+                "gemini-3.7-flash-tiered": {
+                    "displayName": "Gemini 3.7 Flash"
+                },
+                "gemini-3.7-flash-high": {
+                    "displayName": "Gemini 3.7 Flash High",
+                    "quotaInfo": {
+                        "remainingFraction": "0.75",
+                        "resetTime": "2030-01-01T00:00:00Z"
+                    }
+                },
+                "gemini-3.7-flash-low": {
+                    "displayName": "Gemini 3.7 Flash Low",
+                    "quotaInfo": {
+                        "remainingFraction": 0.0
+                    }
+                }
+            }
+        }))
+        .expect("Antigravity models should parse");
+
+        assert_eq!(models.len(), 3);
+        let metadata = metadata.expect("explicit quota should produce metadata");
+        let antigravity = &metadata["antigravity"];
+        assert!(antigravity["quota_by_model"]
+            .get("gemini-3.7-flash-tiered")
+            .is_none());
+        assert_eq!(
+            antigravity["quota_by_model"]["gemini-3.7-flash-high"]["remaining_fraction"],
+            json!(0.75)
+        );
+        assert_eq!(
+            antigravity["quota_by_model"]["gemini-3.7-flash-high"]["used_percent"],
+            json!(25.0)
+        );
+        assert_eq!(
+            antigravity["quota_by_model"]["gemini-3.7-flash-low"]["used_percent"],
+            json!(100.0)
+        );
+    }
+
+    #[tokio::test]
     async fn kiro_transport_fetches_list_available_models() {
         let executed_urls = Arc::new(Mutex::new(Vec::new()));
         let runtime = TestRuntime {
@@ -1960,6 +2787,7 @@ mod tests {
                 ]
             }),
             status_code: 200,
+            response_headers: BTreeMap::new(),
         };
         let outcome = fetch_models_from_transports(&runtime, &[sample_kiro_transport()])
             .await
@@ -2023,6 +2851,7 @@ mod tests {
                 }
             }),
             status_code: 200,
+            response_headers: BTreeMap::new(),
         };
         let outcome = fetch_models_from_transports(&runtime, &[sample_windsurf_transport()])
             .await

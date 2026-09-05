@@ -76,8 +76,12 @@ async fn execute_chatgpt_web_quota_plan(
         state.resolve_transport_execution_timeouts(transport),
         proxy.as_ref(),
     ));
-    let spec =
+    let mut spec =
         build_chatgpt_web_pool_quota_request(&transport.key.id, &endpoint.base_url, authorization);
+    crate::provider_transport::apply_local_auth_config_header_overrides(
+        &mut spec.headers,
+        transport.key.decrypted_auth_config.as_deref(),
+    );
     let resolved_transport_profile = state.resolve_transport_profile(transport);
     let plan = super::shared::build_provider_quota_execution_plan(
         transport,
@@ -466,6 +470,7 @@ mod tests {
             candidate_id: None,
             status_code: 403,
             headers: BTreeMap::new(),
+            response_observation: None,
             body: Some(ResponseBody {
                 json_body: None,
                 body_bytes_b64: Some(base64::engine::general_purpose::STANDARD.encode(body)),

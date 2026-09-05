@@ -31,6 +31,16 @@ pub(crate) fn build_admin_reveal_key_payload(
     key: &StoredProviderCatalogKey,
 ) -> Result<serde_json::Value, String> {
     let parsed_auth_config = state.parse_catalog_auth_config_json(key);
+    if parsed_auth_config.as_ref().is_some_and(|auth_config| {
+        aether_provider_transport::is_codex_agent_identity_auth_config_value(
+            &serde_json::Value::Object(auth_config.clone()),
+        )
+    }) {
+        return Err(
+            "Agent Identity 凭据不能通过通用 Key 查看接口读取，请使用专属 provider-oauth 管理面"
+                .to_string(),
+        );
+    }
     let provider_type = reveal_provider_type_from_auth_config(parsed_auth_config.as_ref());
     let auth_semantics = provider_key_auth_semantics(key, provider_type.as_str());
     let auth_type = if auth_semantics.oauth_managed() {
@@ -97,6 +107,7 @@ fn provider_oauth_export_payload(
         if let Some(access_token) = fallback_access_token
             .map(str::trim)
             .filter(|value| !value.is_empty() && *value != "__placeholder__")
+            .filter(|value| !oauth_export_fallback_matches_authorization_header(&payload, value))
         {
             payload.insert("access_token".to_string(), json!(access_token));
         }
@@ -114,6 +125,43 @@ fn provider_oauth_export_payload(
         }
     }
     payload
+}
+
+fn oauth_export_fallback_matches_authorization_header(
+    payload: &serde_json::Map<String, serde_json::Value>,
+    fallback_access_token: &str,
+) -> bool {
+    let fallback_access_token = fallback_access_token.trim();
+    if fallback_access_token.is_empty() {
+        return false;
+    }
+    let Some(authorization) = payload
+        .get("headers")
+        .and_then(serde_json::Value::as_object)
+        .and_then(|headers| {
+            headers
+                .iter()
+                .find(|(key, _)| key.trim().eq_ignore_ascii_case("authorization"))
+                .and_then(|(_, value)| value.as_str())
+        })
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    else {
+        return false;
+    };
+
+    if authorization == fallback_access_token {
+        return true;
+    }
+
+    let mut parts = authorization.splitn(2, char::is_whitespace);
+    let Some(scheme) = parts.next() else {
+        return false;
+    };
+    let Some(token) = parts.next() else {
+        return false;
+    };
+    scheme.eq_ignore_ascii_case("bearer") && token.trim() == fallback_access_token
 }
 
 fn json_map_has_non_empty_string(
@@ -144,6 +192,15 @@ pub(crate) async fn build_admin_export_key_payload(
         .ok()
         .and_then(|value| value.as_object().cloned())
         .ok_or_else(|| "无法解密认证配置".to_string())?;
+
+    if aether_provider_transport::is_codex_agent_identity_auth_config_value(
+        &serde_json::Value::Object(auth_config.clone()),
+    ) {
+        return Err(
+            "Agent Identity 凭据不能通过通用 Key 导出接口导出，请使用专属 provider-oauth 管理面"
+                .to_string(),
+        );
+    }
 
     let provider_type_from_config = auth_config
         .get("provider_type")
@@ -185,4 +242,85 @@ pub(crate) async fn build_admin_export_key_payload(
         json!(Utc::now().to_rfc3339_opts(SecondsFormat::Secs, true)),
     );
     Ok(serde_json::Value::Object(payload))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::provider_oauth_export_payload;
+    use serde_json::json;
+
+    #[test]
+    fn oauth_export_preserves_imported_request_headers() {
+        let auth_config = json!({
+            "provider_type": "codex",
+            "email": "user@example.com",
+            "headers": {
+                "authorization": "Bearer imported-session",
+                "chatgpt-account-id": "acct-1"
+            }
+        })
+        .as_object()
+        .cloned()
+        .expect("auth_config should be an object");
+
+        let payload = provider_oauth_export_payload("codex", &auth_config, None, Some("fallback"));
+
+        assert_eq!(
+            payload.get("headers"),
+            Some(&json!({
+                "authorization": "Bearer imported-session",
+                "chatgpt-account-id": "acct-1"
+            }))
+        );
+        assert_eq!(payload.get("access_token"), Some(&json!("fallback")));
+    }
+
+    #[test]
+    fn oauth_export_does_not_promote_imported_header_bearer_to_access_token() {
+        let auth_config = json!({
+            "provider_type": "codex",
+            "email": "user@example.com",
+            "headers": {
+                "authorization": "Bearer imported-session"
+            }
+        })
+        .as_object()
+        .cloned()
+        .expect("auth_config should be an object");
+
+        let payload =
+            provider_oauth_export_payload("codex", &auth_config, None, Some("imported-session"));
+
+        assert_eq!(
+            payload.get("headers"),
+            Some(&json!({"authorization": "Bearer imported-session"}))
+        );
+        assert!(payload.get("access_token").is_none());
+    }
+
+    #[test]
+    fn oauth_export_keeps_explicit_access_token_even_with_header_bearer() {
+        let auth_config = json!({
+            "provider_type": "codex",
+            "access_token": "jwt-access-token",
+            "headers": {
+                "authorization": "Bearer imported-session"
+            }
+        })
+        .as_object()
+        .cloned()
+        .expect("auth_config should be an object");
+
+        let payload =
+            provider_oauth_export_payload("codex", &auth_config, None, Some("imported-session"));
+
+        assert_eq!(
+            payload.get("access_token"),
+            Some(&json!("jwt-access-token"))
+        );
+        assert_eq!(
+            payload.get("headers"),
+            Some(&json!({"authorization": "Bearer imported-session"}))
+        );
+    }
 }

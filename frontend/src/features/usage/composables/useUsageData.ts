@@ -14,6 +14,12 @@ import { createDefaultStats } from '../types'
 import { log } from '@/utils/logger'
 import { getErrorStatus } from '@/types/api-error'
 import { isUsageProviderVisible, normalizeUsageProviderStats } from '../utils/providerStats'
+import {
+  mergeUsageRecordErrorMessage,
+  mergeUsageRecordFirstByteTimeMs,
+  mergeUsageRecordResponseTiming,
+  parseUsageTimestampMs,
+} from '../utils/recordSync'
 
 export interface UseUsageDataOptions {
   isAdminPage: Ref<boolean>
@@ -62,6 +68,8 @@ export function useUsageData(options: UseUsageDataOptions) {
   const currentDateRange = ref<DateRangeParams | undefined>(undefined)
   let loadStatsRequestId = 0
   let loadRecordsRequestId = 0
+  let currentAdminRecordTotalState: { key: string; exact: boolean } | null = null
+  const adminRecordExactTotalCache = new Map<string, number>()
 
   // 可用的筛选选项（从统计数据获取，而不是从记录中）
   const availableModels = ref<string[]>([])
@@ -76,6 +84,47 @@ export function useUsageData(options: UseUsageDataOptions) {
         : '-'
     }))
   })
+
+  function buildAdminRecordTotalKey(params: Record<string, unknown>): string {
+    return JSON.stringify(
+      Object.entries(params)
+        .filter(([key, value]) =>
+          !['limit', 'offset', 'include_total', 'total_only'].includes(key) &&
+          value !== undefined &&
+          value !== null &&
+          value !== ''
+        )
+        .sort(([left], [right]) => left.localeCompare(right))
+    )
+  }
+
+  function applyAdminRecordTotal(
+    totalKey: string,
+    total: number,
+    totalIsEstimated: boolean
+  ) {
+    const normalizedTotal = Number.isFinite(total) && total > 0 ? total : 0
+
+    if (!totalIsEstimated) {
+      totalRecords.value = normalizedTotal
+      currentAdminRecordTotalState = { key: totalKey, exact: true }
+      adminRecordExactTotalCache.set(totalKey, normalizedTotal)
+      return
+    }
+
+    const cachedExactTotal = adminRecordExactTotalCache.get(totalKey)
+    if (cachedExactTotal !== undefined) {
+      totalRecords.value = cachedExactTotal
+      currentAdminRecordTotalState = { key: totalKey, exact: true }
+      return
+    }
+
+    const previousTotal = currentAdminRecordTotalState?.key === totalKey
+      ? totalRecords.value
+      : 0
+    totalRecords.value = Math.max(previousTotal, normalizedTotal)
+    currentAdminRecordTotalState = { key: totalKey, exact: false }
+  }
 
   // 加载统计数据（不加载记录）
   async function loadStats(dateRange?: DateRangeParams, options: LoadStatsOptions = {}): Promise<boolean> {
@@ -341,6 +390,12 @@ export function useUsageData(options: UseUsageDataOptions) {
       if (filters?.search?.trim()) {
         params.search = filters.search.trim()
       }
+      if (filters?.status) {
+        params.status = filters.status
+      }
+      if (filters?.api_format) {
+        params.api_format = filters.api_format
+      }
 
       if (isAdminPage.value) {
         // 管理员页面：使用管理员 API
@@ -352,12 +407,6 @@ export function useUsageData(options: UseUsageDataOptions) {
         }
         if (filters?.provider) {
           params.provider = filters.provider
-        }
-        if (filters?.api_format) {
-          params.api_format = filters.api_format
-        }
-        if (filters?.status) {
-          params.status = filters.status
         }
         if (filters?.client_family) {
           params.client_family = filters.client_family
@@ -375,9 +424,10 @@ export function useUsageData(options: UseUsageDataOptions) {
         }
         const nextRecords = (response.records || []) as UsageRecord[]
         currentRecords.value = mergeRecordStatus(currentRecords.value, nextRecords)
-        totalRecords.value = response.total || 0
+        const totalKey = buildAdminRecordTotalKey(params)
+        applyAdminRecordTotal(totalKey, response.total ?? 0, response.total_is_estimated === true)
         if (response.total_is_estimated === true) {
-          void refreshAdminRecordTotal(params, requestId)
+          void refreshAdminRecordTotal(params, requestId, totalKey)
         }
       } else {
         // 用户页面：使用用户 API
@@ -405,11 +455,14 @@ export function useUsageData(options: UseUsageDataOptions) {
 
   async function refreshAdminRecordTotal(
     params: Record<string, unknown>,
-    requestId: number
+    requestId: number,
+    totalKey: string
   ): Promise<void> {
     try {
       const total = await usageApi.getAllUsageRecordTotal(params)
       if (requestId === loadRecordsRequestId) {
+        adminRecordExactTotalCache.set(totalKey, total)
+        currentAdminRecordTotalState = { key: totalKey, exact: true }
         totalRecords.value = total
       }
     } catch (error) {
@@ -417,23 +470,36 @@ export function useUsageData(options: UseUsageDataOptions) {
     }
   }
 
-  function mergePositiveDurationMs(
+  function mergeSparseRecordMetric(
     existingValue: number | null | undefined,
     nextValue: number | null | undefined
   ): number | null | undefined {
     const existingIsPositive = typeof existingValue === 'number' && Number.isFinite(existingValue) && existingValue > 0
     const nextIsPositive = typeof nextValue === 'number' && Number.isFinite(nextValue) && nextValue > 0
 
-    if (existingIsPositive && nextIsPositive) {
-      return Math.max(existingValue, nextValue)
+    if (nextIsPositive) {
+      return nextValue
     }
     if (existingIsPositive) {
       return existingValue
     }
-    if (nextIsPositive) {
+    return existingValue ?? nextValue
+  }
+
+  function mergeBooleanTrueWins(
+    existingValue: boolean | null | undefined,
+    nextValue: boolean | null | undefined
+  ): boolean | undefined {
+    if (existingValue === true || nextValue === true) {
+      return true
+    }
+    if (typeof nextValue === 'boolean') {
       return nextValue
     }
-    return existingValue ?? nextValue
+    if (typeof existingValue === 'boolean') {
+      return existingValue
+    }
+    return undefined
   }
 
   function mergeRecordStatus(
@@ -460,110 +526,198 @@ export function useUsageData(options: UseUsageDataOptions) {
       const hasNextStatus = typeof record.status === 'string' && record.status.length > 0
       const currentRank = hasExistingStatus ? (statusPriority[existing.status] ?? -1) : -1
       const nextRank = hasNextStatus ? (statusPriority[record.status] ?? -1) : -1
-      const statusProgressed = hasNextStatus && (
+      const existingUpdatedAtMs = parseUsageTimestampMs(existing.updated_at)
+      const nextUpdatedAtMs = parseUsageTimestampMs(record.updated_at)
+      const nextStatusSnapshotIsStale = existingUpdatedAtMs != null &&
+        nextUpdatedAtMs != null &&
+        nextUpdatedAtMs < existingUpdatedAtMs
+      const sameRankTerminalTransition = currentRank === 2 && nextRank === 2
+      const statusProgressed = hasNextStatus && !nextStatusSnapshotIsStale && (
         !hasExistingStatus ||
         nextRank > currentRank ||
-        (nextRank === currentRank && existing.status === record.status)
+        (nextRank === currentRank && (
+          existing.status === record.status || sameRankTerminalTransition
+        ))
       )
       const mergedStatus = statusProgressed ? record.status : existing.status
-      const protectStatus = mergedStatus !== record.status
 
       // 确定是否需要保护 provider（避免 pending/unknown/unknow 覆盖已有的正确值）
       const isPendingProvider = !isUsageProviderVisible(record.provider)
       const hasValidExistingProvider = isUsageProviderVisible(existing.provider)
       const protectProvider = isPendingProvider && hasValidExistingProvider
 
-      // 如果需要保护状态，说明本地数据比后端更新，应该保留本地的所有实时更新字段
-      if (protectStatus) {
-        const recordUpstreamIsStream = typeof record.upstream_is_stream === 'boolean'
-          ? record.upstream_is_stream
-          : typeof record.is_stream === 'boolean'
-            ? record.is_stream
-            : undefined
-        const existingUpstreamIsStream = typeof existing.upstream_is_stream === 'boolean'
-          ? existing.upstream_is_stream
-          : typeof existing.is_stream === 'boolean'
-            ? existing.is_stream
-            : undefined
-        const upstreamIsStream = recordUpstreamIsStream ?? existingUpstreamIsStream ?? false
+      const recordUpstreamIsStream = typeof record.upstream_is_stream === 'boolean'
+        ? record.upstream_is_stream
+        : typeof record.is_stream === 'boolean'
+          ? record.is_stream
+          : undefined
+      const existingUpstreamIsStream = typeof existing.upstream_is_stream === 'boolean'
+        ? existing.upstream_is_stream
+        : typeof existing.is_stream === 'boolean'
+          ? existing.is_stream
+          : undefined
+      const upstreamIsStream = mergeBooleanTrueWins(existingUpstreamIsStream, recordUpstreamIsStream) ?? false
 
-        const recordClientRequestedStream = typeof record.client_requested_stream === 'boolean'
-          ? record.client_requested_stream
-          : typeof record.client_is_stream === 'boolean'
-            ? record.client_is_stream
-            : undefined
-        const existingClientRequestedStream = typeof existing.client_requested_stream === 'boolean'
-          ? existing.client_requested_stream
-          : typeof existing.client_is_stream === 'boolean'
-            ? existing.client_is_stream
-            : undefined
-        const clientRequestedStream = recordClientRequestedStream ?? existingClientRequestedStream
-
-        const recordClientIsStream = typeof record.client_is_stream === 'boolean'
+      const recordClientRequestedStream = typeof record.client_requested_stream === 'boolean'
+        ? record.client_requested_stream
+        : typeof record.client_is_stream === 'boolean'
           ? record.client_is_stream
-          : typeof record.client_requested_stream === 'boolean'
-            ? record.client_requested_stream
-            : undefined
-        const existingClientIsStream = typeof existing.client_is_stream === 'boolean'
+          : undefined
+      const existingClientRequestedStream = typeof existing.client_requested_stream === 'boolean'
+        ? existing.client_requested_stream
+        : typeof existing.client_is_stream === 'boolean'
           ? existing.client_is_stream
-          : typeof existing.client_requested_stream === 'boolean'
-            ? existing.client_requested_stream
-            : undefined
-        const clientIsStream = recordClientIsStream ?? existingClientIsStream ?? clientRequestedStream
+          : undefined
+      const clientRequestedStream = mergeBooleanTrueWins(existingClientRequestedStream, recordClientRequestedStream)
 
-        return {
-          ...record,
-          // 保留本地的状态和所有通过轮询更新的字段
-          status: mergedStatus,
-          provider: protectProvider ? existing.provider : (record.provider || existing.provider),
-          input_tokens: Number.isFinite(record.input_tokens)
-            ? record.input_tokens
-            : existing.input_tokens,
-          effective_input_tokens: record.effective_input_tokens ?? existing.effective_input_tokens,
-          output_tokens: existing.output_tokens || record.output_tokens,
-          cache_creation_input_tokens: existing.cache_creation_input_tokens ?? record.cache_creation_input_tokens,
-          cache_creation_ephemeral_5m_input_tokens:
-            existing.cache_creation_ephemeral_5m_input_tokens
-            ?? record.cache_creation_ephemeral_5m_input_tokens,
-          cache_creation_ephemeral_1h_input_tokens:
-            existing.cache_creation_ephemeral_1h_input_tokens
-            ?? record.cache_creation_ephemeral_1h_input_tokens,
-          cache_read_input_tokens: existing.cache_read_input_tokens ?? record.cache_read_input_tokens,
-          cost: existing.cost || record.cost,
-          actual_cost: existing.actual_cost ?? record.actual_cost,
-          response_time_ms: mergePositiveDurationMs(existing.response_time_ms, record.response_time_ms),
-          first_byte_time_ms: mergePositiveDurationMs(existing.first_byte_time_ms, record.first_byte_time_ms),
-          updated_at: existing.updated_at ?? record.updated_at,
-          response_time_updated_at: existing.response_time_updated_at ?? record.response_time_updated_at,
-          status_code: existing.status_code ?? record.status_code,
-          error_message: existing.error_message ?? record.error_message,
-          image_progress: existing.image_progress ?? record.image_progress,
-          is_stream: upstreamIsStream,
-          upstream_is_stream: upstreamIsStream,
-          client_requested_stream: clientRequestedStream,
-          client_is_stream: clientIsStream,
-          api_format: existing.api_format || record.api_format,
-          endpoint_api_format: existing.endpoint_api_format || record.endpoint_api_format,
-          has_format_conversion: existing.has_format_conversion ?? record.has_format_conversion,
-          has_fallback: existing.has_fallback === true || record.has_fallback === true,
-          api_key_name: existing.api_key_name || record.api_key_name,
-          provider_key_name: existing.provider_key_name || record.provider_key_name,
-          rate_multiplier: existing.rate_multiplier ?? record.rate_multiplier,
-          target_model: existing.target_model || record.target_model,
-          reasoning_effort: existing.reasoning_effort || record.reasoning_effort,
-          service_tier: existing.service_tier || record.service_tier
-        }
+      const recordClientIsStream = typeof record.client_is_stream === 'boolean'
+        ? record.client_is_stream
+        : typeof record.client_requested_stream === 'boolean'
+          ? record.client_requested_stream
+          : undefined
+      const existingClientIsStream = typeof existing.client_is_stream === 'boolean'
+        ? existing.client_is_stream
+        : typeof existing.client_requested_stream === 'boolean'
+          ? existing.client_requested_stream
+          : undefined
+      const clientIsStream = mergeBooleanTrueWins(existingClientIsStream, recordClientIsStream) ?? clientRequestedStream
+      const nextTimingIsAuthoritative = statusProgressed &&
+        (record.status === 'completed' || record.status === 'failed' || record.status === 'cancelled')
+      const responseTiming = mergeUsageRecordResponseTiming(
+        {
+          response_time_ms: existing.response_time_ms,
+          response_time_updated_at: existing.response_time_updated_at,
+        },
+        {
+          response_time_ms: record.response_time_ms,
+          response_time_updated_at: record.response_time_updated_at,
+        },
+        { preferNext: nextTimingIsAuthoritative },
+      )
+
+      return {
+        ...record,
+        // 保留详情抽屉/活跃轮询已经拿到的完整指标，避免列表刷新用 0 或空值回退。
+        status: mergedStatus,
+        provider: statusProgressed
+          ? (protectProvider ? existing.provider : (record.provider || existing.provider))
+          : existing.provider,
+        input_tokens: mergeSparseRecordMetric(existing.input_tokens, record.input_tokens) ?? record.input_tokens,
+        effective_input_tokens: mergeSparseRecordMetric(existing.effective_input_tokens, record.effective_input_tokens) ?? record.effective_input_tokens,
+        output_tokens: mergeSparseRecordMetric(existing.output_tokens, record.output_tokens) ?? record.output_tokens,
+        reasoning_tokens: mergeSparseRecordMetric(existing.reasoning_tokens, record.reasoning_tokens) ?? record.reasoning_tokens,
+        total_tokens: mergeSparseRecordMetric(existing.total_tokens, record.total_tokens) ?? record.total_tokens,
+        cache_creation_input_tokens: mergeSparseRecordMetric(existing.cache_creation_input_tokens, record.cache_creation_input_tokens) ?? record.cache_creation_input_tokens,
+        cache_creation_ephemeral_5m_input_tokens:
+          mergeSparseRecordMetric(
+            existing.cache_creation_ephemeral_5m_input_tokens,
+            record.cache_creation_ephemeral_5m_input_tokens
+          ) ?? record.cache_creation_ephemeral_5m_input_tokens,
+        cache_creation_ephemeral_1h_input_tokens:
+          mergeSparseRecordMetric(
+            existing.cache_creation_ephemeral_1h_input_tokens,
+            record.cache_creation_ephemeral_1h_input_tokens
+          ) ?? record.cache_creation_ephemeral_1h_input_tokens,
+        cache_read_input_tokens: mergeSparseRecordMetric(existing.cache_read_input_tokens, record.cache_read_input_tokens) ?? record.cache_read_input_tokens,
+        cost: mergeSparseRecordMetric(existing.cost, record.cost) ?? record.cost,
+        actual_cost: mergeSparseRecordMetric(existing.actual_cost, record.actual_cost) ?? record.actual_cost,
+        response_time_ms: responseTiming.response_time_ms,
+        first_byte_time_ms: mergeUsageRecordFirstByteTimeMs(
+          existing.first_byte_time_ms,
+          record.first_byte_time_ms,
+        ),
+        updated_at: statusProgressed
+          ? (record.updated_at ?? existing.updated_at)
+          : existing.updated_at,
+        response_time_updated_at: responseTiming.response_time_updated_at,
+        // Status, code and error are one lifecycle snapshot. An accepted full
+        // list snapshot may clear an earlier candidate's 400/Cyber failure;
+        // a rejected stale status snapshot must not mutate either field.
+        status_code: statusProgressed
+          ? (record.status_code ?? undefined)
+          : existing.status_code,
+        error_message: statusProgressed
+          ? mergeUsageRecordErrorMessage(
+            existing.error_message,
+            record.error_message,
+            { authoritative: true },
+          )
+          : existing.error_message,
+        image_progress: statusProgressed
+          ? (record.image_progress ?? existing.image_progress)
+          : existing.image_progress,
+        is_stream: upstreamIsStream,
+        is_websocket: mergeBooleanTrueWins(existing.is_websocket, record.is_websocket),
+        websocket_transport: record.websocket_transport || existing.websocket_transport,
+        usage_available: existing.usage_available === false || record.usage_available === false
+          ? false
+          : (record.usage_available ?? existing.usage_available),
+        usage_pricing_available: existing.usage_pricing_available === false
+          || record.usage_pricing_available === false
+          ? false
+          : (record.usage_pricing_available ?? existing.usage_pricing_available),
+        input_audio_tokens: mergeSparseRecordMetric(
+          existing.input_audio_tokens,
+          record.input_audio_tokens,
+        ) ?? record.input_audio_tokens,
+        output_audio_tokens: mergeSparseRecordMetric(
+          existing.output_audio_tokens,
+          record.output_audio_tokens,
+        ) ?? record.output_audio_tokens,
+        upstream_is_stream: upstreamIsStream,
+        client_requested_stream: clientRequestedStream,
+        client_is_stream: clientIsStream,
+        api_format: record.api_format || existing.api_format,
+        endpoint_api_format: record.endpoint_api_format || existing.endpoint_api_format,
+        has_format_conversion: record.has_format_conversion ?? existing.has_format_conversion,
+        has_fallback: existing.has_fallback === true || record.has_fallback === true,
+        has_retry: existing.has_retry === true || record.has_retry === true,
+        api_key_name: record.api_key_name || existing.api_key_name,
+        provider_key_name: statusProgressed
+          ? (record.provider_key_name || existing.provider_key_name)
+          : existing.provider_key_name,
+        rate_multiplier: statusProgressed
+          ? (record.rate_multiplier ?? existing.rate_multiplier)
+          : existing.rate_multiplier,
+        // Full list snapshots describe the final provider candidate. Missing/null means the
+        // final request did not map the model and must clear an earlier candidate's arrow.
+        target_model: statusProgressed
+          ? (typeof record.target_model === 'string' && record.target_model.trim()
+              ? record.target_model
+              : null)
+          : existing.target_model,
+        // Request type is client-request identity, not a provider-candidate fact. Preserve a
+        // known compact operation when a later sparse snapshot omits it.
+        request_type:
+          typeof record.request_type === 'string' && record.request_type.trim()
+            ? record.request_type
+            : existing.request_type,
+        requested_reasoning_effort:
+          typeof record.requested_reasoning_effort === 'string'
+            && record.requested_reasoning_effort.trim()
+            ? record.requested_reasoning_effort
+            : existing.requested_reasoning_effort,
+        // Provider reasoning belongs to the final candidate just like service_tier; do not
+        // retain a previous candidate's `max` when the final request has no reasoning field.
+        reasoning_effort: statusProgressed
+          ? (typeof record.reasoning_effort === 'string' && record.reasoning_effort.trim()
+              ? record.reasoning_effort
+              : null)
+          : existing.reasoning_effort,
+        // The list response is the authoritative snapshot of the final provider request. Do not
+        // carry a tier forward when this response has no tier; doing so can leave a stale Fast
+        // badge after the final upstream request falls back to Standard.
+        service_tier: statusProgressed
+          ? (typeof record.service_tier === 'string' && record.service_tier.trim()
+              ? record.service_tier
+              : null)
+          : existing.service_tier,
+        actual_service_tier: statusProgressed
+          ? (typeof record.actual_service_tier === 'string' && record.actual_service_tier.trim()
+              ? record.actual_service_tier
+              : null)
+          : existing.actual_service_tier
       }
-
-      // 只需要保护 provider
-      if (protectProvider) {
-        return {
-          ...record,
-          provider: existing.provider
-        }
-      }
-
-      return record
     })
   }
 

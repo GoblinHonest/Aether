@@ -9,7 +9,7 @@
       >
         <Badge
           :variant="authStore.isAdmin ? 'default' : 'secondary'"
-          class="uppercase tracking-normal mb-4 self-start bg-[#1a1a1a] text-white text-[10px] px-2 py-0.5 rounded dark:bg-[#e5e5e5] dark:text-[#111]"
+          class="mb-4 self-start uppercase tracking-[0.45em]"
         >
           {{ dashboardModeLabel }}
         </Badge>
@@ -21,7 +21,7 @@
             <Card
               v-for="i in statSkeletonCount"
               :key="'skeleton-' + i"
-              class="bg-white rounded-xl border border-[#eee] p-5 dark:bg-[#111] dark:border-[#222]"
+              class="p-5"
             >
               <Skeleton class="h-4 w-20 mb-4" />
               <Skeleton class="h-8 w-32 mb-2" />
@@ -33,11 +33,16 @@
             <Card
               v-for="(stat, index) in stats"
               :key="stat.name"
-              class="relative overflow-hidden bg-white rounded-xl border border-[#eee] p-3 sm:p-5 dark:bg-[#111] dark:border-[#222]"
+              class="relative overflow-hidden p-3 sm:p-5"
+              :class="statCardBorders[index % statCardBorders.length]"
             >
+              <div
+                class="pointer-events-none absolute -right-4 -top-6 h-28 w-28 rounded-full blur-3xl opacity-40"
+                :class="statCardGlows[index % statCardGlows.length]"
+              />
               <!-- 图标固定在右上角 -->
               <div
-                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-2xl border border-[#eee] bg-white/50 p-2 sm:p-3 backdrop-blur-sm dark:border-[#222] dark:bg-[#111]/50"
+                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-2xl border border-border bg-card/50 p-2 sm:p-3 shadow-inner backdrop-blur-sm"
                 :class="getStatIconColor(index)"
               >
                 <component
@@ -47,15 +52,17 @@
               </div>
               <!-- 内容区域 -->
               <div>
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] pr-10 sm:pr-14 dark:text-[#888]">
+                <p class="min-h-10 text-xs font-normal leading-snug uppercase tracking-normal break-words text-[#999] pr-10 sm:pr-14 dark:text-[#888]">
                   {{ stat.name }}
                 </p>
-                <p class="mt-2 sm:mt-4 text-2xl font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+                <p
+                  class="mt-2 sm:mt-4 text-xl sm:text-3xl font-semibold text-foreground"
+                >
                   {{ stat.value }}
                 </p>
                 <p
                   v-if="stat.subValue"
-                  class="mt-0.5 sm:mt-1 text-[10px] sm:text-sm text-[#999] dark:text-[#888]"
+                  class="mt-0.5 sm:mt-1 text-[10px] sm:text-sm text-muted-foreground"
                 >
                   {{ stat.subValue }}
                 </p>
@@ -86,10 +93,15 @@
             <Card
               v-for="(placeholder, index) in emptyStatPlaceholders"
               :key="'empty-' + index"
-              class="relative overflow-hidden bg-white rounded-xl border border-[#eee] p-3 sm:p-5 dark:bg-[#111] dark:border-[#222]"
+              class="relative overflow-hidden p-3 sm:p-5"
+              :class="statCardBorders[index % statCardBorders.length]"
             >
               <div
-                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-2xl border border-[#eee] bg-white/50 p-2 sm:p-3 backdrop-blur-sm dark:border-[#222] dark:bg-[#111]/50"
+                class="pointer-events-none absolute -right-4 -top-6 h-28 w-28 rounded-full blur-3xl opacity-20"
+                :class="statCardGlows[index % statCardGlows.length]"
+              />
+              <div
+                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-2xl border border-border bg-card/50 p-2 sm:p-3 shadow-inner backdrop-blur-sm"
                 :class="getStatIconColor(index)"
               >
                 <component
@@ -98,13 +110,17 @@
                 />
               </div>
               <div>
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] pr-10 sm:pr-14 dark:text-[#888]">
+                <p class="min-h-10 text-xs font-normal leading-snug uppercase tracking-normal break-words text-[#999] pr-10 sm:pr-14 dark:text-[#888]">
                   {{ placeholder.name }}
                 </p>
-                <p class="mt-2 sm:mt-4 text-2xl font-medium text-[#1a1a1a]/50 dark:text-[#e5e5e5]/50">
+                <p
+                  class="mt-2 sm:mt-4 text-xl sm:text-3xl font-semibold text-muted-foreground/50"
+                >
                   --
                 </p>
-                <p class="mt-0.5 sm:mt-1 text-[10px] sm:text-sm text-[#999]/50 dark:text-[#888]/50">
+                <p
+                  class="mt-0.5 sm:mt-1 text-[10px] sm:text-sm text-muted-foreground/50"
+                >
                   暂无数据
                 </p>
               </div>
@@ -118,65 +134,81 @@
           class="mt-6"
         >
           <div class="mb-3 flex items-center justify-between">
-            <h3 class="text-base font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+            <h3 class="text-sm font-medium text-foreground">
               本月系统健康
             </h3>
             <Badge
               variant="outline"
-              class="text-xs text-[#999] dark:text-[#888]"
+              class="uppercase tracking-[0.3em] text-[10px]"
             >
               Monthly
             </Badge>
           </div>
           <div class="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-4">
-            <Card class="relative bg-white rounded-xl border border-[#eee] p-3 sm:p-4 dark:bg-[#111] dark:border-[#222]">
-              <Clock class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+            <Card class="relative p-3 sm:p-4 border-book-cloth/30">
+              <Clock
+                class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground"
+              />
               <div class="pr-6">
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] dark:text-[#888]">
+                <p class="text-xs font-normal uppercase tracking-normal break-words text-[#999] dark:text-[#888]">
                   平均响应
                 </p>
-                <p class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+                <p
+                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-semibold text-foreground"
+                >
                   {{ systemHealth.avg_response_time }}s
                 </p>
               </div>
             </Card>
-            <Card class="relative bg-white rounded-xl border border-[#eee] p-3 sm:p-4 dark:bg-[#111] dark:border-[#222]">
-              <AlertTriangle class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+            <Card class="relative p-3 sm:p-4 border-kraft/30">
+              <AlertTriangle
+                class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground"
+              />
               <div class="pr-6">
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] dark:text-[#888]">
+                <p class="text-xs font-normal uppercase tracking-normal break-words text-[#999] dark:text-[#888]">
                   错误率
                 </p>
                 <p
-                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-medium"
-                  :class="systemHealth.error_rate > 5 ? 'text-[#dc2626]' : 'text-[#1a1a1a] dark:text-[#e5e5e5]'"
+                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-semibold"
+                  :class="
+                    systemHealth.error_rate > 5
+                      ? 'text-destructive'
+                      : 'text-foreground'
+                  "
                 >
                   {{ systemHealth.error_rate }}%
                 </p>
               </div>
             </Card>
-            <Card class="relative bg-white rounded-xl border border-[#eee] p-3 sm:p-4 dark:bg-[#111] dark:border-[#222]">
-              <Shuffle class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+            <Card class="relative p-3 sm:p-4 border-book-cloth/25">
+              <Shuffle
+                class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground"
+              />
               <div class="pr-6">
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] dark:text-[#888]">
+                <p class="text-xs font-normal uppercase tracking-normal break-words text-[#999] dark:text-[#888]">
                   转移次数
                 </p>
-                <p class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+                <p
+                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-semibold text-foreground"
+                >
                   {{ systemHealth.fallback_count }}
                 </p>
               </div>
             </Card>
             <Card
               v-if="costStats"
-              class="relative bg-white rounded-xl border border-[#eee] p-3 sm:p-4 dark:bg-[#111] dark:border-[#222]"
+              class="relative p-3 sm:p-4 border-manilla/40"
             >
               <DollarSign
                 class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground"
               />
               <div class="pr-6">
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] dark:text-[#888]">
+                <p class="text-xs font-normal uppercase tracking-normal break-words text-[#999] dark:text-[#888]">
                   本月费用
                 </p>
-                <p class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+                <p
+                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-semibold text-foreground"
+                >
                   {{ formatCurrency(costStats.total_cost) }}
                 </p>
                 <Badge
@@ -200,12 +232,12 @@
           class="mt-6"
         >
           <div class="mb-3 flex items-center justify-between">
-            <h3 class="text-base font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+            <h3 class="text-sm font-medium text-foreground">
               本月统计
             </h3>
             <Badge
               variant="outline"
-              class="text-xs text-[#999] dark:text-[#888]"
+              class="uppercase tracking-[0.3em] text-[10px]"
             >
               Monthly
             </Badge>
@@ -213,64 +245,72 @@
           <div class="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-4">
             <Card
               v-if="cacheStats"
-              class="relative bg-white rounded-xl border border-[#eee] p-3 sm:p-4 dark:bg-[#111] dark:border-[#222]"
+              class="relative p-3 sm:p-4 border-book-cloth/30"
             >
               <Database
                 class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground"
               />
               <div class="pr-6">
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] dark:text-[#888]">
+                <p class="text-xs font-normal uppercase tracking-normal break-words text-[#999] dark:text-[#888]">
                   缓存命中率
                 </p>
-                <p class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+                <p
+                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-semibold text-foreground"
+                >
                   {{ cacheStats.cache_hit_rate || 0 }}%
                 </p>
               </div>
             </Card>
             <Card
               v-if="cacheStats"
-              class="relative bg-white rounded-xl border border-[#eee] p-3 sm:p-4 dark:bg-[#111] dark:border-[#222]"
+              class="relative p-3 sm:p-4 border-kraft/30"
             >
               <Hash
                 class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground"
               />
               <div class="pr-6">
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] dark:text-[#888]">
+                <p class="text-xs font-normal uppercase tracking-normal break-words text-[#999] dark:text-[#888]">
                   缓存读取
                 </p>
-                <p class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+                <p
+                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-semibold text-foreground"
+                >
                   {{ formatTokens(cacheStats.cache_read_tokens) }}
                 </p>
               </div>
             </Card>
             <Card
               v-if="cacheStats"
-              class="relative bg-white rounded-xl border border-[#eee] p-3 sm:p-4 dark:bg-[#111] dark:border-[#222]"
+              class="relative p-3 sm:p-4 border-book-cloth/25"
             >
               <Database
                 class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground"
               />
               <div class="pr-6">
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] dark:text-[#888]">
+                <p class="text-xs font-normal uppercase tracking-normal break-words text-[#999] dark:text-[#888]">
                   缓存创建
                 </p>
-                <p class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+                <p
+                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-semibold text-foreground"
+                >
                   {{ formatTokens(cacheStats.cache_creation_tokens) }}
                 </p>
               </div>
             </Card>
             <Card
               v-if="userMonthlyCost !== null"
-              class="relative bg-white rounded-xl border border-[#eee] p-3 sm:p-4 dark:bg-[#111] dark:border-[#222]"
+              class="relative p-3 sm:p-4 border-manilla/40"
             >
               <DollarSign
                 class="absolute top-3 right-3 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground"
               />
               <div class="pr-6">
-                <p class="text-xs font-normal uppercase tracking-normal text-[#999] dark:text-[#888]">
+                <p class="text-xs font-normal uppercase tracking-normal break-words text-[#999] dark:text-[#888]">
                   本月费用
                 </p>
-                <p class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+                <p
+                  class="mt-1.5 sm:mt-2 text-lg sm:text-xl font-semibold text-foreground"
+                >
                   {{ formatCurrency(userMonthlyCost) }}
                 </p>
               </div>
@@ -286,12 +326,12 @@
         :style="announcementsContainerStyle"
       >
         <div class="mb-3 flex items-center justify-between flex-shrink-0">
-          <h3 class="text-base font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+          <h3 class="text-sm font-medium text-foreground">
             系统公告
           </h3>
           <Badge
             variant="outline"
-            class="bg-[#f5f5f5] text-[#1a1a1a] text-[10px] dark:bg-[#222] dark:text-[#e5e5e5]"
+            class="uppercase tracking-[0.3em] text-[10px]"
           >
             Live
           </Badge>
@@ -369,6 +409,7 @@
                   >
                     <div class="flex items-center gap-2 mb-1">
                       <h4
+                        translate="no"
                         class="text-xs font-medium text-foreground line-clamp-1 flex-1"
                       >
                         {{ announcement.title }}
@@ -381,6 +422,7 @@
                       </span>
                     </div>
                     <div
+                      translate="no"
                       class="text-[11px] text-muted-foreground leading-relaxed line-clamp-2 mb-1"
                     >
                       {{ getPlainText(announcement.content) }}
@@ -399,7 +441,9 @@
 
     <!-- 趋势图表筛选 -->
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <h3 class="text-base font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+      <h3
+        class="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+      >
         统计周期
       </h3>
       <TimeRangePicker
@@ -413,9 +457,11 @@
       <!-- 每日使用趋势（折线图）- 普通用户可见 -->
       <Card
         v-if="!isAdmin"
-        class="bg-white rounded-xl border border-[#eee] p-5 dark:bg-[#111] dark:border-[#222]"
+        class="p-5"
       >
-        <h4 class="mb-3 text-xs font-medium text-[#999] uppercase tracking-normal dark:text-[#888]">
+        <h4
+          class="mb-3 text-xs font-semibold text-foreground uppercase tracking-wider"
+        >
           每日使用趋势
         </h4>
         <div
@@ -448,9 +494,11 @@
       <!-- 每日模型成本（堆叠柱状图）- 仅管理员可见 -->
       <Card
         v-if="isAdmin"
-        class="bg-white rounded-xl border border-[#eee] p-5 dark:bg-[#111] dark:border-[#222]"
+        class="p-5"
       >
-        <h4 class="mb-3 text-xs font-medium text-[#999] uppercase tracking-normal dark:text-[#888]">
+        <h4
+          class="mb-3 text-xs font-semibold text-foreground uppercase tracking-wider"
+        >
           每日模型成本
         </h4>
         <div
@@ -483,9 +531,11 @@
       <!-- 提供商成本分布（环形图）- 仅管理员可见 -->
       <Card
         v-if="isAdmin"
-        class="bg-white rounded-xl border border-[#eee] p-5 dark:bg-[#111] dark:border-[#222]"
+        class="p-5"
       >
-        <h4 class="mb-3 text-xs font-medium text-[#999] uppercase tracking-normal dark:text-[#888]">
+        <h4
+          class="mb-3 text-xs font-semibold text-foreground uppercase tracking-wider"
+        >
           提供商成本分布
         </h4>
         <div
@@ -518,9 +568,11 @@
       <!-- 每日模型成本（堆叠柱状图）- 普通用户可见 -->
       <Card
         v-if="!isAdmin"
-        class="bg-white rounded-xl border border-[#eee] p-5 dark:bg-[#111] dark:border-[#222]"
+        class="p-5"
       >
-        <h4 class="mb-3 text-xs font-medium text-[#999] uppercase tracking-normal dark:text-[#888]">
+        <h4
+          class="mb-3 text-xs font-semibold text-foreground uppercase tracking-wider"
+        >
           每日模型成本
         </h4>
         <div
@@ -552,11 +604,11 @@
     </div>
 
     <!-- 每日统计 -->
-    <Card class="overflow-hidden mt-6 rounded-xl border border-[#eee] dark:border-[#222]">
+    <Card class="overflow-hidden mt-6">
       <!-- 移动端：卡片列表 -->
       <div class="sm:hidden">
-        <div class="px-4 py-3 border-b border-[#f5f5f5] dark:border-[#222]">
-          <h3 class="text-base font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+        <div class="px-4 py-3 border-b border-border/60">
+          <h3 class="text-sm font-semibold">
             每日统计
           </h3>
         </div>
@@ -575,7 +627,7 @@
         </div>
         <div
           v-else
-          class="divide-y divide-[#f5f5f5] dark:divide-[#222]"
+          class="divide-y divide-border/60"
         >
           <div
             v-for="stat in dailyStats.slice().reverse()"
@@ -717,14 +769,14 @@
       <!-- 汇总信息 -->
       <div
         v-if="dailyStats.length > 0"
-        class="border-t border-[#f5f5f5] bg-muted/30 backdrop-blur-sm px-4 py-3 text-xs dark:border-[#222]"
+        class="border-t border-border bg-muted/30 backdrop-blur-sm px-4 py-3 text-xs"
       >
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <div class="text-center">
             <div class="text-muted-foreground text-[10px]">
               总请求
             </div>
-            <div class="font-medium text-foreground">
+            <div class="font-semibold text-foreground">
               {{ totalStats.requests.toLocaleString() }}
             </div>
           </div>
@@ -732,7 +784,7 @@
             <div class="text-muted-foreground text-[10px]">
               总Tokens
             </div>
-            <div class="font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+            <div class="font-semibold text-book-cloth dark:text-kraft">
               {{ formatTokens(totalStats.tokens) }}
             </div>
           </div>
@@ -740,7 +792,7 @@
             <div class="text-muted-foreground text-[10px]">
               总费用
             </div>
-            <div class="font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+            <div class="font-semibold text-amber-600 dark:text-amber-400">
               ${{ totalStats.cost.toFixed(4) }}
             </div>
           </div>
@@ -748,7 +800,7 @@
             <div class="text-muted-foreground text-[10px]">
               平均响应
             </div>
-            <div class="font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+            <div class="font-semibold text-book-cloth dark:text-kraft">
               {{ formatResponseTime(totalStats.avgResponseTime) }}
             </div>
           </div>
@@ -795,6 +847,7 @@
 
       <!-- eslint-disable vue/no-v-html -->
       <div
+        translate="no"
         class="prose prose-sm dark:prose-invert max-w-none"
         v-html="renderMarkdown(selectedAnnouncement.content)"
       />
@@ -814,6 +867,8 @@
 </template>
 
 <script setup lang="ts">
+import { getI18nLocale } from '@/i18n'
+import { formatRelativeTime } from '@/utils/format'
 import {
   ref,
   onMounted,
@@ -991,18 +1046,18 @@ const dashboardModeLabel = computed(() => {
 });
 
 const statCardBorders = [
-  'border-[#eee] dark:border-[#222]',
-  'border-[#eee] dark:border-[#222]',
-  'border-[#eee] dark:border-[#222]',
-  'border-[#eee] dark:border-[#222]'
-]
+  "border-book-cloth/30 dark:border-book-cloth/25",
+  "border-kraft/30 dark:border-kraft/25",
+  "border-manilla/40 dark:border-manilla/30",
+  "border-book-cloth/25 dark:border-kraft/25",
+];
 
 const statCardGlows = [
-  'bg-[#f5f5f5]',
-  'bg-[#f5f5f5]',
-  'bg-[#fafafa]',
-  'bg-[#f5f5f5]'
-]
+  "bg-book-cloth/30",
+  "bg-kraft/30",
+  "bg-manilla/35",
+  "bg-kraft/30",
+];
 
 const getStatIconColor = (_index: number): string => {
   return "text-muted-foreground";
@@ -1131,15 +1186,15 @@ const totalStats = computed(() => {
 
 // 每日模型成本（堆叠柱状图）
 const MODEL_COLORS = [
-  'rgba(26, 26, 26, 0.9)',    // #1a1a1a
-  'rgba(68, 68, 68, 0.8)',    // #444
-  'rgba(102, 102, 102, 0.8)', // #666
-  'rgba(136, 136, 136, 0.8)', // #888
-  'rgba(170, 170, 170, 0.8)', // #aaa
-  'rgba(204, 204, 204, 0.8)', // #ccc
-  'rgba(221, 221, 221, 0.8)', // #ddd
-  'rgba(238, 238, 238, 0.8)'  // #eee
-]
+  "rgba(59, 130, 246, 0.8)", // blue
+  "rgba(239, 68, 68, 0.8)", // red
+  "rgba(16, 185, 129, 0.8)", // green
+  "rgba(245, 158, 11, 0.8)", // amber
+  "rgba(139, 92, 246, 0.8)", // purple
+  "rgba(6, 182, 212, 0.8)", // cyan
+  "rgba(132, 204, 22, 0.8)", // lime
+  "rgba(249, 115, 22, 0.8)", // orange
+];
 
 const dailyModelCostChartData = computed<ChartData<"bar">>(() => {
   if (dailyStats.value.length === 0) {
@@ -1199,21 +1254,25 @@ const dailyModelCostChartOptions = computed<ChartOptions<"bar">>(() => ({
   scales: {
     x: {
       stacked: true,
-      ticks: { font: { size: 11 }, color: '#999' },
-      grid: { color: '#f5f5f5' }
+      ticks: { font: { size: 10 } },
     },
     y: {
       stacked: true,
-      title: { display: true, text: '费用 ($)', color: '#999', font: { size: 11 } },
+      title: {
+        display: true,
+        text: getI18nLocale() === 'en-US' ? 'Cost ($)' : '费用 ($)',
+        color: '#999',
+        font: { size: 11 },
+      },
       ticks: { font: { size: 11 }, color: '#999' },
       grid: { color: '#f5f5f5' }
-    }
+    },
   },
   plugins: {
     legend: {
       display: true,
-      position: 'bottom',
-      labels: { font: { size: 11 }, boxWidth: 12, padding: 8, color: '#999' }
+      position: "bottom",
+      labels: { font: { size: 10 }, boxWidth: 12, padding: 8 },
     },
     tooltip: {
       callbacks: {
@@ -1227,7 +1286,8 @@ const dailyModelCostChartOptions = computed<ChartOptions<"bar">>(() => ({
             const val = typeof item.raw === "number" ? item.raw : 0;
             return sum + val;
           }, 0);
-          return `Total: $${total.toFixed(4)}`;
+          const label = getI18nLocale() === 'en-US' ? 'Total' : '总计';
+          return `${label}: $${total.toFixed(4)}`;
         },
       },
     },
@@ -1236,15 +1296,15 @@ const dailyModelCostChartOptions = computed<ChartOptions<"bar">>(() => ({
 
 // 提供商成本分布（环形图）
 const PROVIDER_COLORS = [
-  'rgba(26, 26, 26, 0.9)',    // #1a1a1a
-  'rgba(68, 68, 68, 0.8)',    // #444
-  'rgba(102, 102, 102, 0.8)', // #666
-  'rgba(136, 136, 136, 0.8)', // #888
-  'rgba(170, 170, 170, 0.8)', // #aaa
-  'rgba(204, 204, 204, 0.8)', // #ccc
-  'rgba(221, 221, 221, 0.8)', // #ddd
-  'rgba(238, 238, 238, 0.8)'  // #eee
-]
+  "rgba(59, 130, 246, 0.8)", // blue
+  "rgba(239, 68, 68, 0.8)", // red
+  "rgba(16, 185, 129, 0.8)", // green
+  "rgba(245, 158, 11, 0.8)", // amber
+  "rgba(139, 92, 246, 0.8)", // purple
+  "rgba(6, 182, 212, 0.8)", // cyan
+  "rgba(132, 204, 22, 0.8)", // lime
+  "rgba(249, 115, 22, 0.8)", // orange
+];
 
 const providerCostChartData = computed<ChartData<"doughnut">>(() => {
   if (providerSummary.value.length === 0) {
@@ -1274,11 +1334,10 @@ const providerCostChartOptions = computed<ChartOptions<"doughnut">>(() => ({
     legend: {
       position: "right",
       labels: {
-        font: { size: 11 },
+        font: { size: 10 },
         boxWidth: 12,
         padding: 8,
-        color: '#999'
-      }
+      },
     },
     tooltip: {
       callbacks: {
@@ -1308,8 +1367,8 @@ const dailyUsageTrendChartData = computed<ChartData<"line">>(() => {
     labels: dailyStats.value.map((stat) => formatDateForChart(stat.date)),
     datasets: [
       {
-        label: '请求数',
-        data: dailyStats.value.map(stat => stat.requests),
+        label: getI18nLocale() === 'en-US' ? 'Requests' : '请求数',
+        data: dailyStats.value.map((stat) => stat.requests),
         borderColor: 'rgba(26, 26, 26, 0.9)',
         backgroundColor: 'rgba(26, 26, 26, 0.08)',
         fill: true,
@@ -1317,10 +1376,10 @@ const dailyUsageTrendChartData = computed<ChartData<"line">>(() => {
         yAxisID: "y",
       },
       {
-        label: 'Tokens (K)',
-        data: dailyStats.value.map(stat => stat.tokens / 1000),
-        borderColor: 'rgba(170, 170, 170, 0.9)',
-        backgroundColor: 'rgba(170, 170, 170, 0.08)',
+        label: "Tokens (K)",
+        data: dailyStats.value.map((stat) => stat.tokens / 1000),
+        borderColor: "rgba(16, 185, 129, 0.8)",
+        backgroundColor: "rgba(16, 185, 129, 0.1)",
         fill: true,
         tension: 0.3,
         yAxisID: "y1",
@@ -1343,31 +1402,40 @@ const dailyUsageTrendChartOptions = computed<ChartOptions<"line">>(() => {
     },
     scales: {
       x: {
-        ticks: { font: { size: 11 }, color: '#999' },
-        grid: { color: '#f5f5f5' }
+        ticks: { font: { size: 10 } },
       },
       y: {
         type: "linear",
         display: true,
-        position: 'left',
-        title: { display: true, text: '请求数', color: '#999', font: { size: 11 } },
+        position: "left",
+        title: {
+          display: true,
+          text: getI18nLocale() === 'en-US' ? 'Requests' : '请求数',
+          color: '#999',
+          font: { size: 11 },
+        },
         ticks: { font: { size: 11 }, color: '#999' },
         grid: { color: '#f5f5f5' }
       },
       y1: {
         type: "linear",
         display: true,
-        position: 'right',
-        title: { display: true, text: 'Tokens (K)', color: '#999', font: { size: 11 } },
-        ticks: { font: { size: 11 }, color: '#999' },
-        grid: { drawOnChartArea: false }
-      }
+        position: "right",
+        title: {
+          display: true,
+          text: "Tokens (K)",
+          color: "rgb(107, 114, 128)",
+          font: { size: 10 },
+        },
+        ticks: { font: { size: 10 } },
+        grid: { drawOnChartArea: false },
+      },
     },
     plugins: {
       legend: {
         display: true,
-        position: 'bottom',
-        labels: { font: { size: 11 }, boxWidth: 12, padding: 8, color: '#999' }
+        position: "bottom",
+        labels: { font: { size: 10 }, boxWidth: 12, padding: 8 },
       },
       tooltip: {
         callbacks: {
@@ -1501,9 +1569,9 @@ function formatDate(dateString: string): string {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  if (date.toDateString() === today.toDateString()) return "今天";
-  if (date.toDateString() === yesterday.toDateString()) return "昨天";
-  return date.toLocaleDateString("zh-CN", {
+  if (date.toDateString() === today.toDateString()) return formatRelativeTime(0, 'day');
+  if (date.toDateString() === yesterday.toDateString()) return formatRelativeTime(-1, 'day');
+  return date.toLocaleDateString(getI18nLocale(), {
     month: "2-digit",
     day: "2-digit",
     weekday: "short",
@@ -1515,9 +1583,9 @@ function formatDateForChart(dateString: string): string {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  if (date.toDateString() === today.toDateString()) return "今天";
-  if (date.toDateString() === yesterday.toDateString()) return "昨天";
-  return date.toLocaleDateString("zh-CN", { month: "numeric", day: "numeric" });
+  if (date.toDateString() === today.toDateString()) return formatRelativeTime(0, 'day');
+  if (date.toDateString() === yesterday.toDateString()) return formatRelativeTime(-1, 'day');
+  return date.toLocaleDateString(getI18nLocale(), { month: "numeric", day: "numeric" });
 }
 
 function formatResponseTime(seconds: number): string {
@@ -1614,11 +1682,11 @@ function formatAnnouncementDate(dateString: string): string {
   const minutes = Math.floor(diff / (1000 * 60));
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (minutes < 1) return "刚刚";
-  if (minutes < 60) return `${minutes}分钟前`;
-  if (hours < 24) return `${hours}小时前`;
-  if (days < 7) return `${days}天前`;
-  return date.toLocaleDateString("zh-CN", {
+  if (minutes < 1) return formatRelativeTime(0, 'second');
+  if (minutes < 60) return formatRelativeTime(-minutes, 'minute');
+  if (hours < 24) return formatRelativeTime(-hours, 'hour');
+  if (days < 7) return formatRelativeTime(-days, 'day');
+  return date.toLocaleDateString(getI18nLocale(), {
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
@@ -1641,7 +1709,7 @@ function getAnnouncementDotColor(type: string): string {
 
 function formatFullDate(dateString: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString("zh-CN", {
+  return date.toLocaleDateString(getI18nLocale(), {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -1690,14 +1758,59 @@ function renderMarkdown(content: string): string {
   background: rgb(100 116 139);
 }
 
-:deep(.prose) { color: var(--color-text); }
-:deep(.prose p) { margin-top: 0.75em; margin-bottom: 0.75em; line-height: 1.65; }
-:deep(.prose ul), :deep(.prose ol) { margin-top: 0.75em; margin-bottom: 0.75em; padding-left: 1.5em; }
-:deep(.prose li) { margin-top: 0.25em; margin-bottom: 0.25em; }
-:deep(.prose h1), :deep(.prose h2), :deep(.prose h3), :deep(.prose h4) { margin-top: 1.5em; margin-bottom: 0.75em; font-weight: 600; color: var(--color-text); }
-:deep(.prose code) { background: var(--color-code-background); color: var(--color-code-text); padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; font-weight: 500; }
-:deep(.prose pre) { background: var(--color-code-background); padding: 1em; border-radius: 8px; overflow-x: auto; }
-:deep(.prose a) { color: #1a1a1a; text-decoration: underline; }
-:deep(.prose blockquote) { border-left: 3px solid #1a1a1a; padding-left: 1em; margin-left: 0; font-style: italic; color: #666; }
-:deep(.prose strong) { font-weight: 600; }
+:deep(.prose) {
+  color: var(--color-text);
+}
+:deep(.prose p) {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  line-height: 1.65;
+}
+:deep(.prose ul),
+:deep(.prose ol) {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  padding-left: 1.5em;
+}
+:deep(.prose li) {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+:deep(.prose h1),
+:deep(.prose h2),
+:deep(.prose h3),
+:deep(.prose h4) {
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  font-weight: 600;
+  color: var(--color-text);
+}
+:deep(.prose code) {
+  background: var(--color-code-background);
+  color: var(--color-code-text);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+:deep(.prose pre) {
+  background: var(--color-code-background);
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+:deep(.prose a) {
+  color: var(--book-cloth);
+  text-decoration: underline;
+}
+:deep(.prose blockquote) {
+  border-left: 3px solid var(--book-cloth);
+  padding-left: 1em;
+  margin-left: 0;
+  font-style: italic;
+  color: var(--cloud-dark);
+}
+:deep(.prose strong) {
+  font-weight: 600;
+}
 </style>

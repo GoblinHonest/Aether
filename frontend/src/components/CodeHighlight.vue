@@ -185,7 +185,7 @@ function highlightPlaceholders(html: string): string {
 
 .code-highlight :deep(.hljs-attr),
 .code-highlight :deep(.hljs-attribute) {
-  color: #1a1a1a;
+  color: #2a2a2b;
   font-weight: 500;
 }
 
@@ -209,7 +209,7 @@ function highlightPlaceholders(html: string): string {
 }
 
 .code-highlight :deep(.hljs-section) {
-  color: #1a1a1a;
+  color: #2a2a2b;
   font-weight: 500;
 }
 
@@ -226,7 +226,7 @@ function highlightPlaceholders(html: string): string {
 
 .code-highlight :deep(.hljs-variable),
 .code-highlight :deep(.hljs-property) {
-  color: #1a1a1a;
+  color: #2a2a2b;
 }
 
 .code-highlight :deep(.hljs-punctuation) {

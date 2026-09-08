@@ -34,8 +34,8 @@ const triggerClass = computed(() => {
   return cn(
 'relative z-10 inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium [&_svg]:shrink-0 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
     isActive.value
-      ? 'text-[#1a1a1a] dark:text-[#e5e5e5] font-medium'
-      : 'text-[#999] hover:text-[#1a1a1a] dark:hover:text-[#e5e5e5]',
+      ? 'text-[#2a2a2b] dark:text-[#e5e5e5] font-medium'
+      : 'text-[#999] hover:text-[#2a2a2b] dark:hover:text-[#e5e5e5]',
     props.class
   )
 })

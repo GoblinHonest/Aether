@@ -78,7 +78,7 @@ function copyStep(stepId: string, code: string) {
   <div class="space-y-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#2a2a2b]/10 dark:bg-[#2a2a2b]/20 border border-[#2a2a2b]/20 dark:border-[#2a2a2b]/40 px-3 py-1 text-xs font-medium text-[#2a2a2b] dark:text-[#e5e5e5]">
         <Zap class="h-3 w-3" />
         ManyCode 官方文档
       </div>
@@ -111,7 +111,7 @@ function copyStep(stepId: string, code: string) {
             :key="idx"
             class="flex shrink-0 items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px hover:text-[#262624] dark:hover:text-[#f1ead8]"
             :class="activeDeployTab === idx
-              ? 'border-[#1a1a1a] text-[#1a1a1a] dark:text-[#e5e5e5]'
+              ? 'border-[#2a2a2b] text-[#2a2a2b] dark:text-[#e5e5e5]'
               : 'border-transparent text-[#666666] dark:text-[#a3a094]'"
             @click="activeDeployTab = idx"
           >
@@ -135,7 +135,7 @@ function copyStep(stepId: string, code: string) {
             :class="step.optional ? 'border-dashed opacity-80' : ''"
           >
             <div class="flex items-center gap-3 px-4 py-3">
-              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#1a1a1a] text-white">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#2a2a2b] text-white">
                 {{ idx + 1 }}
               </span>
               <div class="flex-1 min-w-0">
@@ -143,7 +143,7 @@ function copyStep(stepId: string, code: string) {
                   <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">{{ step.title }}</span>
                   <span
                     v-if="step.optional"
-                    class="text-[10px] px-1.5 py-0.5 rounded-full bg-[#e6e6e6] dark:bg-[rgba(255,255,255,0.08)] text-[#666666] dark:text-[#a3a094]"
+                    class="text-[10px] px-1.5 py-0.5 rounded-full bg-[#e5e6eb] dark:bg-[rgba(255,255,255,0.08)] text-[#666666] dark:text-[#a3a094]"
                   >
                     可选
                   </span>
@@ -183,7 +183,7 @@ function copyStep(stepId: string, code: string) {
             class="group rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] overflow-hidden transition-colors"
           >
             <div class="flex items-center gap-3 px-4 py-3">
-              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#1a1a1a] text-white">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#2a2a2b] text-white">
                 {{ idx + 1 }}
               </span>
               <div class="flex-1 min-w-0">
@@ -398,7 +398,7 @@ function copyStep(stepId: string, code: string) {
           <p>Rust实现, 超小资源占有, 适合性能低的VPS直接使用。</p>
           <a
             href="#"
-            class="text-[#1a1a1a] dark:text-[#e5e5e5] hover:underline mt-2 inline-block"
+            class="text-[#2a2a2b] dark:text-[#e5e5e5] hover:underline mt-2 inline-block"
           >
             了解更多 >
           </a>
@@ -411,7 +411,7 @@ function copyStep(stepId: string, code: string) {
 
         <div>
           <h3>3. 多级代理</h3>
-          <p>优先级：<span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#1a1a1a]/10 px-2 py-0.5 rounded">Key代理</span> > <span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#1a1a1a]/10 px-2 py-0.5 rounded">提供商代理</span> > <span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#1a1a1a]/10 px-2 py-0.5 rounded">全局代理</span></p>
+          <p>优先级：<span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#2a2a2b]/10 px-2 py-0.5 rounded">Key代理</span> > <span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#2a2a2b]/10 px-2 py-0.5 rounded">提供商代理</span> > <span class="text-[#262624] dark:text-[#f1ead8] font-medium bg-[#2a2a2b]/10 px-2 py-0.5 rounded">全局代理</span></p>
           
           <ul class="list-decimal pl-5 mt-4 space-y-2 text-[#666666] dark:text-[#a3a094]">
             <li>全局代理 - 系统配置</li>

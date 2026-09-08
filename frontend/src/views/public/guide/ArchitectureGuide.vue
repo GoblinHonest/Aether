@@ -8,7 +8,7 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
   <div class="space-y-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#2a2a2b]/10 dark:bg-[#2a2a2b]/20 border border-[#2a2a2b]/20 dark:border-[#2a2a2b]/40 px-3 py-1 text-xs font-medium text-[#2a2a2b] dark:text-[#e5e5e5]">
         <Network class="h-3 w-3" />
         系统架构
       </div>
@@ -31,10 +31,10 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
           <!-- 1. 多格式兼容接入 -->
           <div class="space-y-1.5">
             <div class="flex items-center gap-2.5">
-              <span class="text-xs font-medium font-mono text-[#1a1a1a]">1.</span>
+              <span class="text-xs font-medium font-mono text-[#2a2a2b]">1.</span>
               <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">多格式兼容接入</span>
             </div>
-            <p class="text-sm text-[#636261] dark:text-[#a3a094] leading-relaxed pl-[22px]">
+            <p class="text-sm text-[#4e5969] dark:text-[#a3a094] leading-relaxed pl-[22px]">
               支持多种 API 格式、端点配置及认证方式，不同客户端均可平滑接入。
             </p>
           </div>
@@ -42,10 +42,10 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
           <!-- 2. 统一模型路由 -->
           <div class="space-y-1.5">
             <div class="flex items-center gap-2.5">
-              <span class="text-xs font-medium font-mono text-[#1a1a1a]">2.</span>
+              <span class="text-xs font-medium font-mono text-[#2a2a2b]">2.</span>
               <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">统一模型路由</span>
             </div>
-            <p class="text-sm text-[#636261] dark:text-[#a3a094] leading-relaxed pl-[22px]">
+            <p class="text-sm text-[#4e5969] dark:text-[#a3a094] leading-relaxed pl-[22px]">
               对外暴露统一模型名称，对内自动映射到各提供商的内部模型名及变体，支持优先级选择、亲和性路由、负载均衡与故障转移。
             </p>
           </div>
@@ -53,39 +53,39 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
           <!-- 3. 跨平台格式转换 -->
           <div class="space-y-2">
             <div class="flex items-center gap-2.5">
-              <span class="text-xs font-medium font-mono text-[#1a1a1a]">3.</span>
+              <span class="text-xs font-medium font-mono text-[#2a2a2b]">3.</span>
               <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">跨平台格式转换</span>
             </div>
             <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-[#f5f5f5]/50 dark:bg-[rgba(227,224,211,0.05)] p-3 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
-              <div class="flex-1 bg-white dark:bg-[#0a0a0a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
+              <div class="flex-1 bg-white dark:bg-[#17171a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
                 兼容格式入口
               </div>
-              <ArrowRight class="hidden md:block w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 shrink-0" />
+              <ArrowRight class="hidden md:block w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 shrink-0" />
               <div class="md:hidden flex justify-center">
-                <ArrowRight class="w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 rotate-90" />
+                <ArrowRight class="w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 rotate-90" />
               </div>
-              <div class="flex-1 bg-[#1a1a1a]/5 dark:bg-[#1a1a1a]/10 border border-[#1a1a1a]/15 dark:border-[#1a1a1a]/20 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+              <div class="flex-1 bg-[#2a2a2b]/5 dark:bg-[#2a2a2b]/10 border border-[#2a2a2b]/15 dark:border-[#2a2a2b]/20 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#2a2a2b] dark:text-[#e5e5e5]">
                 格式转换
               </div>
-              <ArrowRight class="hidden md:block w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 shrink-0" />
+              <ArrowRight class="hidden md:block w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 shrink-0" />
               <div class="md:hidden flex justify-center">
-                <ArrowRight class="w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 rotate-90" />
+                <ArrowRight class="w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 rotate-90" />
               </div>
-              <div class="flex-1 bg-white dark:bg-[#0a0a0a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
+              <div class="flex-1 bg-white dark:bg-[#17171a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
                 上游提供商
               </div>
-              <ArrowRight class="hidden md:block w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 shrink-0" />
+              <ArrowRight class="hidden md:block w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 shrink-0" />
               <div class="md:hidden flex justify-center">
-                <ArrowRight class="w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 rotate-90" />
+                <ArrowRight class="w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 rotate-90" />
               </div>
-              <div class="flex-1 bg-[#1a1a1a]/5 dark:bg-[#1a1a1a]/10 border border-[#1a1a1a]/15 dark:border-[#1a1a1a]/20 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+              <div class="flex-1 bg-[#2a2a2b]/5 dark:bg-[#2a2a2b]/10 border border-[#2a2a2b]/15 dark:border-[#2a2a2b]/20 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#2a2a2b] dark:text-[#e5e5e5]">
                 格式转换
               </div>
-              <ArrowRight class="hidden md:block w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 shrink-0" />
+              <ArrowRight class="hidden md:block w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 shrink-0" />
               <div class="md:hidden flex justify-center">
-                <ArrowRight class="w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 rotate-90" />
+                <ArrowRight class="w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 rotate-90" />
               </div>
-              <div class="flex-1 bg-white dark:bg-[#0a0a0a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
+              <div class="flex-1 bg-white dark:bg-[#17171a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
                 兼容格式响应
               </div>
             </div>
@@ -94,25 +94,25 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
           <!-- 4. 同生态原生透传 -->
           <div class="space-y-2">
             <div class="flex items-center gap-2.5">
-              <span class="text-xs font-medium font-mono text-[#1a1a1a]">4.</span>
+              <span class="text-xs font-medium font-mono text-[#2a2a2b]">4.</span>
               <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">同生态原生透传</span>
             </div>
             <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-[#f5f5f5]/50 dark:bg-[rgba(227,224,211,0.05)] p-3 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
-              <div class="flex-1 bg-white dark:bg-[#0a0a0a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
+              <div class="flex-1 bg-white dark:bg-[#17171a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
                 原生 API 入口
               </div>
-              <ArrowRight class="hidden md:block w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 shrink-0" />
+              <ArrowRight class="hidden md:block w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 shrink-0" />
               <div class="md:hidden flex justify-center">
-                <ArrowRight class="w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 rotate-90" />
+                <ArrowRight class="w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 rotate-90" />
               </div>
-              <div class="flex-[2] bg-[#1a1a1a]/5 dark:bg-[#1a1a1a]/10 border border-[#1a1a1a]/15 dark:border-[#1a1a1a]/20 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+              <div class="flex-[2] bg-[#2a2a2b]/5 dark:bg-[#2a2a2b]/10 border border-[#2a2a2b]/15 dark:border-[#2a2a2b]/20 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#2a2a2b] dark:text-[#e5e5e5]">
                 原生请求透传 → 上游提供商 → 原生响应透传
               </div>
-              <ArrowRight class="hidden md:block w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 shrink-0" />
+              <ArrowRight class="hidden md:block w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 shrink-0" />
               <div class="md:hidden flex justify-center">
-                <ArrowRight class="w-4 h-4 text-[#1a1a1a]/40 dark:text-[#1a1a1a]/30 rotate-90" />
+                <ArrowRight class="w-4 h-4 text-[#2a2a2b]/40 dark:text-[#2a2a2b]/30 rotate-90" />
               </div>
-              <div class="flex-1 bg-white dark:bg-[#0a0a0a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
+              <div class="flex-1 bg-white dark:bg-[#17171a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
                 原生 API 出口
               </div>
             </div>

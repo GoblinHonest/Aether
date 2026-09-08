@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-[#ffffff] dark:bg-[#0a0a0a] p-8">
+  <div class="min-h-screen bg-[#ffffff] dark:bg-[#17171a] p-8">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-3xl font-bold text-center mb-2 text-[#1a1a1a] dark:text-white">
+      <h1 class="text-3xl font-bold text-center mb-2 text-[#2a2a2b] dark:text-white">
         Logo 颜色方案对比
       </h1>
       <p class="text-center text-[#666666] dark:text-gray-400 mb-8">
@@ -13,7 +13,7 @@
         <div
           v-for="(scheme, index) in colorSchemes"
           :key="index"
-          class="relative bg-white dark:bg-[#262624] rounded-2xl p-6 border border-[#e6e6e6] dark:border-[rgba(227,224,211,0.16)] cursor-pointer transition-all  hover:scale-[1.02]"
+          class="relative bg-white dark:bg-[#262624] rounded-2xl p-6 border border-[#e5e6eb] dark:border-[rgba(227,224,211,0.16)] cursor-pointer transition-all  hover:scale-[1.02]"
           :class="{ 'ring-2 ring-primary': selectedScheme === index }"
           @click="selectScheme(index)"
         >
@@ -114,7 +114,7 @@
             @click.stop
           >
             <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-[#1a1a1a] dark:text-white">
+              <h2 class="text-xl font-bold text-[#2a2a2b] dark:text-white">
                 {{ colorSchemes[selectedScheme].name }}
               </h2>
               <button
@@ -192,7 +192,7 @@
       <div class="mt-8 text-center">
         <RouterLink
           to="/"
-          class="inline-flex items-center gap-2 px-4 py-2 text-[#666666] dark:text-gray-400 hover:text-[#1a1a1a] dark:hover:text-white transition"
+          class="inline-flex items-center gap-2 px-4 py-2 text-[#666666] dark:text-gray-400 hover:text-[#2a2a2b] dark:hover:text-white transition"
         >
           <svg
             class="w-4 h-4"
@@ -226,7 +226,7 @@ const fullPath = AETHER_FULL_PATH
 const colorSchemes = [
   {
     name: '当前配色 - 暖橙',
-    primary: '#1a1a1a',
+    primary: '#2a2a2b',
     secondary: '#e8a882',
     description: '温暖的赤陶色，亲和力强'
   },

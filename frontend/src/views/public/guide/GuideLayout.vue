@@ -19,10 +19,10 @@
         >
           <HeaderLogo
             size="h-9 w-9"
-            class-name="text-[#1a1a1a] dark:text-white"
+            class-name="text-[#2a2a2b] dark:text-white"
           />
           <div class="flex flex-col justify-center">
-            <h1 class="text-lg font-bold text-[#1a1a1a] dark:text-white leading-none">
+            <h1 class="text-lg font-bold text-[#2a2a2b] dark:text-white leading-none">
               {{ siteName }}
             </h1>
             <span class="text-[10px] text-[#999999] dark:text-muted-foreground leading-none mt-1.5 font-medium tracking-wide">{{ siteSubtitle }}</span>
@@ -90,14 +90,14 @@
       </div>
 
       <!-- FOOTER (Base URL) -->
-      <div class="p-4 border-t border-[#1a1a1a]/5 dark:border-white/5">
+      <div class="p-4 border-t border-[#2a2a2b]/5 dark:border-white/5">
         <label class="block text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-normal mb-2">
           Base URL
         </label>
         <input
           v-model="baseUrl"
           type="text"
-          class="w-full px-3 py-2 text-sm rounded-lg border border-[#1a1a1a]/5 dark:border-white/5 bg-white/50 dark:bg-white/5 text-[#1a1a1a] dark:text-white placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#1a1a1a]/30 transition"
+          class="w-full px-3 py-2 text-sm rounded-lg border border-[#2a2a2b]/5 dark:border-white/5 bg-white/50 dark:bg-white/5 text-[#2a2a2b] dark:text-white placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#2a2a2b]/30 transition"
           placeholder="https://your-aether.com"
         >
       </div>
@@ -114,10 +114,10 @@
             >
               <HeaderLogo
                 size="h-9 w-9"
-                class-name="text-[#1a1a1a] dark:text-white"
+                class-name="text-[#2a2a2b] dark:text-white"
               />
               <div class="flex flex-col justify-center">
-                <h1 class="text-lg font-bold text-[#1a1a1a] dark:text-white leading-none">
+                <h1 class="text-lg font-bold text-[#2a2a2b] dark:text-white leading-none">
                   {{ siteName }}
                 </h1>
                 <span class="text-[10px] text-[#999999] dark:text-muted-foreground leading-none mt-1.5 font-medium tracking-wide">{{ siteSubtitle }}</span>
@@ -188,8 +188,8 @@
                       :to="item.href"
                       class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
                       :class="isNavActive(item.href)
-                        ? 'bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 text-[#1a1a1a] dark:text-[#e5e5e5]'
-                        : 'text-[#666666] dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#1a1a1a] dark:hover:text-white'"
+                        ? 'bg-[#2a2a2b]/10 dark:bg-[#2a2a2b]/20 text-[#2a2a2b] dark:text-[#e5e5e5]'
+                        : 'text-[#666666] dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#2a2a2b] dark:hover:text-white'"
                       @click="mobileMenuOpen = false"
                     >
                       <component
@@ -207,7 +207,7 @@
       </header>
 
       <!-- Desktop Page Header -->
-      <header class="hidden lg:flex h-16 px-8 items-center justify-between shrink-0 border-b border-[#1a1a1a]/5 dark:border-white/5 sticky top-0 z-40 backdrop-blur-md bg-[#ffffff]/90 dark:bg-[#0a0a0a]/90">
+      <header class="hidden lg:flex h-16 px-8 items-center justify-between shrink-0 border-b border-[#2a2a2b]/5 dark:border-white/5 sticky top-0 z-40 backdrop-blur-md bg-[#ffffff]/90 dark:bg-[#17171a]/90">
         <div class="flex flex-col gap-0.5">
           <div class="flex items-center gap-2 text-sm text-muted-foreground">
             <RouterLink
@@ -435,11 +435,11 @@ const navigation = computed(() => [
 
 // 样式类 - 与 MainLayout 保持一致
 const sidebarClasses = computed(() => {
-  return 'w-[260px] flex flex-col hidden lg:flex border-r border-[#1a1a1a]/5 dark:border-white/5 bg-[#ffffff] dark:bg-[#111111] h-screen sticky top-0'
+  return 'w-[260px] flex flex-col hidden lg:flex border-r border-[#2a2a2b]/5 dark:border-white/5 bg-[#ffffff] dark:bg-[#232324] h-screen sticky top-0'
 })
 
 const contentClasses = computed(() => {
-  return 'flex-1 min-w-0 bg-[#ffffff] dark:bg-[#0a0a0a] text-[#1a1a1a] dark:text-[#e5e5e5]'
+  return 'flex-1 min-w-0 bg-[#ffffff] dark:bg-[#17171a] text-[#2a2a2b] dark:text-[#e5e5e5]'
 })
 
 const mainClasses = computed(() => {

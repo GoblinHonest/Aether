@@ -1185,15 +1185,16 @@ const totalStats = computed(() => {
 });
 
 // 每日模型成本（堆叠柱状图）
+// Arco Design 数据可视化序列
 const MODEL_COLORS = [
-  "rgba(59, 130, 246, 0.8)", // blue
-  "rgba(239, 68, 68, 0.8)", // red
-  "rgba(16, 185, 129, 0.8)", // green
-  "rgba(245, 158, 11, 0.8)", // amber
-  "rgba(139, 92, 246, 0.8)", // purple
-  "rgba(6, 182, 212, 0.8)", // cyan
-  "rgba(132, 204, 22, 0.8)", // lime
-  "rgba(249, 115, 22, 0.8)", // orange
+  "rgba(22, 93, 255, 0.85)",  // arcoblue-6
+  "rgba(0, 180, 42, 0.85)",   // green-6
+  "rgba(114, 46, 209, 0.85)", // purple-6
+  "rgba(247, 186, 30, 0.9)",  // gold-6
+  "rgba(245, 63, 63, 0.85)",  // red-6
+  "rgba(20, 201, 201, 0.85)", // cyan-6
+  "rgba(159, 219, 29, 0.9)",  // lime-6
+  "rgba(245, 49, 157, 0.85)", // magenta-6
 ];
 
 const dailyModelCostChartData = computed<ChartData<"bar">>(() => {
@@ -1295,15 +1296,16 @@ const dailyModelCostChartOptions = computed<ChartOptions<"bar">>(() => ({
 }));
 
 // 提供商成本分布（环形图）
+// Arco Design 数据可视化序列
 const PROVIDER_COLORS = [
-  "rgba(59, 130, 246, 0.8)", // blue
-  "rgba(239, 68, 68, 0.8)", // red
-  "rgba(16, 185, 129, 0.8)", // green
-  "rgba(245, 158, 11, 0.8)", // amber
-  "rgba(139, 92, 246, 0.8)", // purple
-  "rgba(6, 182, 212, 0.8)", // cyan
-  "rgba(132, 204, 22, 0.8)", // lime
-  "rgba(249, 115, 22, 0.8)", // orange
+  "rgba(22, 93, 255, 0.85)",  // arcoblue-6
+  "rgba(0, 180, 42, 0.85)",   // green-6
+  "rgba(114, 46, 209, 0.85)", // purple-6
+  "rgba(247, 186, 30, 0.9)",  // gold-6
+  "rgba(245, 63, 63, 0.85)",  // red-6
+  "rgba(20, 201, 201, 0.85)", // cyan-6
+  "rgba(159, 219, 29, 0.9)",  // lime-6
+  "rgba(245, 49, 157, 0.85)", // magenta-6
 ];
 
 const providerCostChartData = computed<ChartData<"doughnut">>(() => {
@@ -1369,8 +1371,8 @@ const dailyUsageTrendChartData = computed<ChartData<"line">>(() => {
       {
         label: getI18nLocale() === 'en-US' ? 'Requests' : '请求数',
         data: dailyStats.value.map((stat) => stat.requests),
-        borderColor: 'rgba(20, 20, 20, 0.9)',
-        backgroundColor: 'rgba(20, 20, 20, 0.08)',
+        borderColor: 'rgba(22, 93, 255, 0.9)',
+        backgroundColor: 'rgba(22, 93, 255, 0.08)',
         fill: true,
         tension: 0.3,
         yAxisID: "y",
@@ -1378,8 +1380,8 @@ const dailyUsageTrendChartData = computed<ChartData<"line">>(() => {
       {
         label: "Tokens (K)",
         data: dailyStats.value.map((stat) => stat.tokens / 1000),
-        borderColor: "rgba(16, 185, 129, 0.8)",
-        backgroundColor: "rgba(16, 185, 129, 0.1)",
+        borderColor: "rgba(20, 201, 201, 0.8)",
+        backgroundColor: "rgba(20, 201, 201, 0.1)",
         fill: true,
         tension: 0.3,
         yAxisID: "y1",

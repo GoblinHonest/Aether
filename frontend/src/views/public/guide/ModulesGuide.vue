@@ -7,14 +7,14 @@ import { panelClasses } from './guide-config'
   <div class="space-y-12 pb-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#2a2a2b]/10 dark:bg-[#2a2a2b]/20 border border-[#2a2a2b]/20 dark:border-[#2a2a2b]/40 px-3 py-1 text-xs font-medium text-[#2a2a2b] dark:text-[#e5e5e5]">
         <Blocks class="h-3 w-3" />
         系统扩展
       </div>
       <h1 class="text-3xl font-bold text-[#262624] dark:text-[#f1ead8]">
         模块管理
       </h1>
-      <p class="text-base text-[#636261] dark:text-[#a3a094] max-w-2xl">
+      <p class="text-base text-[#4e5969] dark:text-[#a3a094] max-w-2xl">
         ManyCode 提供高可插入的模块化管理机制，帮助连接外部服务和授权系统。
       </p>
     </div>
@@ -48,7 +48,7 @@ import { panelClasses } from './guide-config'
         <h3 class="text-xl font-bold text-[#262624] dark:text-[#f1ead8] mb-2 m-0 mt-0 pt-0 border-0">
           1. 访问令牌
         </h3>
-        <p class="text-sm text-[#636261] dark:text-[#a3a094] leading-relaxed">
+        <p class="text-sm text-[#4e5969] dark:text-[#a3a094] leading-relaxed">
           允许通过 Management Token 授权使用全部或部分后端敏感接口（如自动化运维脚本接入）。
         </p>
       </section>
@@ -82,7 +82,7 @@ import { panelClasses } from './guide-config'
         <h3 class="text-xl font-bold text-[#262624] dark:text-[#f1ead8] mb-2 m-0 mt-0 pt-0 border-0">
           2. 邮件配置
         </h3>
-        <p class="text-sm text-[#636261] dark:text-[#a3a094] leading-relaxed">
+        <p class="text-sm text-[#4e5969] dark:text-[#a3a094] leading-relaxed">
           用于注册验证及账户通知服务。管理员可以自定义 SMTP 服务器并高度定制系统发送的各种 HTML 邮件模板。
         </p>
       </section>
@@ -114,7 +114,7 @@ import { panelClasses } from './guide-config'
         <h3 class="text-xl font-bold text-[#262624] dark:text-[#f1ead8] mb-2 m-0 mt-0 pt-0 border-0">
           3. OAuth 登录
         </h3>
-        <p class="text-sm text-[#636261] dark:text-[#a3a094] leading-relaxed">
+        <p class="text-sm text-[#4e5969] dark:text-[#a3a094] leading-relaxed">
           支持包括 Linux Do OAuth 等多种第三方授权验证登录，方便统一认证渠道并提升用户体验。
         </p>
       </section>
@@ -142,7 +142,7 @@ import { panelClasses } from './guide-config'
         <h3 class="text-xl font-bold text-[#262624] dark:text-[#f1ead8] mb-2 m-0 mt-0 pt-0 border-0">
           4. LDAP 认证
         </h3>
-        <p class="text-sm text-[#636261] dark:text-[#a3a094] leading-relaxed">
+        <p class="text-sm text-[#4e5969] dark:text-[#a3a094] leading-relaxed">
           为企业管理构建。直接对接企业现有的 LDAP 或 Active Directory 目录以映射内网员工账户和组织架构。
         </p>
       </section>

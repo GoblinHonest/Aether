@@ -124,7 +124,7 @@ onMounted(() => {
 .markdown-body :not(pre) > code {
   @apply px-1.5 py-0.5 rounded text-sm;
   background: var(--color-background-soft);
-  color: #1a1a1a;
+  color: #2a2a2b;
   font-family: var(--monospace) !important;
   border: 1px solid var(--color-border-soft);
 }
@@ -151,7 +151,7 @@ onMounted(() => {
 
 /* Links */
 .markdown-body a {
-  @apply text-[#1a1a1a] underline decoration-dashed underline-offset-4 transition-all;
+  @apply text-[#2a2a2b] underline decoration-dashed underline-offset-4 transition-all;
 }
 
 .markdown-body a:hover {

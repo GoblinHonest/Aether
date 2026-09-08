@@ -9,14 +9,14 @@
  * 颜色系统
  *
  * MiMo 纯黑白单色设计体系:
- * - primary: 纯黑 (#1a1a1a / #e5e5e5)
+ * - primary: 纯黑 (#2a2a2b / #e5e5e5)
  * - secondary: 中灰 (#666666 / #999999)
- * - accent: 浅灰 (#f5f5f5 / #1a1a1a)
+ * - accent: 浅灰 (#f5f5f5 / #2a2a2b)
  */
 export const themeColors = {
   // 主色调
   primary: {
-    light: '#1a1a1a',
+    light: '#2a2a2b',
     dark: '#e5e5e5',
     hover: {
       light: '#333333',
@@ -37,7 +37,7 @@ export const themeColors = {
   // 强调色
   accent: {
     light: '#f5f5f5',
-    dark: '#1a1a1a',
+    dark: '#2a2a2b',
   },
 
   // 背景色
@@ -48,9 +48,9 @@ export const themeColors = {
       muted: '#fafafa'
     },
     dark: {
-      base: '#0a0a0a',
-      elevated: '#111111',
-      muted: '#1a1a1a'
+      base: '#17171a',
+      elevated: '#232324',
+      muted: '#2a2a2b'
     }
   },
 
@@ -58,8 +58,8 @@ export const themeColors = {
   border: {
     light: {
       default: '#eeeeee',
-      hover: 'rgba(20, 20, 20, 0.15)',
-      focus: 'rgba(20, 20, 20, 0.25)'
+      hover: 'rgba(29, 33, 41, 0.15)',
+      focus: 'rgba(29, 33, 41, 0.25)'
     },
     dark: {
       default: 'rgba(255, 255, 255, 0.08)',

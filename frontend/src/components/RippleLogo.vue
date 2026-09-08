@@ -23,7 +23,7 @@
           >
             <stop
               offset="0%"
-              stop-color="#1a1a1a"
+              stop-color="#2a2a2b"
             />
             <stop
               offset="50%"
@@ -31,7 +31,7 @@
             />
             <stop
               offset="100%"
-              stop-color="#1a1a1a"
+              stop-color="#2a2a2b"
             />
           </linearGradient>
           <filter
@@ -163,7 +163,7 @@
         >
           <stop
             offset="0%"
-            stop-color="#1a1a1a"
+            stop-color="#2a2a2b"
           />
           <stop
             offset="50%"
@@ -171,7 +171,7 @@
           />
           <stop
             offset="100%"
-            stop-color="#1a1a1a"
+            stop-color="#2a2a2b"
           />
         </linearGradient>
         <!-- Glow filter for breathing effect -->

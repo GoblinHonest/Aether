@@ -21,7 +21,7 @@
 
         <!-- Title -->
         <h2
-          class="text-4xl md:text-5xl font-bold text-[#1a1a1a] dark:text-white mb-6 transition-all duration-700"
+          class="text-4xl md:text-5xl font-bold text-[#2a2a2b] dark:text-white mb-6 transition-all duration-700"
           :style="titleStyle"
         >
           {{ title }}

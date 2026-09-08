@@ -195,7 +195,7 @@ justify-content: flex-start;
 }
 
 :is(.dark) .tabs-list {
-  background-color: #1a1a1a;
+  background-color: #2a2a2b;
   color: #999;
 }
 

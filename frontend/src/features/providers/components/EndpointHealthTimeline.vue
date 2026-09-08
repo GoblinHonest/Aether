@@ -143,7 +143,7 @@ const segments = computed(() => {
       color = failRate > 0.5 ? 'bg-[#ccc] dark:bg-[#444]' : 'bg-[#aaa] dark:bg-[#555]'
     } else if (successCount > 0) {
       const successRate = successCount / total
-      color = successRate > 0.7 ? 'bg-[#1a1a1a] dark:bg-[#e5e5e5]' : 'bg-[#666] dark:bg-[#999]'
+      color = successRate > 0.7 ? 'bg-[#2a2a2b] dark:bg-[#e5e5e5]' : 'bg-[#666] dark:bg-[#999]'
     } else if (skippedCount > 0) {
       color = 'bg-[#999] dark:bg-[#666]'
     } else {
@@ -167,7 +167,7 @@ const segments = computed(() => {
 function getStatusColor(status: string) {
   switch (status) {
     case 'success':
-      return 'bg-[#1a1a1a] dark:bg-[#e5e5e5]'
+      return 'bg-[#2a2a2b] dark:bg-[#e5e5e5]'
     case 'failed':
       return 'bg-[#ccc] dark:bg-[#444]'
     case 'skipped':

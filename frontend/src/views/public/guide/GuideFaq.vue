@@ -26,7 +26,7 @@ const toggleFaq = (index: number) => {
   <div class="space-y-12 pb-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#2a2a2b]/10 dark:bg-[#2a2a2b]/20 border border-[#2a2a2b]/20 dark:border-[#2a2a2b]/40 px-3 py-1 text-xs font-medium text-[#2a2a2b] dark:text-[#e5e5e5]">
         <HelpCircle class="h-3 w-3" />
         答疑解惑
       </div>
@@ -54,7 +54,7 @@ const toggleFaq = (index: number) => {
             </h3>
             <ChevronRight
               class="w-5 h-5 text-[#999999] dark:text-[#a3a094] transition-transform duration-200"
-              :class="{ 'rotate-90 text-[#1a1a1a]': faq.isOpen }"
+              :class="{ 'rotate-90 text-[#2a2a2b]': faq.isOpen }"
             />
           </button>
           

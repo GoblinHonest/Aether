@@ -6,14 +6,14 @@ import { BookOpen } from 'lucide-vue-next'
   <div class="space-y-12">
     <!-- Hero 区域 -->
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#1a1a1a]/10 dark:bg-[#1a1a1a]/20 border border-[#1a1a1a]/20 dark:border-[#1a1a1a]/40 px-3 py-1 text-xs font-medium text-[#1a1a1a] dark:text-[#e5e5e5]">
+      <div class="inline-flex items-center gap-1.5 rounded-full bg-[#2a2a2b]/10 dark:bg-[#2a2a2b]/20 border border-[#2a2a2b]/20 dark:border-[#2a2a2b]/40 px-3 py-1 text-xs font-medium text-[#2a2a2b] dark:text-[#e5e5e5]">
         <BookOpen class="h-3 w-3" />
         文档核心
       </div>
       <h1 class="text-3xl font-bold text-[#262624] dark:text-[#f1ead8]">
         相关概念
       </h1>
-      <p class="text-base text-[#636261] dark:text-[#a3a094] max-w-2xl">
+      <p class="text-base text-[#4e5969] dark:text-[#a3a094] max-w-2xl">
         深入理解 ManyCode 运行时的核心模块和层级结构。
       </p>
     </div>
@@ -29,7 +29,7 @@ import { BookOpen } from 'lucide-vue-next'
           <h4 class="font-medium text-[#262624] dark:text-[#f1ead8]">
             1. 左侧模型选择、搜索区域
           </h4>
-          <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-[#636261] dark:text-[#a3a094]">
+          <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-[#4e5969] dark:text-[#a3a094]">
             <li>模型来源：opencode 维护的 https://models.dev</li>
             <li>仅显示几个官方模型提供商，可以通过搜索获取更多模型。</li>
           </ul>
@@ -38,7 +38,7 @@ import { BookOpen } from 'lucide-vue-next'
           <h4 class="font-medium text-[#262624] dark:text-[#f1ead8]">
             2. 右侧参数配置区域
           </h4>
-          <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-[#636261] dark:text-[#a3a094]">
+          <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-[#4e5969] dark:text-[#a3a094]">
             <li>手动添加模型 或 选择模型后自动填写。</li>
             <li>模型偏好：标定这个模型是否支持这些能力，一般情况下可不选。</li>
             <li>
@@ -65,7 +65,7 @@ import { BookOpen } from 'lucide-vue-next'
       class="scroll-mt-24 lg:scroll-mt-20"
     >
       <h2>2. 添加提供商</h2>
-      <div class="space-y-4 mt-4 text-[#636261] dark:text-[#a3a094] text-sm">
+      <div class="space-y-4 mt-4 text-[#4e5969] dark:text-[#a3a094] text-sm">
         <ul class="list-decimal pl-5 space-y-2">
           <li><strong class="text-[#262624] dark:text-[#f1ead8] font-medium">提供商类型：</strong>自定义或反代；一般自定义即可，反代请进入反代章节。</li>
           <li><strong class="text-[#262624] dark:text-[#f1ead8] font-medium">最大重试次数：</strong>在缓存亲和调度模式下，首次请求失败后的重试次数。</li>
@@ -93,10 +93,10 @@ import { BookOpen } from 'lucide-vue-next'
       class="scroll-mt-24 lg:scroll-mt-20"
     >
       <h2>3. 添加端点</h2>
-      <p class="text-sm text-[#636261] dark:text-[#a3a094] mb-4">
+      <p class="text-sm text-[#4e5969] dark:text-[#a3a094] mb-4">
         添加端点是添加上游支持的端点，并非你需要使用的端点。比如 Anyrouter 只支持 Claude Code 接入，那么就应该添加 Claude Messages 端点，并在 Key 中选择对应认证方式。
       </p>
-      <ul class="list-decimal pl-5 space-y-2 text-[#636261] dark:text-[#a3a094] text-sm">
+      <ul class="list-decimal pl-5 space-y-2 text-[#4e5969] dark:text-[#a3a094] text-sm">
         <li><strong class="text-[#262624] dark:text-[#f1ead8] font-medium">选择格式：</strong>选择上游支持的端点格式。</li>
         <li><strong class="text-[#262624] dark:text-[#f1ead8] font-medium">自定义 Base URL、Path：</strong>根据上游提供的信息填写。为空则使用提示的默认值。</li>
       </ul>
@@ -122,7 +122,7 @@ import { BookOpen } from 'lucide-vue-next'
       class="scroll-mt-24 lg:scroll-mt-20"
     >
       <h2>4. 添加密钥</h2>
-      <ul class="list-decimal pl-5 space-y-3 mt-4 text-[#636261] dark:text-[#a3a094] text-sm">
+      <ul class="list-decimal pl-5 space-y-3 mt-4 text-[#4e5969] dark:text-[#a3a094] text-sm">
         <li>
           <strong class="text-[#262624] dark:text-[#f1ead8] font-medium">认证类型：</strong>
           <ul class="list-disc pl-5 mt-1">
@@ -177,7 +177,7 @@ import { BookOpen } from 'lucide-vue-next'
       class="scroll-mt-24 lg:scroll-mt-20"
     >
       <h2>5. 模型权限</h2>
-      <ul class="list-decimal pl-5 space-y-2 mt-4 text-[#636261] dark:text-[#a3a094] text-sm">
+      <ul class="list-decimal pl-5 space-y-2 mt-4 text-[#4e5969] dark:text-[#a3a094] text-sm">
         <li>在编辑密钥中开启自动获取/刷新上游全部模型。</li>
         <li>手动限制/创建该Key的可用模型。</li>
         <li>不开启自动获取且勾选任意模型，即模型权限为空，则认为可以使用提供商的全部关联模型。</li>
@@ -213,7 +213,7 @@ import { BookOpen } from 'lucide-vue-next'
       class="scroll-mt-24 lg:scroll-mt-20"
     >
       <h2>6. 关联模型</h2>
-      <p class="text-sm text-[#636261] dark:text-[#a3a094] mb-4">
+      <p class="text-sm text-[#4e5969] dark:text-[#a3a094] mb-4">
         从全局模型关联提供商模型，即设置该提供商可以访问的模型，同时可以在这里设置提供商自己的模型价格。默认继承全局模型的价格。
       </p>
       <div class="grid grid-cols-1 gap-4 mt-6">
@@ -246,14 +246,14 @@ import { BookOpen } from 'lucide-vue-next'
       class="scroll-mt-24 lg:scroll-mt-20"
     >
       <h2>7. 模型映射</h2>
-      <p class="text-sm text-[#636261] dark:text-[#a3a094] mb-4">
+      <p class="text-sm text-[#4e5969] dark:text-[#a3a094] mb-4">
         如果该提供商的请求名称并非标准名称，即可通过映射改变在实际请求提供时的模型 id。
       </p>
       <div class="bg-[#f5f5f0]/80 dark:bg-[rgba(227,224,211,0.05)] p-4 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)] text-sm mb-6">
         <p class="mb-2">
-          <span class="text-[#1a1a1a] font-medium mr-2">名称修正示例:</span>官方标准名称为 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6</code> ，实际提供商叫 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6-last</code>。
+          <span class="text-[#2a2a2b] font-medium mr-2">名称修正示例:</span>官方标准名称为 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6</code> ，实际提供商叫 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6-last</code>。
         </p>
-        <p><span class="text-[#1a1a1a] font-medium mr-2">降/升级请求示例:</span>官方标准名称为 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6</code> ，实际请求提供商用 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-sonnet-4-6</code>。</p>
+        <p><span class="text-[#2a2a2b] font-medium mr-2">降/升级请求示例:</span>官方标准名称为 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-opus-4-6</code> ，实际请求提供商用 <code class="bg-black/5 dark:bg-white/10 px-1 py-0.5 rounded text-xs">claude-sonnet-4-6</code>。</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <img
@@ -320,7 +320,7 @@ import { BookOpen } from 'lucide-vue-next'
       class="scroll-mt-24 lg:scroll-mt-20 pb-8"
     >
       <h2>9. 优先级管理</h2>
-      <p class="text-sm text-[#636261] dark:text-[#a3a094] mb-4">
+      <p class="text-sm text-[#4e5969] dark:text-[#a3a094] mb-4">
         允许拖动、或者直接点击数字输入调整优先级。
       </p>
       
@@ -330,7 +330,7 @@ import { BookOpen } from 'lucide-vue-next'
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               1. 提供商优先
             </h4>
-            <p class="text-sm text-[#636261] dark:text-[#a3a094] mt-1">
+            <p class="text-sm text-[#4e5969] dark:text-[#a3a094] mt-1">
               按提供商顺序调度，同优先级负载均衡。
             </p>
           </div>
@@ -338,7 +338,7 @@ import { BookOpen } from 'lucide-vue-next'
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               2. Key优先
             </h4>
-            <p class="text-sm text-[#636261] dark:text-[#a3a094] mt-1">
+            <p class="text-sm text-[#4e5969] dark:text-[#a3a094] mt-1">
               全局Key统一调度，同优先级负载均衡。
             </p>
           </div>
@@ -346,7 +346,7 @@ import { BookOpen } from 'lucide-vue-next'
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               3. 缓存亲和模式
             </h4>
-            <p class="text-sm text-[#636261] dark:text-[#a3a094] mt-1">
+            <p class="text-sm text-[#4e5969] dark:text-[#a3a094] mt-1">
               在Key TTL时间的约束下，优先使用上一次请求使用的Key。
             </p>
           </div>
@@ -354,7 +354,7 @@ import { BookOpen } from 'lucide-vue-next'
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               4. 负载均衡模式
             </h4>
-            <ul class="list-disc pl-5 mt-1 text-sm text-[#636261] dark:text-[#a3a094] space-y-1">
+            <ul class="list-disc pl-5 mt-1 text-sm text-[#4e5969] dark:text-[#a3a094] space-y-1">
               <li>取消全局提供商优先级，提供商内部Key依然保持优先级。</li>
               <li>取消全局Key优先级，乱序使用。</li>
             </ul>
@@ -363,7 +363,7 @@ import { BookOpen } from 'lucide-vue-next'
             <h4 class="font-bold text-[#262624] dark:text-[#f1ead8] flex items-center gap-2">
               5. 固定顺序模式
             </h4>
-            <p class="text-sm text-[#636261] dark:text-[#a3a094] mt-1">
+            <p class="text-sm text-[#4e5969] dark:text-[#a3a094] mt-1">
               取消缓存亲和，始终使用固定顺序Key请求。
             </p>
           </div>

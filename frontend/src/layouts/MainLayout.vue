@@ -42,13 +42,13 @@
             >
               <HeaderLogo
                 size="h-9 w-9"
-                class-name="shrink-0 text-[#141414] dark:text-white"
+                class-name="shrink-0 text-[#1d2129] dark:text-white"
               />
               <div class="flex min-w-0 flex-col justify-center">
-                <h1 class="truncate text-sm font-semibold leading-none text-[#141414] dark:text-white">
+                <h1 class="truncate text-sm font-semibold leading-none text-[#1d2129] dark:text-white">
                   {{ siteName }}
                 </h1>
-                <span class="mt-1.5 truncate text-[10px] font-medium leading-none tracking-wide text-[#838280] dark:text-muted-foreground">{{ siteSubtitle }}</span>
+                <span class="mt-1.5 truncate text-[10px] font-medium leading-none tracking-wide text-[#86909c] dark:text-muted-foreground">{{ siteSubtitle }}</span>
               </div>
             </RouterLink>
 
@@ -60,7 +60,7 @@
             >
               <HeaderLogo
                 size="h-8 w-8"
-                class-name="shrink-0 text-[#141414] dark:text-white"
+                class-name="shrink-0 text-[#1d2129] dark:text-white"
               />
             </div>
           </Transition>
@@ -68,7 +68,7 @@
           <button
             type="button"
             class="absolute top-1/2 z-10 flex h-8 w-8 shrink-0 -translate-y-1/2 transform-gpu items-center justify-center rounded-md text-muted-foreground transition-[right,color,background-color,opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:transition-none"
-            :class="sidebarCollapsed ? 'right-[15px] scale-90 opacity-0 will-change-[right,opacity,transform] group-hover/sidebar-brand:scale-100 group-hover/sidebar-brand:opacity-100 focus-visible:scale-100 focus-visible:bg-[#f9f9f9] focus-visible:opacity-100 dark:focus-visible:bg-[#0d0d0d]' : 'right-3 opacity-100'"
+            :class="sidebarCollapsed ? 'right-[15px] scale-90 opacity-0 will-change-[right,opacity,transform] group-hover/sidebar-brand:scale-100 group-hover/sidebar-brand:opacity-100 focus-visible:scale-100 focus-visible:bg-[#f2f3f5] focus-visible:opacity-100 dark:focus-visible:bg-[#232324]' : 'right-3 opacity-100'"
             :aria-label="sidebarCollapsed ? t('nav.expandSidebar') : t('nav.collapseSidebar')"
             :aria-expanded="!sidebarCollapsed"
             :title="sidebarCollapsed ? t('nav.expandSidebar') : t('nav.collapseSidebar')"
@@ -123,7 +123,7 @@
         >
           <div
             :key="sidebarCollapsed ? 'collapsed-footer' : 'expanded-footer'"
-            class="border-t border-[#141414]/5 dark:border-white/5"
+            class="border-t border-[#1d2129]/5 dark:border-white/5"
             :class="sidebarCollapsed ? 'max-w-16 p-2' : 'p-4'"
           >
             <div
@@ -135,7 +135,7 @@
                 :class="sidebarCollapsed ? 'justify-center' : 'gap-3'"
               >
                 <div
-                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/5 bg-[#f0f0eb] text-xs font-bold text-[#141414] dark:bg-white/10 dark:text-[#73cd94]"
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/5 bg-[#f0f0eb] text-xs font-bold text-[#1d2129] dark:bg-white/10 dark:text-[#165dff]"
                   :title="sidebarCollapsed ? authStore.user?.username : undefined"
                 >
                   {{ authStore.user?.username?.substring(0, 2).toUpperCase() }}
@@ -188,10 +188,10 @@
             >
               <HeaderLogo
                 size="h-9 w-9"
-class-name="shrink-0 text-[#1a1a1a] dark:text-white"
+class-name="shrink-0 text-[#2a2a2b] dark:text-white"
               />
               <div class="flex min-w-0 flex-col justify-center">
-                <h1 class="truncate text-sm font-semibold text-[#1a1a1a] dark:text-white leading-none">
+                <h1 class="truncate text-sm font-semibold text-[#2a2a2b] dark:text-white leading-none">
                   {{ siteName }}
                 </h1>
                 <span class="mt-1.5 truncate text-[10px] font-medium leading-none tracking-normal text-[#999999] dark:text-muted-foreground">{{ siteSubtitle }}</span>
@@ -285,8 +285,8 @@ class-name="shrink-0 text-[#1a1a1a] dark:text-white"
                       :to="item.href"
                       class="flex min-w-0 items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
                       :class="isNavActive(item.href)
-                        ? 'bg-[#1a1a1a]/8 dark:bg-white/8 text-[#1a1a1a] dark:text-[#e5e5e5]'
-                        : 'text-[#666666] dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#1a1a1a] dark:hover:text-white'"
+                        ? 'bg-[#2a2a2b]/8 dark:bg-white/8 text-[#2a2a2b] dark:text-[#e5e5e5]'
+                        : 'text-[#666666] dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#2a2a2b] dark:hover:text-white'"
                       @pointerenter="prefetchNavigationItem(item.href)"
                       @focus="prefetchNavigationItem(item.href)"
                       @pointerdown="prefetchNavigationItem(item.href)"
@@ -303,14 +303,14 @@ class-name="shrink-0 text-[#1a1a1a] dark:text-white"
               </div>
 
               <!-- User Section -->
-              <div class="mt-4 pt-4 border-t border-[#1a1a1a]/8 dark:border-[rgba(255,255,255,0.08)]">
+              <div class="mt-4 pt-4 border-t border-[#2a2a2b]/8 dark:border-[rgba(255,255,255,0.08)]">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-8 h-8 rounded-full bg-[#f5f5f5] dark:bg-white/10 border border-black/5 flex items-center justify-center text-xs font-bold text-[#1a1a1a] dark:text-[#e5e5e5] shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-[#f5f5f5] dark:bg-white/10 border border-black/5 flex items-center justify-center text-xs font-bold text-[#2a2a2b] dark:text-[#e5e5e5] shrink-0">
                       {{ authStore.user?.username?.substring(0, 2).toUpperCase() }}
                     </div>
                     <div class="flex flex-col min-w-0">
-                      <span class="text-sm font-semibold leading-none truncate text-[#1a1a1a] dark:text-white">{{ authStore.user?.username }}</span>
+                      <span class="text-sm font-semibold leading-none truncate text-[#2a2a2b] dark:text-white">{{ authStore.user?.username }}</span>
                       <span class="text-[10px] text-[#999999] dark:text-muted-foreground leading-none mt-1">{{ currentRoleLabel }}</span>
                     </div>
                   </div>
@@ -341,7 +341,7 @@ class-name="shrink-0 text-[#1a1a1a] dark:text-white"
       </header>
 
       <!-- Desktop Page Header -->
-<header class="hidden lg:flex min-h-16 gap-4 px-8 py-3 items-center justify-between shrink-0 border-b border-[#000]/5 dark:border-white/8 sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#0a0a0a]/90">
+<header class="hidden lg:flex min-h-16 gap-4 px-8 py-3 items-center justify-between shrink-0 border-b border-[#000]/5 dark:border-white/8 sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#17171a]/90">
         <div class="flex min-w-0 flex-col gap-0.5">
           <div class="flex min-w-0 flex-wrap items-center gap-2 text-sm text-muted-foreground">
             <template
@@ -379,13 +379,21 @@ class-name="shrink-0 text-[#1a1a1a] dark:text-white"
           <AlertTriangle class="w-3.5 h-3.5" />
           <span>{{ t('demo.mode') }}</span>
         </div>
-
         <div class="flex shrink-0 items-center gap-2">
           <!-- Page-level header actions (right side) -->
           <div
             id="header-actions-right"
             class="flex items-center"
           />
+          <button
+            type="button"
+            class="hidden h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition sm:flex"
+            :title="t('palette.title') + ' (Ctrl+K)'"
+            :aria-label="t('palette.title')"
+            @click="paletteOpen = true"
+          >
+            <Search class="h-4 w-4" />
+          </button>
           <VersionButton
             v-if="isAdmin"
             :status="versionStatus"
@@ -487,6 +495,13 @@ class-name="shrink-0 text-[#1a1a1a] dark:text-white"
       @apply-update="handleApplySystemUpdate"
       @rollback="handleRollback"
     />
+
+    <CommandPalette
+      :open="paletteOpen"
+      :items="paletteItems"
+      @close="paletteOpen = false"
+      @navigate="handlePaletteNavigate"
+    />
   </AppShell>
 </template>
 
@@ -511,6 +526,8 @@ import HeaderLogo from '@/components/HeaderLogo.vue'
 import LanguageSwitcher from '@/components/common/LanguageSwitcher.vue'
 import ThemeModeButton from '@/components/common/ThemeModeButton.vue'
 import UpdateDialog from '@/components/common/UpdateDialog.vue'
+import CommandPalette from '@/components/common/CommandPalette.vue'
+import type { PaletteItem } from '@/components/common/CommandPalette.vue'
 import VersionButton from '@/components/common/VersionButton.vue'
 import { buildUpdateErrorStatus } from '@/utils/updateStatus'
 import { safeExternalHttpsUrl } from '@/utils/navigationSecurity'
@@ -523,6 +540,7 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
+  Search,
 } from 'lucide-vue-next'
 
 import GithubIcon from '@/components/icons/GithubIcon.vue'
@@ -1239,14 +1257,53 @@ const breadcrumbs = computed(() => buildBreadcrumbs({
   t,
 }))
 
+// Command palette (Ctrl+K / ⌘K): items derive from permission-filtered navigation
+const paletteOpen = ref(false)
+const paletteItems = computed<PaletteItem[]>(() => {
+  const seen = new Set<string>()
+  const items: PaletteItem[] = []
+  for (const group of navigation.value) {
+    for (const item of group.items) {
+      if (!item.href || seen.has(item.href)) continue
+      seen.add(item.href)
+      items.push({
+        name: item.name,
+        href: item.href,
+        icon: item.icon,
+        groupKey: group.title || 'misc',
+        groupLabel: group.title || '',
+      })
+    }
+  }
+  return items
+})
+
+function handlePaletteHotkey(e: KeyboardEvent) {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault()
+    paletteOpen.value = !paletteOpen.value
+  }
+}
+
+function handlePaletteNavigate(href: string) {
+  if (route.path !== href) router.push(href)
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handlePaletteHotkey)
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', handlePaletteHotkey)
+})
+
 // Styling Classes (Editorial)
 const sidebarClasses = computed(() => {
     const widthClass = sidebarCollapsed.value ? 'w-16' : 'w-[240px]'
-    return `${widthClass} flex-col hidden lg:flex bg-[#f9f9f9] dark:bg-[#080808] h-screen sticky top-0 transition-[width] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none`
+    return `${widthClass} flex-col hidden lg:flex bg-[#f2f3f5] dark:bg-[#17171a] h-screen sticky top-0 transition-[width] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none`
 })
 
 const contentClasses = computed(() => {
-    return `flex-1 min-w-0 bg-[#fdfdfd] dark:bg-[#0d0d0d] text-[#141414] dark:text-[#f9f9f9]`
+    return `flex-1 min-w-0 bg-[#f7f8fa] dark:bg-[#232324] text-[#1d2129] dark:text-[#f2f3f5]`
 })
 
 const mainClasses = computed(() => {

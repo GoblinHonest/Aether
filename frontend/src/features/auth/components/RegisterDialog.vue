@@ -8,7 +8,7 @@
       <div class="flex flex-col items-center text-center">
         <div class="mb-4">
           <img
-            src="/IMG_20260619_184826.png"
+            :src="'/IMG_20260619_184826.png'"
             alt="Logo"
             class="h-12 w-auto"
           >

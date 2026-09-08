@@ -143,7 +143,7 @@ function copyStep(stepId: string, code: string) {
                   <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">{{ step.title }}</span>
                   <span
                     v-if="step.optional"
-                    class="text-[10px] px-1.5 py-0.5 rounded-full bg-[#e5e4df] dark:bg-[rgba(255,255,255,0.08)] text-[#666666] dark:text-[#a3a094]"
+                    class="text-[10px] px-1.5 py-0.5 rounded-full bg-[#e6e6e6] dark:bg-[rgba(255,255,255,0.08)] text-[#666666] dark:text-[#a3a094]"
                   >
                     可选
                   </span>

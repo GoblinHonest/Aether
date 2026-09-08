@@ -8,7 +8,7 @@
       <!-- Logo 和标题 -->
       <div class="flex flex-col items-center text-center mb-8">
         <img
-          src="/IMG_20260619_184826.png"
+          :src="'/IMG_20260619_184826.png'"
           :alt="siteName"
           class="h-12 w-auto mb-4"
         >

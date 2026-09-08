@@ -69,8 +69,8 @@ export default {
         manilla: "var(--manilla)",
       },
       fontFamily: {
-        sans: ["Inter", "Plus Jakarta Sans", "-apple-system", "BlinkMacSystemFont", "system-ui", "PingFang SC", "sans-serif"],
-        serif: ["Inter", "Plus Jakarta Sans", "system-ui", "sans-serif"],
+        sans: ["DM Sans", "Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "system-ui", "PingFang SC", "sans-serif"],
+        serif: ["DM Sans", "Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "Fira Code", "ui-monospace", "monospace"],
       },
       borderRadius: {

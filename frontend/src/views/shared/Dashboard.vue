@@ -1369,8 +1369,8 @@ const dailyUsageTrendChartData = computed<ChartData<"line">>(() => {
       {
         label: getI18nLocale() === 'en-US' ? 'Requests' : '请求数',
         data: dailyStats.value.map((stat) => stat.requests),
-        borderColor: 'rgba(26, 26, 26, 0.9)',
-        backgroundColor: 'rgba(26, 26, 26, 0.08)',
+        borderColor: 'rgba(20, 20, 20, 0.9)',
+        backgroundColor: 'rgba(20, 20, 20, 0.08)',
         fill: true,
         tension: 0.3,
         yAxisID: "y",

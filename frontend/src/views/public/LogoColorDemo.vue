@@ -13,7 +13,7 @@
         <div
           v-for="(scheme, index) in colorSchemes"
           :key="index"
-          class="relative bg-white dark:bg-[#262624] rounded-2xl p-6 border border-[#e5e4df] dark:border-[rgba(227,224,211,0.16)] cursor-pointer transition-all  hover:scale-[1.02]"
+          class="relative bg-white dark:bg-[#262624] rounded-2xl p-6 border border-[#e6e6e6] dark:border-[rgba(227,224,211,0.16)] cursor-pointer transition-all  hover:scale-[1.02]"
           :class="{ 'ring-2 ring-primary': selectedScheme === index }"
           @click="selectScheme(index)"
         >

@@ -20,6 +20,7 @@
     "version": "git describe --tags --always"
   },
   "dependencies": {
+    "@fontsource/dm-sans": "^5.3.0",
     "@fontsource/inter": "^5.2.8",
     "@stripe/stripe-js": "^9.6.0",
     "@types/dompurify": "^3.0.5",

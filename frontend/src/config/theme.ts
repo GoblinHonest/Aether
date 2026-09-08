@@ -58,8 +58,8 @@ export const themeColors = {
   border: {
     light: {
       default: '#eeeeee',
-      hover: 'rgba(26, 26, 26, 0.15)',
-      focus: 'rgba(26, 26, 26, 0.25)'
+      hover: 'rgba(20, 20, 20, 0.15)',
+      focus: 'rgba(20, 20, 20, 0.25)'
     },
     dark: {
       default: 'rgba(255, 255, 255, 0.08)',

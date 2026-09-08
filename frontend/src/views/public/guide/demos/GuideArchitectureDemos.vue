@@ -13,19 +13,19 @@ const demos = [
 
 <template>
   <div class="fixed inset-0 z-50 bg-[#ffffff] dark:bg-[#141311] overflow-y-auto">
-    <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-[#1a1815]/80 backdrop-blur border-b border-[#e5e4df] dark:border-white/10">
+    <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-[#1a1815]/80 backdrop-blur border-b border-[#e6e6e6] dark:border-white/10">
       <div class="flex items-center gap-4">
         <router-link
           to="/guide/architecture"
-          class="flex items-center gap-2 text-sm font-medium text-[#666663] hover:text-[#1a1a1a] dark:text-[#a3a094] transition-colors"
+          class="flex items-center gap-2 text-sm font-medium text-[#636261] hover:text-[#1a1a1a] dark:text-[#a3a094] transition-colors"
         >
           <ArrowLeft class="w-4 h-4" /> 返回文档
         </router-link>
-        <h1 class="text-xl font-bold text-[#262624] dark:text-[#f1ead8] m-0 border-l border-[#e5e4df] dark:border-white/10 pl-4">
+        <h1 class="text-xl font-bold text-[#262624] dark:text-[#f1ead8] m-0 border-l border-[#e6e6e6] dark:border-white/10 pl-4">
           架构布局草案演示
         </h1>
       </div>
-      <div class="flex gap-2 bg-[#f5f5f0] dark:bg-[#111111] p-1 rounded-xl border border-[#e5e4df] dark:border-white/5">
+      <div class="flex gap-2 bg-[#f5f5f0] dark:bg-[#111111] p-1 rounded-xl border border-[#e6e6e6] dark:border-white/5">
         <button
           v-for="demo in demos"
           :key="demo.id"
@@ -33,7 +33,7 @@ const demos = [
           :class="[
             activeDemo === demo.id 
               ? 'bg-white dark:bg-[#2a2825] text-[#1a1a1a]'  
-              : 'text-[#666663] dark:text-[#a3a094] hover:bg-black/5 dark:hover:bg-white/5'
+              : 'text-[#636261] dark:text-[#a3a094] hover:bg-black/5 dark:hover:bg-white/5'
           ]"
           @click="activeDemo = demo.id"
         >
@@ -54,13 +54,13 @@ const demos = [
         </div>
         <!-- Ingress row -->
         <div class="flex gap-12 w-full justify-center">
-          <div class="w-48 h-16 bg-white dark:bg-[#111111] border border-[#e5e4df] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
+          <div class="w-48 h-16 bg-white dark:bg-[#111111] border border-[#e6e6e6] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
             Claude API Request
           </div>
-          <div class="w-48 h-16 bg-white dark:bg-[#111111] border border-[#e5e4df] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
+          <div class="w-48 h-16 bg-white dark:bg-[#111111] border border-[#e6e6e6] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
             OpenAI API Request
           </div>
-          <div class="w-48 h-16 bg-white dark:bg-[#111111] border border-[#e5e4df] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
+          <div class="w-48 h-16 bg-white dark:bg-[#111111] border border-[#e6e6e6] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
             Gemini API Request
           </div>
         </div>
@@ -113,11 +113,11 @@ const demos = [
         </div>
 
         <!-- Final hop down -->
-        <div class="w-1 h-12 bg-[#e5e4df] dark:bg-white/20 mx-auto my-4" />
+        <div class="w-1 h-12 bg-[#e6e6e6] dark:bg-white/20 mx-auto my-4" />
 
         <!-- Upstream -->
-        <div class="w-full max-w-4xl h-24 border-2 border-dashed border-[#e5e4df] dark:border-white/20 rounded-xl flex items-center justify-around">
-          <div class="font-bold text-[#666663] dark:text-[#a3a094]">
+        <div class="w-full max-w-4xl h-24 border-2 border-dashed border-[#e6e6e6] dark:border-white/20 rounded-xl flex items-center justify-around">
+          <div class="font-bold text-[#636261] dark:text-[#a3a094]">
             Upstream:
           </div>
           <div class="px-6 py-2 bg-emerald-500/10 text-emerald-600 rounded-lg font-bold">
@@ -156,15 +156,15 @@ const demos = [
 
         <!-- Ingress Left Arc -->
         <div class="absolute left-24 top-1/2 -translate-y-1/2 flex flex-col gap-6">
-          <div class="w-40 h-10 bg-white dark:bg-[#111111] border border-[#e5e4df] dark:border-white/10 rounded pl-4 flex items-center relative">
+          <div class="w-40 h-10 bg-white dark:bg-[#111111] border border-[#e6e6e6] dark:border-white/10 rounded pl-4 flex items-center relative">
             <span class="font-mono text-sm font-bold">Claude API</span>
             <div class="absolute right-[-40px] top-1/2 h-[1px] w-10 bg-[#1a1a1a]" />
           </div>
-          <div class="w-40 h-10 bg-white dark:bg-[#111111] border border-[#e5e4df] dark:border-white/10 rounded pl-4 flex items-center relative">
+          <div class="w-40 h-10 bg-white dark:bg-[#111111] border border-[#e6e6e6] dark:border-white/10 rounded pl-4 flex items-center relative">
             <span class="font-mono text-sm font-bold">OpenAI API</span>
             <div class="absolute right-[-40px] top-1/2 h-[1px] w-10 bg-[#1a1a1a]" />
           </div>
-          <div class="w-40 h-10 bg-white dark:bg-[#111111] border border-[#e5e4df] dark:border-white/10 rounded pl-4 flex items-center relative">
+          <div class="w-40 h-10 bg-white dark:bg-[#111111] border border-[#e6e6e6] dark:border-white/10 rounded pl-4 flex items-center relative">
             <span class="font-mono text-sm font-bold">Gemini API</span>
             <div class="absolute right-[-40px] top-1/2 h-[1px] w-10 bg-[#1a1a1a]" />
           </div>
@@ -249,8 +249,8 @@ const demos = [
           </div>
 
           <!-- Layer 3: Egress & Providers (Bottom) -->
-          <div class="absolute inset-x-0 bottom-[-50px] h-60 bg-[#f5f5f0]/50 dark:bg-[#1a1815]/50 backdrop-blur border border-[#e5e4df] dark:border-white/10 rounded-br-3xl rounded-tl-3xl shadow-xl flex flex-col p-8 transform translate-z-[0px]">
-            <h3 class="text-sm font-bold text-[#666663] dark:text-[#a3a094] mb-4">
+          <div class="absolute inset-x-0 bottom-[-50px] h-60 bg-[#f5f5f0]/50 dark:bg-[#1a1815]/50 backdrop-blur border border-[#e6e6e6] dark:border-white/10 rounded-br-3xl rounded-tl-3xl shadow-xl flex flex-col p-8 transform translate-z-[0px]">
+            <h3 class="text-sm font-bold text-[#636261] dark:text-[#a3a094] mb-4">
               LAYER 3: EGRESS & UPSTREAM
             </h3>
             

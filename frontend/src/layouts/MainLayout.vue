@@ -42,13 +42,13 @@
             >
               <HeaderLogo
                 size="h-9 w-9"
-                class-name="shrink-0 text-[#191919] dark:text-white"
+                class-name="shrink-0 text-[#141414] dark:text-white"
               />
               <div class="flex min-w-0 flex-col justify-center">
-                <h1 class="truncate text-lg font-bold leading-none text-[#191919] dark:text-white">
+                <h1 class="truncate text-sm font-semibold leading-none text-[#141414] dark:text-white">
                   {{ siteName }}
                 </h1>
-                <span class="mt-1.5 truncate text-[10px] font-medium leading-none tracking-wide text-[#91918d] dark:text-muted-foreground">{{ siteSubtitle }}</span>
+                <span class="mt-1.5 truncate text-[10px] font-medium leading-none tracking-wide text-[#838280] dark:text-muted-foreground">{{ siteSubtitle }}</span>
               </div>
             </RouterLink>
 
@@ -60,7 +60,7 @@
             >
               <HeaderLogo
                 size="h-8 w-8"
-                class-name="shrink-0 text-[#191919] dark:text-white"
+                class-name="shrink-0 text-[#141414] dark:text-white"
               />
             </div>
           </Transition>
@@ -68,7 +68,7 @@
           <button
             type="button"
             class="absolute top-1/2 z-10 flex h-8 w-8 shrink-0 -translate-y-1/2 transform-gpu items-center justify-center rounded-md text-muted-foreground transition-[right,color,background-color,opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:transition-none"
-            :class="sidebarCollapsed ? 'right-[15px] scale-90 opacity-0 will-change-[right,opacity,transform] group-hover/sidebar-brand:scale-100 group-hover/sidebar-brand:opacity-100 focus-visible:scale-100 focus-visible:bg-[#faf9f5] focus-visible:opacity-100 dark:focus-visible:bg-[#1e1c19]' : 'right-3 opacity-100'"
+            :class="sidebarCollapsed ? 'right-[15px] scale-90 opacity-0 will-change-[right,opacity,transform] group-hover/sidebar-brand:scale-100 group-hover/sidebar-brand:opacity-100 focus-visible:scale-100 focus-visible:bg-[#f9f9f9] focus-visible:opacity-100 dark:focus-visible:bg-[#0d0d0d]' : 'right-3 opacity-100'"
             :aria-label="sidebarCollapsed ? t('nav.expandSidebar') : t('nav.collapseSidebar')"
             :aria-expanded="!sidebarCollapsed"
             :title="sidebarCollapsed ? t('nav.expandSidebar') : t('nav.collapseSidebar')"
@@ -123,7 +123,7 @@
         >
           <div
             :key="sidebarCollapsed ? 'collapsed-footer' : 'expanded-footer'"
-            class="border-t border-[#3d3929]/5 dark:border-white/5"
+            class="border-t border-[#141414]/5 dark:border-white/5"
             :class="sidebarCollapsed ? 'max-w-16 p-2' : 'p-4'"
           >
             <div
@@ -135,7 +135,7 @@
                 :class="sidebarCollapsed ? 'justify-center' : 'gap-3'"
               >
                 <div
-                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/5 bg-[#f0f0eb] text-xs font-bold text-[#3d3929] dark:bg-white/10 dark:text-[#d4a27f]"
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/5 bg-[#f0f0eb] text-xs font-bold text-[#141414] dark:bg-white/10 dark:text-[#73cd94]"
                   :title="sidebarCollapsed ? authStore.user?.username : undefined"
                 >
                   {{ authStore.user?.username?.substring(0, 2).toUpperCase() }}
@@ -191,7 +191,7 @@
 class-name="shrink-0 text-[#1a1a1a] dark:text-white"
               />
               <div class="flex min-w-0 flex-col justify-center">
-                <h1 class="truncate text-lg font-bold text-[#1a1a1a] dark:text-white leading-none">
+                <h1 class="truncate text-sm font-semibold text-[#1a1a1a] dark:text-white leading-none">
                   {{ siteName }}
                 </h1>
                 <span class="mt-1.5 truncate text-[10px] font-medium leading-none tracking-normal text-[#999999] dark:text-muted-foreground">{{ siteSubtitle }}</span>
@@ -1241,12 +1241,12 @@ const breadcrumbs = computed(() => buildBreadcrumbs({
 
 // Styling Classes (Editorial)
 const sidebarClasses = computed(() => {
-    const widthClass = sidebarCollapsed.value ? 'w-16' : 'w-[260px]'
-    return `${widthClass} flex-col hidden lg:flex border-r border-[#3d3929]/5 dark:border-white/5 bg-[#faf9f5] dark:bg-[#1e1c19] h-screen sticky top-0 transition-[width] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none`
+    const widthClass = sidebarCollapsed.value ? 'w-16' : 'w-[240px]'
+    return `${widthClass} flex-col hidden lg:flex bg-[#f9f9f9] dark:bg-[#080808] h-screen sticky top-0 transition-[width] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none`
 })
 
 const contentClasses = computed(() => {
-    return `flex-1 min-w-0 bg-white dark:bg-[#0a0a0a] text-[#1a1a1a] dark:text-[#e5e5e5]`
+    return `flex-1 min-w-0 bg-[#fdfdfd] dark:bg-[#0d0d0d] text-[#141414] dark:text-[#f9f9f9]`
 })
 
 const mainClasses = computed(() => {

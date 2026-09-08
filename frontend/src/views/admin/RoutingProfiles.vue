@@ -619,6 +619,7 @@
                     {{ filter.label }}
                   </button>
                 </div>
+                </div>
 
                 <div
                   v-if="loadingGlobalModels"

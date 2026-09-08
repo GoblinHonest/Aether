@@ -34,7 +34,7 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
               <span class="text-xs font-medium font-mono text-[#1a1a1a]">1.</span>
               <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">多格式兼容接入</span>
             </div>
-            <p class="text-sm text-[#666663] dark:text-[#a3a094] leading-relaxed pl-[22px]">
+            <p class="text-sm text-[#636261] dark:text-[#a3a094] leading-relaxed pl-[22px]">
               支持多种 API 格式、端点配置及认证方式，不同客户端均可平滑接入。
             </p>
           </div>
@@ -45,7 +45,7 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
               <span class="text-xs font-medium font-mono text-[#1a1a1a]">2.</span>
               <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">统一模型路由</span>
             </div>
-            <p class="text-sm text-[#666663] dark:text-[#a3a094] leading-relaxed pl-[22px]">
+            <p class="text-sm text-[#636261] dark:text-[#a3a094] leading-relaxed pl-[22px]">
               对外暴露统一模型名称，对内自动映射到各提供商的内部模型名及变体，支持优先级选择、亲和性路由、负载均衡与故障转移。
             </p>
           </div>

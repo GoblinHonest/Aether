@@ -100,7 +100,7 @@ export const panelClasses = {
   codeBody: 'code-panel-body',
   iconButtonSmall: [
     'flex items-center justify-center rounded-lg border h-7 w-7',
-    'border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)]',
+    'border-[#e6e6e6] dark:border-[rgba(227,224,211,0.12)]',
     'bg-transparent',
     'text-[#666666] dark:text-[#f1ead8]',
     'transition hover:bg-[#f0f0eb] dark:hover:bg-[#3a3731]'

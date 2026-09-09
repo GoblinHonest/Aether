@@ -128,38 +128,6 @@
               />
               {{ $legacyT('重新检查') }}
             </Button>
-            <Button
-              v-if="rollbackAvailable"
-              variant="outline"
-              size="sm"
-              class="flex-1"
-              :disabled="isBusy"
-              @click="handleRollback"
-            >
-              {{ rollingBack ? '回滚中...' : '回滚' }}
-            </Button>
-            <Button
-              v-if="status?.has_update && status.release_url && !rollbackAvailable"
-              size="sm"
-              class="flex-1"
-              @click="handleOpenRelease"
-            >
-              <ExternalLink class="mr-2 h-3.5 w-3.5" />
-              {{ releaseButtonLabel }}
-            </Button>
-            <Button
-              v-if="status?.has_update && canApplyUpdate"
-              size="sm"
-              class="flex-1"
-              :disabled="isBusy"
-              @click="handleApplyUpdate"
-            >
-              <RefreshCw
-                class="mr-2 h-3.5 w-3.5"
-                :class="updating ? 'animate-spin' : ''"
-              />
-              {{ actionButtonLabel }}
-            </Button>
           </div>
 
           <!-- Releases List -->
@@ -312,25 +280,6 @@
       >
         {{ $legacyT('关闭') }}
       </Button>
-      <Button
-        v-if="selectedRelease?.release_url"
-        variant="outline"
-        @click="handleOpenSelectedReleasePage"
-      >
-        <ExternalLink class="mr-2 h-3.5 w-3.5" />
-        {{ $legacyT('查看标签页') }}
-      </Button>
-      <Button
-        v-if="canUseSelectedRelease"
-        :disabled="isBusy"
-        @click="handleUseSelectedRelease"
-      >
-        <RefreshCw
-          class="mr-2 h-3.5 w-3.5"
-          :class="isBusy ? 'animate-spin' : ''"
-        />
-        {{ selectedReleaseActionLabel }}
-      </Button>
     </template>
   </Dialog>
 </template>
@@ -344,10 +293,9 @@ import { normalizeReleaseNotesForDisplay } from '@/utils/releaseNotes'
 import { formatDisplayVersion } from '@/utils/version'
 import { describeUpdateStatus } from '@/utils/updateStatus'
 import { sanitizeMarkdown } from '@/utils/sanitize'
-import { safeExternalHttpsUrl } from '@/utils/navigationSecurity'
 import { useI18n } from '@/i18n'
 import { marked } from 'marked'
-import { ChevronRight, ExternalLink, Info, RefreshCw } from 'lucide-vue-next'
+import { ChevronRight, Info, RefreshCw } from 'lucide-vue-next'
 
 const props = defineProps<{
   status: CheckUpdateResponse | null
@@ -362,10 +310,6 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{
   refresh: []
-  openRelease: []
-  applyUpdate: []
-  previewRelease: [release: ReleaseEntry]
-  rollback: []
 }>()
 const { legacyT, locale } = useI18n()
 const SOURCE_BUILD_UPDATE_HINT = '当前为源码构建，请使用 git pull 后重新编译。'
@@ -384,12 +328,12 @@ const loading = computed(() => props.loading ?? false)
 const updating = computed(() => props.updating ?? false)
 const updatePhase = computed(() => props.updatePhase ?? 'download')
 const updateSupported = computed(() => props.updateSupported ?? true)
+const canApplyUpdate = computed(() => updateSupported.value && props.status?.updatable !== false)
 const rollbackAvailable = computed(() => props.rollbackAvailable ?? false)
 const rollingBack = computed(() => props.rollingBack ?? false)
 const isReconnecting = computed(() => updatePhase.value === 'reconnecting')
 const isDownloadingUpdate = computed(() => updating.value && updatePhase.value === 'download')
 const isBusy = computed(() => updating.value || rollingBack.value || isReconnecting.value)
-const canApplyUpdate = computed(() => updateSupported.value && props.status?.updatable !== false)
 const downloadProgressText = computed(() => legacyT(props.downloadProgressText || '正在下载更新包...'))
 const downloadProgressPercent = computed(() => {
   const value = props.downloadProgressPercent
@@ -406,7 +350,6 @@ const updateBlockerText = computed(() => {
   }
   return legacyT(props.status?.update_blocker || '当前版本暂不支持在线更新')
 })
-const releaseButtonLabel = computed(() => legacyT(updateSupported.value ? '查看更新' : '查看发布'))
 const buttonClass = computed(() => {
   const classes = []
 
@@ -461,12 +404,6 @@ const buttonTitle = computed(() => {
   if (!props.status) return legacyT('版本信息')
   return `${legacyT('版本信息：')}${statusLabel.value}`
 })
-const actionButtonLabel = computed(() => {
-  if (updating.value) {
-    return legacyT(updatePhase.value === 'restart' ? '重启中...' : '下载中...')
-  }
-  return legacyT(updatePhase.value === 'restart' ? '立即重启' : '立即更新')
-})
 const selectedReleaseTitle = computed(() => {
   return selectedRelease.value
     ? `${legacyT('版本详情')} · ${formatDisplayVersion(selectedRelease.value.version)}`
@@ -476,16 +413,6 @@ const selectedReleaseDescription = computed(() => {
   return selectedRelease.value?.published_at
     ? `${legacyT('发布于')} ${formatDate(selectedRelease.value.published_at)}`
     : legacyT('查看该版本的发布说明')
-})
-const canUseSelectedRelease = computed(() => {
-  return !!selectedRelease.value &&
-    !selectedRelease.value.is_current &&
-    selectedRelease.value.updatable !== false &&
-    updateSupported.value
-})
-const selectedReleaseActionLabel = computed(() => {
-  if (!selectedRelease.value) return legacyT('切换到此版本')
-  return legacyT(selectedRelease.value.is_newer ? '更新到此版本' : '切换到此版本')
 })
 const selectedReleaseHelpText = computed(() => {
   if (!selectedRelease.value) return ''
@@ -568,30 +495,6 @@ function handleRefresh() {
   emit('refresh')
 }
 
-function handleOpenRelease() {
-  isOpen.value = false
-  emit('openRelease')
-}
 
-function handleOpenSelectedReleasePage() {
-  const releaseUrl = safeExternalHttpsUrl(selectedRelease.value?.release_url)
-  if (releaseUrl) {
-    window.open(releaseUrl, '_blank', 'noopener,noreferrer')
-  }
-}
 
-function handleUseSelectedRelease() {
-  if (!selectedRelease.value || !canUseSelectedRelease.value) return
-  showReleaseDetails.value = false
-  isOpen.value = false
-  emit('previewRelease', selectedRelease.value)
-}
-
-function handleApplyUpdate() {
-  emit('applyUpdate')
-}
-
-function handleRollback() {
-  emit('rollback')
-}
 </script>

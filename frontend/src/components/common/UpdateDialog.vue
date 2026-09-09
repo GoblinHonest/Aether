@@ -164,15 +164,6 @@
           {{ rollingBack ? legacyT('回滚中...') : legacyT('回滚上一版本') }}
         </Button>
         <Button
-          v-else
-          variant="outline"
-          class="flex-1"
-          :disabled="updating || rollingBack"
-          @click="handleViewRelease"
-        >
-          {{ releaseLinkLabelText }}
-        </Button>
-        <Button
           v-if="updateSupported"
           class="flex-1"
           :disabled="updating || rollingBack || !canApplyUpdate"
@@ -195,18 +186,15 @@ import { normalizeReleaseNotesForDisplay } from '@/utils/releaseNotes'
 import { sanitizeMarkdown } from '@/utils/sanitize'
 import { marked } from 'marked'
 import { useI18n } from '@/i18n'
-import { safeExternalHttpsUrl } from '@/utils/navigationSecurity'
 
 const props = defineProps<{
   modelValue: boolean
   currentVersion: string
   latestVersion: string
-  releaseUrl: string | null
   releaseNotes: string | null
   publishedAt: string | null
   dialogTitle?: string
   versionLabel?: string
-  releaseLinkLabel?: string
   updatePhase?: 'download' | 'restart' | 'reconnecting'
   updating?: boolean
   updateSupported?: boolean
@@ -249,7 +237,6 @@ const rollingBack = computed(() => props.rollingBack ?? false)
 const downloadProgressText = computed(() => legacyT(props.downloadProgressText || '正在下载更新包...'))
 const dialogTitleText = computed(() => legacyT(props.dialogTitle ?? '发现新版本'))
 const versionLabelText = computed(() => legacyT(props.versionLabel ?? '最新版本'))
-const releaseLinkLabelText = computed(() => legacyT(props.releaseLinkLabel ?? '查看发布'))
 const fallbackDescriptionText = computed(() => {
   if (!canApplyUpdate.value) return updateBlockerText.value
   return legacyT('新版本已发布，建议更新以获得最新功能和安全修复')
@@ -320,14 +307,6 @@ function handleLater() {
     until: Date.now() + 24 * 60 * 60 * 1000
   }
   localStorage.setItem(ignoreKey, JSON.stringify(ignoreData))
-  isOpen.value = false
-}
-
-function handleViewRelease() {
-  const releaseUrl = safeExternalHttpsUrl(props.releaseUrl)
-  if (releaseUrl) {
-    window.open(releaseUrl, '_blank', 'noopener,noreferrer')
-  }
   isOpen.value = false
 }
 

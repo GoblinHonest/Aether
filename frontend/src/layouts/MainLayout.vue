@@ -204,18 +204,8 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
                 v-if="isAdmin"
                 :status="versionStatus"
                 :loading="loadingVersionStatus"
-                :updating="applyingSystemUpdate"
-                :update-phase="systemUpdatePhase"
-                :update-supported="updateSupported"
-                :rollback-available="rollbackAvailable"
-                :rolling-back="rollingBack"
-                :download-progress-text="updateProgressText"
-                :download-progress-percent="updateProgressPercent"
+                :update-supported="false"
                 @refresh="handleVersionRefresh"
-                @open-release="openVersionReleasePage"
-                @preview-release="openReleaseUpdateDialog"
-                @apply-update="handleApplySystemUpdate"
-                @rollback="handleRollback"
               />
               <LanguageSwitcher />
               <ThemeModeButton />
@@ -398,18 +388,8 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
             v-if="isAdmin"
             :status="versionStatus"
             :loading="loadingVersionStatus"
-            :updating="applyingSystemUpdate"
-            :update-phase="systemUpdatePhase"
-            :update-supported="updateSupported"
-            :rollback-available="rollbackAvailable"
-            :rolling-back="rollingBack"
-            :download-progress-text="updateProgressText"
-            :download-progress-percent="updateProgressPercent"
+            :update-supported="false"
             @refresh="handleVersionRefresh"
-            @open-release="openVersionReleasePage"
-            @preview-release="openReleaseUpdateDialog"
-            @apply-update="handleApplySystemUpdate"
-            @rollback="handleRollback"
           />
           <LanguageSwitcher />
           <!-- Theme Toggle -->
@@ -457,33 +437,7 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
       </template>
     </Dialog>
 
-    <!-- 更新提示弹窗 -->
-    <UpdateDialog
-      v-if="updateInfo"
-      v-model="showUpdateDialog"
-      :current-version="updateInfo.current_version"
-      :latest-version="updateInfo.latest_version || ''"
-      :release-url="updateInfo.release_url"
-      :release-notes="updateInfo.release_notes"
-      :published-at="updateInfo.published_at"
-      :dialog-title="updateDialogTitle"
-      :version-label="updateDialogVersionLabel"
-      :release-link-label="updateDialogReleaseLinkLabel"
-      :updating="applyingSystemUpdate"
-      :update-phase="systemUpdatePhase"
-      :update-supported="updateSupported"
-      :updatable="updateInfo.updatable"
-      :update-blocker="updateInfo.update_blocker"
-      :update-strategy="updateStrategy"
-      :docker-update-command="dockerUpdateCommand"
-      :reconnect-message="reconnectMessage"
-      :rollback-available="rollbackAvailable"
-      :rolling-back="rollingBack"
-      :download-progress-text="updateProgressText"
-      :download-progress-percent="updateProgressPercent"
-      @apply-update="handleApplySystemUpdate"
-      @rollback="handleRollback"
-    />
+
 
     <CommandPalette
       :open="paletteOpen"
@@ -604,10 +558,6 @@ const updateDialogVersionLabel = computed(() => {
     return updateSupported.value ? t('update.version.target') : t('update.version.tag')
   }
   return t('update.version.latest')
-})
-const updateDialogReleaseLinkLabel = computed(() => {
-  if (updateDialogMode.value === 'selected') return t('update.link.tag')
-  return updateSupported.value ? t('update.link.update') : t('update.link.release')
 })
 watch(systemUpdatePhase, (val) => {
   setSessionStorageItem('aether_update_phase', val)
@@ -769,24 +719,6 @@ watch(() => route.path, () => {
   mobileMenuOpen.value = false
 })
 
-// 检查是否应该显示更新提示
-function shouldShowUpdatePrompt(latestVersion: string): boolean {
-  const ignoreKey = 'aether_update_ignore'
-  const ignoreData = localStorage.getItem(ignoreKey)
-  if (!ignoreData) return true
-
-  try {
-    const { version, until } = JSON.parse(ignoreData)
-    // 如果忽略的是同一版本且未过期，则不显示
-    if (version === latestVersion && Date.now() < until) {
-      return false
-    }
-  } catch {
-    // 解析失败，显示提示
-  }
-  return true
-}
-
 async function loadVersionStatus(force = false) {
   if (!isAdmin.value) return null
   if (!force && applyCachedVersionStatus()) {
@@ -855,13 +787,6 @@ function syncSystemUpdatePhase(status: CheckUpdateResponse | null) {
 
 function handleVersionRefresh() {
   void loadVersionStatus(true)
-}
-
-function openVersionReleasePage() {
-  const releaseUrl = safeExternalHttpsUrl(versionStatus.value?.release_url)
-  if (releaseUrl) {
-    window.open(releaseUrl, '_blank', 'noopener,noreferrer')
-  }
 }
 
 function buildUpdateInfoFromRelease(release: ReleaseEntry): CheckUpdateResponse {
@@ -1075,29 +1000,6 @@ function showDebugVersionStatus(hasUpdate = true) {
   preparedUpdateVersion.value = null
 }
 
-// 检查更新
-async function checkForUpdate() {
-  // 只有管理员才检查更新
-  if (!authStore.canOperateAdmin) return
-
-  // 同一会话内只检查一次
-  const sessionKey = 'aether_update_checked'
-  if (sessionStorage.getItem(sessionKey)) {
-    applyCachedVersionStatus()
-    return
-  }
-  sessionStorage.setItem(sessionKey, '1')
-
-  const result = versionStatus.value ?? await loadVersionStatus()
-  if (result?.has_update && result.latest_version) {
-    if (shouldShowUpdatePrompt(result.latest_version)) {
-      updateDialogMode.value = 'latest'
-      updateInfo.value = result
-      showUpdateDialog.value = true
-    }
-  }
-}
-
 function syncAuthNotice() {
   authStore.syncToken()
   showAuthError.value = !!authStore.user && !authStore.token
@@ -1173,11 +1075,6 @@ onMounted(() => {
   }
   void loadRequiredAnnouncements()
 
-  // 延迟检查更新，避免 GitHub Releases 检查和首屏业务数据争抢资源。
-  updateCheckTimer = window.setTimeout(() => {
-    updateCheckTimer = null
-    void checkForUpdate()
-  }, 2000)
 
   if (import.meta.env.DEV) {
     window.__aetherShowUpdateDialog = showDebugUpdateDialog

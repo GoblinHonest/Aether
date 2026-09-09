@@ -11,10 +11,10 @@
     <!-- Error State -->
     <Card
       v-else-if="error"
-      class="border-red-200 dark:border-red-800"
+      class="border-destructive/25"
     >
       <div class="p-4">
-        <p class="text-sm text-red-600 dark:text-red-400">
+        <p class="text-sm text-destructive">
           {{ error }}
         </p>
       </div>
@@ -2629,12 +2629,12 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 /* 子节点状态颜色 */
-.sub-dot.status-success { background: #22c55e; color: #22c55e; }
-.sub-dot.status-failed { background: #ef4444; color: #ef4444; }
-.sub-dot.status-cancelled { background: #f59e0b; color: #f59e0b; }
-.sub-dot.status-pending { background: #3b82f6; color: #3b82f6; }
+.sub-dot.status-success { background: var(--chart-5); color: var(--chart-5); }
+.sub-dot.status-failed { background: var(--destructive); color: var(--destructive); }
+.sub-dot.status-cancelled { background: var(--chart-4); color: var(--chart-4); }
+.sub-dot.status-pending { background: var(--chart-1); color: var(--chart-1); }
 .sub-dot.status-skipped { background: var(--foreground); color: var(--foreground); }
-.sub-dot.status-available { background: #d1d5db; color: #d1d5db; }
+.sub-dot.status-available { background: var(--border); color: var(--border); }
 
 /* 选中状态：呼吸动画 + 涟漪效果 */
 .minimal-node-group.selected .node-dot {
@@ -2692,12 +2692,12 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 /* 状态颜色 - 同心圆使用 color */
-.node-dot.status-success { color: #22c55e; }
-.node-dot.status-failed { color: #ef4444; }
-.node-dot.status-cancelled { color: #f59e0b; }
-.node-dot.status-pending { color: #3b82f6; }
+.node-dot.status-success { color: var(--chart-5); }
+.node-dot.status-failed { color: var(--destructive); }
+.node-dot.status-cancelled { color: var(--chart-4); }
+.node-dot.status-pending { color: var(--chart-1); }
 .node-dot.status-skipped { color: var(--foreground); }
-.node-dot.status-available { color: #d1d5db; }
+.node-dot.status-available { color: var(--border); }
 
 /* 连接线容器 */
 .node-line-wrapper {
@@ -2755,12 +2755,12 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   border-radius: 50%;
 }
 
-.title-dot.status-success { background: #22c55e; }
-.title-dot.status-failed { background: #ef4444; }
-.title-dot.status-cancelled { background: #f59e0b; }
-.title-dot.status-pending { background: #3b82f6; }
+.title-dot.status-success { background: var(--chart-5); }
+.title-dot.status-failed { background: var(--destructive); }
+.title-dot.status-cancelled { background: var(--chart-4); }
+.title-dot.status-pending { background: var(--chart-1); }
 .title-dot.status-skipped { background: var(--foreground); }
-.title-dot.status-available { background: #d1d5db; }
+.title-dot.status-available { background: var(--border); }
 
 .title-text {
   font-weight: 600;
@@ -2832,23 +2832,23 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 .status-tag.status-success {
-  background: #22c55e20;
-  color: #22c55e;
+  background: color-mix(in srgb, var(--chart-5) 12%, transparent);
+  color: var(--chart-5);
 }
 
 .status-tag.status-failed {
-  background: #ef444420;
-  color: #ef4444;
+  background: color-mix(in srgb, var(--destructive) 12%, transparent);
+  color: var(--destructive);
 }
 
 .status-tag.status-cancelled {
-  background: #f59e0b20;
-  color: #f59e0b;
+  background: color-mix(in srgb, var(--chart-4) 12%, transparent);
+  color: var(--chart-4);
 }
 
 .status-tag.status-pending {
-  background: #3b82f620;
-  color: #3b82f6;
+  background: color-mix(in srgb, var(--chart-1) 12%, transparent);
+  color: var(--chart-1);
 }
 
 .status-tag.status-skipped {
@@ -3102,21 +3102,21 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
 .image-progress-phase.phase-connecting,
 .image-progress-phase.phase-streaming {
-  color: #2563eb;
-  background: #3b82f614;
-  border-color: #3b82f633;
+  color: var(--chart-1);
+  background: color-mix(in srgb, var(--chart-1) 8%, transparent);
+  border-color: color-mix(in srgb, var(--chart-1) 20%, transparent);
 }
 
 .image-progress-phase.phase-completed {
-  color: #16a34a;
-  background: #22c55e14;
-  border-color: #22c55e33;
+  color: var(--chart-5);
+  background: color-mix(in srgb, var(--chart-5) 8%, transparent);
+  border-color: color-mix(in srgb, var(--chart-5) 20%, transparent);
 }
 
 .image-progress-phase.phase-failed {
-  color: #dc2626;
-  background: #ef444414;
-  border-color: #ef444433;
+  color: var(--destructive);
+  background: color-mix(in srgb, var(--destructive) 8%, transparent);
+  border-color: color-mix(in srgb, var(--destructive) 20%, transparent);
 }
 
 .image-progress-grid {
@@ -3290,12 +3290,12 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
 .usage-cost {
   font-size: 0.75rem;
-  color: #16a34a;
+  color: var(--chart-5);
   font-family: ui-monospace, monospace;
 }
 
 .dark .usage-cost {
-  color: #4ade80;
+  color: var(--chart-5);
 }
 
 .usage-divider {
@@ -3351,8 +3351,8 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .error-block {
   margin-top: 1rem;
   padding: 0.875rem;
-  background: #ef444410;
-  border: 1px solid #ef444430;
+  background: color-mix(in srgb, var(--destructive) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--destructive) 19%, transparent);
   border-radius: 8px;
 }
 
@@ -3367,7 +3367,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .error-type {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #ef4444;
+  color: var(--destructive);
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
@@ -3383,23 +3383,23 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 .error-status-badge.is-success {
-  color: #166534;
-  background: #22c55e18;
+  color: var(--chart-5);
+  background: color-mix(in srgb, var(--chart-5) 9%, transparent);
 }
 
 .error-status-badge.is-warning {
-  color: #92400e;
-  background: #f59e0b1f;
+  color: var(--chart-4);
+  background: color-mix(in srgb, var(--chart-4) 12%, transparent);
 }
 
 .error-status-badge.is-error {
-  color: #991b1b;
-  background: #ef44441f;
+  color: var(--destructive);
+  background: color-mix(in srgb, var(--destructive) 12%, transparent);
 }
 
 .error-msg {
   font-size: 0.85rem;
-  color: #dc2626;
+  color: var(--destructive);
   word-break: break-word;
 }
 

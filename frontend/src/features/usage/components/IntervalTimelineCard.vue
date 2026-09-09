@@ -1,5 +1,5 @@
 <template>
-  <Card class="p-4">
+  <Card class="h-full flex flex-col p-4">
     <div class="flex items-center justify-between mb-3">
       <p class="text-sm font-semibold">
         {{ title }}
@@ -29,7 +29,7 @@
     </div>
     <div
       v-if="loading"
-      class="h-[160px] flex items-center justify-center"
+      class="flex-1 min-h-[160px] flex items-center justify-center"
     >
       <div class="text-sm text-muted-foreground">
         Loading...
@@ -37,7 +37,7 @@
     </div>
     <div
       v-else-if="hasData"
-      class="h-[160px]"
+      class="flex-1 min-h-[160px]"
     >
       <ScatterChart
         :data="chartData"
@@ -46,7 +46,7 @@
     </div>
     <div
       v-else
-      class="h-[160px] flex items-center justify-center text-sm text-muted-foreground"
+      class="flex-1 min-h-[160px] flex items-center justify-center text-sm text-muted-foreground"
     >
       暂无请求间隔数据
     </div>
@@ -61,6 +61,7 @@ import ScatterChart from '@/components/charts/ScatterChart.vue'
 import { cacheAnalysisApi, type IntervalTimelineResponse } from '@/api/cache'
 import { meApi } from '@/api/me'
 import type { ChartOptions } from 'chart.js'
+import { hexToRgba, useChartPalette } from '@/components/charts/theme'
 import { log } from '@/utils/logger'
 
 const props = withDefaults(defineProps<{
@@ -75,7 +76,7 @@ const props = withDefaults(defineProps<{
 
 const loading = ref(false)
 const timelineData = ref<IntervalTimelineResponse | null>(null)
-const primaryColor = ref('201, 100, 66')  // 默认主题色
+
 let loadRequestId = 0
 let refreshTimer: ReturnType<typeof setTimeout> | null = null
 const isPageVisible = ref(typeof document === 'undefined' ? true : !document.hidden)
@@ -84,17 +85,9 @@ const ADMIN_TIMELINE_LIMIT = 1500
 const USER_TIMELINE_LIMIT = 1200
 
 // 获取主题色
-function getPrimaryColor(): string {
-  if (typeof window === 'undefined') return '201, 100, 66'
-  // CSS 变量定义在 body 上，不是 documentElement
-  const body = document.body
-  const style = getComputedStyle(body)
-  const rgb = style.getPropertyValue('--color-primary-rgb').trim()
-  return rgb || '201, 100, 66'
-}
+
 
 onMounted(() => {
-  primaryColor.value = getPrimaryColor()
   if (typeof document !== 'undefined') {
     document.addEventListener('visibilitychange', handleVisibilityChange)
   }
@@ -102,19 +95,10 @@ onMounted(() => {
   scheduleNextRefresh()
 })
 
-// 预定义的颜色列表（用于区分不同用户/模型）
-const COLORS = [
-  'rgba(59, 130, 246, 0.7)',   // blue
-  'rgba(236, 72, 153, 0.7)',   // pink
-  'rgba(34, 197, 94, 0.7)',    // green
-  'rgba(249, 115, 22, 0.7)',   // orange
-  'rgba(168, 85, 247, 0.7)',   // purple
-  'rgba(234, 179, 8, 0.7)',    // yellow
-  'rgba(14, 165, 233, 0.7)',   // sky
-  'rgba(239, 68, 68, 0.7)',    // red
-  'rgba(20, 184, 166, 0.7)',   // teal
-  'rgba(99, 102, 241, 0.7)',   // indigo
-]
+// Arco 8-color series, resolved reactively per theme via useChartPalette
+const palette = useChartPalette()
+
+const groupColor = (index: number) => hexToRgba(palette.value[index % 8], 0.7)
 
 const hasData = computed(() =>
   timelineData.value && timelineData.value.points && timelineData.value.points.length > 0
@@ -143,14 +127,14 @@ const legendItems = computed(() => {
     return users.map(([userId, username], index) => ({
       id: userId,
       name: username || userId.slice(0, 8),
-      color: COLORS[index % COLORS.length]
+      color: groupColor(index)
     }))
   } else if (timelineData.value?.models && timelineData.value.models.length > 1) {
     // 用户视图：显示模型图例
     return timelineData.value.models.map((model, index) => ({
       id: model,
       name: formatModelName(model),
-      color: COLORS[index % COLORS.length]
+      color: groupColor(index)
     }))
   }
   return []
@@ -199,7 +183,7 @@ const chartData = computed<TimeScatterChartData>(() => {
     const userIds = Object.keys(timelineData.value.users)
     const userColorMap: Record<string, string> = {}
     userIds.forEach((userId, index) => {
-      userColorMap[userId] = COLORS[index % COLORS.length]
+      userColorMap[userId] = groupColor(index)
     })
 
     // 按用户分组数据
@@ -230,7 +214,7 @@ const chartData = computed<TimeScatterChartData>(() => {
     const models = timelineData.value.models
     const modelColorMap: Record<string, string> = {}
     models.forEach((model, index) => {
-      modelColorMap[model] = COLORS[index % COLORS.length]
+      modelColorMap[model] = groupColor(index)
     })
 
     // 按模型分组数据
@@ -261,8 +245,8 @@ const chartData = computed<TimeScatterChartData>(() => {
     datasets: [{
       label: '请求间隔',
       data: points.map(p => ({ x: p.x, y: p.y })),
-      backgroundColor: `rgba(${primaryColor.value}, 0.6)`,
-      borderColor: `rgba(${primaryColor.value}, 0.8)`,
+      backgroundColor: hexToRgba(palette.value[0], 0.6),
+      borderColor: hexToRgba(palette.value[0], 0.8),
       pointRadius: 3,
       pointHoverRadius: 5,
     }]

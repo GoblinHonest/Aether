@@ -1,5 +1,5 @@
 <template>
-  <Card class="p-4 overflow-hidden">
+  <Card class="h-full flex flex-col p-4 overflow-hidden">
     <div class="flex items-center justify-between mb-3">
       <p class="text-sm font-semibold">
         {{ title }}
@@ -34,6 +34,7 @@
     </div>
     <ActivityHeatmap
       v-else-if="hasData"
+      class="flex-1"
       :data="data"
       :show-header="false"
     />

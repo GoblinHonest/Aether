@@ -164,7 +164,7 @@
   }
 
   body[theme-mode='light'] {
-    --color-primary-rgb: 26, 26, 26;
+    --color-primary-rgb: 22, 93, 255;
     --color-primary: #1d2129;
     --color-primary-soft: #4e5969;
     --color-primary-mute: #f2f3f5;
@@ -182,7 +182,7 @@
   body[theme-mode='dark'],
   .dark {
     color-scheme: dark;
-    --color-primary-rgb: 229, 229, 229;
+    --color-primary-rgb: 64, 128, 255;
     --slate-dark: #f6f6f6;
     --slate-medium: #ababac;
     --slate-light: #525252;

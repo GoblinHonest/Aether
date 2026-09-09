@@ -8,7 +8,7 @@
   >
     <div class="max-h-[calc(100dvh-13rem)] space-y-5 overflow-y-auto overscroll-contain pr-1 sm:max-h-[min(72vh,42rem)] sm:space-y-6 sm:pr-2">
       <!-- Section 1: 分配模式 (distribution_mode 互斥组, 四选一) -->
-      <div class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-4">
+      <div class="space-y-4 rounded-lg border border-border/60 bg-card/70 p-4">
         <div class="space-y-1">
           <h3 class="text-sm font-medium">
             分配模式
@@ -73,7 +73,7 @@
       </div>
 
       <!-- Section 2: 策略调度 (非互斥, 可叠加组合 + 拖拽排序) -->
-      <div class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-4">
+      <div class="space-y-4 rounded-lg border border-border/60 bg-card/70 p-4">
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
             <h3 class="text-sm font-medium">

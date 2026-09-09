@@ -110,7 +110,7 @@ onMounted(() => {
 
 /* Code Blocks & Inline Code */
 .markdown-body pre {
-  @apply p-4 rounded-xl overflow-x-auto mb-6 text-sm backdrop-blur-md;
+  @apply p-4 rounded-xl overflow-x-auto mb-6 text-sm;
   background: var(--color-background-soft);
   border: 1px solid var(--color-border-soft);
   font-family: var(--monospace) !important;

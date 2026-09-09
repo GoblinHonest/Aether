@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-2xl border border-dashed border-border/60 bg-card/70 px-6 py-10 text-center">
+  <div class="rounded-lg border border-dashed border-border/60 bg-card/70 px-6 py-10 text-center">
     <Avatar class="mx-auto mb-3 h-12 w-12">
       <AvatarFallback class="bg-muted text-base font-semibold text-muted-foreground">
         U

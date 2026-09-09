@@ -35,10 +35,10 @@ const buttonClass = computed(() => {
     'inline-flex min-w-0 max-w-full items-center justify-center rounded-md text-[13px] font-medium leading-5 [overflow-wrap:anywhere] [&_svg]:shrink-0 transition-colors duration-200 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
 
   const variantClasses = {
-    default: 'bg-primary text-[#0f0d0c] hover:bg-primary/90',
+    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
     destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/85',
     outline:
-      'border border-border/60 bg-card/60 text-foreground hover:border-primary/60 hover:text-primary hover:bg-primary/10 backdrop-blur transition-all',
+      'border border-border/60 bg-card/60 text-foreground hover:border-primary/60 hover:text-primary hover:bg-primary/10 transition-all',
     secondary:
       'bg-secondary text-secondary-foreground hover:bg-secondary/80',
     ghost: 'hover:bg-accent hover:text-accent-foreground',

@@ -42,7 +42,7 @@
               />
               <!-- 图标固定在右上角 -->
               <div
-                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-2xl border border-border bg-card/50 p-2 sm:p-3 shadow-inner backdrop-blur-sm"
+                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-lg border border-border bg-card/50 p-2 sm:p-3 shadow-inner"
                 :class="getStatIconColor(index)"
               >
                 <component
@@ -101,7 +101,7 @@
                 :class="statCardGlows[index % statCardGlows.length]"
               />
               <div
-                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-2xl border border-border bg-card/50 p-2 sm:p-3 shadow-inner backdrop-blur-sm"
+                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-lg border border-border bg-card/50 p-2 sm:p-3 shadow-inner"
                 :class="getStatIconColor(index)"
               >
                 <component
@@ -769,7 +769,7 @@
       <!-- 汇总信息 -->
       <div
         v-if="dailyStats.length > 0"
-        class="border-t border-border bg-muted/30 backdrop-blur-sm px-4 py-3 text-xs"
+        class="border-t border-border bg-muted/30 px-4 py-3 text-xs"
       >
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <div class="text-center">

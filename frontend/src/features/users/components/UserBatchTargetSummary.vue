@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/10 via-background to-muted/40 p-4 shadow-sm">
+  <div class="rounded-lg border border-primary/15 bg-gradient-to-br from-primary/10 via-background to-muted/40 p-4 shadow-sm">
     <div class="flex flex-wrap items-start justify-between gap-3">
       <div class="min-w-0 space-y-1">
         <div class="flex items-center gap-2 text-sm font-semibold text-foreground">

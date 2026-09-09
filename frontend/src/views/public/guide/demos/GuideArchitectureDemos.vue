@@ -13,7 +13,7 @@ const demos = [
 
 <template>
   <div class="fixed inset-0 z-50 bg-[#ffffff] dark:bg-[#141311] overflow-y-auto">
-    <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-[#1a1815]/80 backdrop-blur border-b border-[#e5e6eb] dark:border-white/10">
+    <div class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-[#1a1815]/80 border-b border-[#e5e6eb] dark:border-white/10">
       <div class="flex items-center gap-4">
         <router-link
           to="/guide/architecture"
@@ -47,7 +47,7 @@ const demos = [
       <!-- Variant 1: Vertical -->
       <div
         v-if="activeDemo === 1"
-        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-3xl relative flex flex-col items-center justify-between p-12"
+        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-xl relative flex flex-col items-center justify-between p-12"
       >
         <div class="absolute top-4 left-6 text-sm font-mono text-[#2a2a2b]/50">
           Layout Variant: Vertical Pipeline
@@ -79,7 +79,7 @@ const demos = [
         </div>
 
         <!-- Aether Core -->
-        <div class="w-full max-w-3xl h-48 bg-[#2a2a2b]/10 border-2 border-[#2a2a2b] rounded-2xl flex flex-col items-center justify-center">
+        <div class="w-full max-w-3xl h-48 bg-[#2a2a2b]/10 border-2 border-[#2a2a2b] rounded-lg flex flex-col items-center justify-center">
           <h2 class="text-3xl font-black tracking-normal text-[#2a2a2b] mb-2">
             AETHER GATEWAY
           </h2>
@@ -138,7 +138,7 @@ const demos = [
       <!-- Variant 2: Central Hub -->
       <div
         v-if="activeDemo === 2"
-        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-3xl relative flex items-center justify-center p-12"
+        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-xl relative flex items-center justify-center p-12"
       >
         <div class="absolute top-4 left-6 text-sm font-mono text-[#2a2a2b]/50">
           Layout Variant: Central Star/Hub
@@ -201,7 +201,7 @@ const demos = [
       <!-- Variant 3: 2.5D Stacked -->
       <div
         v-if="activeDemo === 3"
-        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-3xl relative pt-32 pb-12 flex justify-center perspective-[1000px]"
+        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-xl relative pt-32 pb-12 flex justify-center perspective-[1000px]"
       >
         <div class="absolute top-4 left-6 text-sm font-mono text-[#2a2a2b]/50">
           Layout Variant: 2.5D Stacked Layers (AWS Style)
@@ -212,7 +212,7 @@ const demos = [
           style="transform: rotateX(55deg) rotateZ(-45deg);"
         >
           <!-- Layer 1: Ingress (Top) -->
-          <div class="absolute inset-x-0 top-0 h-40 bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/50 dark:border-white/10 rounded-tr-3xl rounded-bl-3xl shadow-2xl flex flex-col justify-center px-12 transform translate-z-[120px]">
+          <div class="absolute inset-x-0 top-0 h-40 bg-white/40 dark:bg-black/40 border border-white/50 dark:border-white/10 rounded-tr-3xl rounded-bl-3xl shadow-md flex flex-col justify-center px-12 transform translate-z-[120px]">
             <h3 class="text-sm font-bold text-[#2a2a2b] absolute top-4 left-4 tracking-normal">
               LAYER 1: INGRESS CLIENTS
             </h3>
@@ -232,7 +232,7 @@ const demos = [
           </div>
 
           <!-- Layer 2: Aether Gateway Core (Middle) -->
-          <div class="absolute inset-x-0 top-[200px] h-48 bg-[#2a2a2b]/20 backdrop-blur-xl border-2 border-[#2a2a2b] rounded-lg shadow-2xl flex items-center justify-center relative transform translate-z-[60px]">
+          <div class="absolute inset-x-0 top-[200px] h-48 bg-[#2a2a2b]/20 border-2 border-[#2a2a2b] rounded-lg shadow-md flex items-center justify-center relative transform translate-z-[60px]">
             <h3 class="text-sm font-bold text-[#2a2a2b] absolute top-4 left-4 tracking-normal">
               LAYER 2: AETHER GATEWAY (CORE)
             </h3>
@@ -249,7 +249,7 @@ const demos = [
           </div>
 
           <!-- Layer 3: Egress & Providers (Bottom) -->
-          <div class="absolute inset-x-0 bottom-[-50px] h-60 bg-[#f5f5f0]/50 dark:bg-[#1a1815]/50 backdrop-blur border border-[#e5e6eb] dark:border-white/10 rounded-br-3xl rounded-tl-3xl shadow-xl flex flex-col p-8 transform translate-z-[0px]">
+          <div class="absolute inset-x-0 bottom-[-50px] h-60 bg-[#f5f5f0]/50 dark:bg-[#1a1815]/50 border border-[#e5e6eb] dark:border-white/10 rounded-br-3xl rounded-tl-3xl shadow-xl flex flex-col p-8 transform translate-z-[0px]">
             <h3 class="text-sm font-bold text-[#4e5969] dark:text-[#a3a094] mb-4">
               LAYER 3: EGRESS & UPSTREAM
             </h3>

@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-2xl border border-border/60 bg-card/95 p-4 shadow-[0_10px_26px_-22px_hsl(var(--foreground))]">
+  <div class="rounded-lg border border-border/60 bg-card/95 p-4 shadow-[0_10px_26px_-22px_hsl(var(--foreground))]">
     <div class="space-y-4">
       <div class="flex items-start gap-3">
         <Checkbox

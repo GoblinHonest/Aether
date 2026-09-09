@@ -13,7 +13,7 @@
         class="fixed inset-0 z-[300] flex items-start justify-center pt-[12vh]"
         @click.self="close"
       >
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+        <div class="absolute inset-0 bg-black/40" />
 
         <div
           ref="panelRef"

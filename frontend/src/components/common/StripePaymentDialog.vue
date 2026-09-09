@@ -84,7 +84,7 @@
         />
         <div
           v-if="initializing"
-          class="absolute inset-3 flex items-center justify-center gap-2 rounded-lg bg-background/80 text-sm text-muted-foreground backdrop-blur-sm"
+          class="absolute inset-3 flex items-center justify-center gap-2 rounded-lg bg-background/80 text-sm text-muted-foreground"
         >
           <Loader2 class="h-4 w-4 animate-spin" />
           {{ legacyT('正在加载 Stripe 支付组件...') }}

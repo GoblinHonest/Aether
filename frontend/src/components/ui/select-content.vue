@@ -12,7 +12,7 @@
       <SelectViewport :class="viewportClass">
         <div
           v-if="showSearchInput"
-          class="sticky top-0 z-10 bg-card/95 px-1 pt-1 pb-2 backdrop-blur supports-[backdrop-filter]:bg-card/85"
+          class="sticky top-0 z-10 bg-card/95 px-1 pt-1 pb-2"
         >
           <div class="relative">
             <Search

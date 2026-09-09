@@ -538,7 +538,7 @@
             :sortable="false"
             :filter-active="filterUser !== '__all__'"
             filter-title="筛选用户"
-            filter-content-class="w-64 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+            filter-content-class="w-64 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
           >
             用户
             <template #filter="{ close }">
@@ -564,7 +564,7 @@
             :sortable="false"
             :filter-active="filterModel !== '__all__'"
             filter-title="筛选模型"
-            filter-content-class="w-64 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+            filter-content-class="w-64 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
           >
             模型
             <template #filter="{ close }">
@@ -583,7 +583,7 @@
             :sortable="false"
             :filter-active="filterProvider !== '__all__'"
             filter-title="筛选提供商"
-            filter-content-class="w-48 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+            filter-content-class="w-48 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
           >
             提供商
             <template #filter="{ close }">
@@ -603,7 +603,7 @@
             :sortable="false"
             :filter-active="filterApiFormat !== '__all__'"
             filter-title="筛选 API 格式"
-            filter-content-class="w-72 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+            filter-content-class="w-72 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
           >
             API格式
             <template #filter="{ close }">
@@ -623,7 +623,7 @@
             align="center"
             :filter-active="filterStatus !== '__all__'"
             filter-title="筛选类型"
-            filter-content-class="w-44 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+            filter-content-class="w-44 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
           >
             类型
             <template #filter="{ close }">
@@ -664,7 +664,7 @@
             :sortable="false"
             :filter-active="filterClientFamily !== '__all__'"
             filter-title="筛选客户端"
-            filter-content-class="w-44 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+            filter-content-class="w-44 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
           >
             客户端
             <template #filter="{ close }">

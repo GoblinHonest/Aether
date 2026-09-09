@@ -108,7 +108,7 @@
               </div>
             </div>
 
-            <div class="rounded-2xl border border-border/60 overflow-hidden bg-background">
+            <div class="rounded-lg border border-border/60 overflow-hidden bg-background">
               <div class="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -270,7 +270,7 @@
               </div>
             </div>
 
-            <div class="rounded-2xl border border-border/60 overflow-hidden bg-background">
+            <div class="rounded-lg border border-border/60 overflow-hidden bg-background">
               <div class="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -431,7 +431,7 @@
               />
             </div>
 
-            <div class="rounded-2xl border border-border/60 overflow-hidden bg-background">
+            <div class="rounded-lg border border-border/60 overflow-hidden bg-background">
               <div class="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -557,7 +557,7 @@
               />
             </div>
 
-            <div class="rounded-2xl border border-border/60 overflow-hidden bg-background">
+            <div class="rounded-lg border border-border/60 overflow-hidden bg-background">
               <div class="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -625,7 +625,7 @@
             value="redeem_codes"
             class="mt-5 space-y-5"
           >
-            <div class="rounded-2xl border border-border/60 bg-background p-4 space-y-4">
+            <div class="rounded-lg border border-border/60 bg-background p-4 space-y-4">
               <div class="flex items-center justify-between gap-3">
                 <div>
                   <h4 class="text-sm font-semibold">
@@ -732,7 +732,7 @@
                   </div>
                 </div>
 
-                <div class="rounded-2xl border border-border/60 overflow-hidden bg-background">
+                <div class="rounded-lg border border-border/60 overflow-hidden bg-background">
                   <div class="overflow-x-auto">
                     <Table>
                       <TableHeader>
@@ -878,7 +878,7 @@
                   }}
                 </div>
 
-                <div class="rounded-2xl border border-border/60 overflow-hidden bg-background">
+                <div class="rounded-lg border border-border/60 overflow-hidden bg-background">
                   <div class="overflow-x-auto">
                     <Table>
                       <TableHeader>
@@ -959,11 +959,11 @@
           class="fixed inset-0 z-[80] flex justify-end"
         >
           <div
-            class="absolute inset-0 bg-black/35 backdrop-blur-sm"
+            class="absolute inset-0 bg-black/35"
             @click="closeLedgerDrawer"
           />
-          <div class="drawer-panel relative h-full w-full sm:w-[760px] lg:w-[860px] sm:max-w-[95vw] border-l border-border bg-background shadow-2xl overflow-y-auto">
-            <div class="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur px-4 py-3 sm:px-6 sm:py-4">
+          <div class="drawer-panel relative h-full w-full sm:w-[760px] lg:w-[860px] sm:max-w-[95vw] border-l border-border bg-background shadow-md overflow-y-auto">
+            <div class="sticky top-0 z-10 border-b border-border bg-background/95 px-4 py-3 sm:px-6 sm:py-4">
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                   <h3 class="text-lg font-semibold text-foreground leading-tight">
@@ -986,7 +986,7 @@
             </div>
 
             <div class="p-4 sm:p-6 space-y-5">
-              <div class="rounded-2xl border border-border/60 bg-muted/30 p-4 space-y-3">
+              <div class="rounded-lg border border-border/60 bg-muted/30 p-4 space-y-3">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                   <div class="flex items-center gap-2">
                     <Badge variant="outline">
@@ -1126,11 +1126,11 @@
           class="fixed inset-0 z-[80] flex justify-end"
         >
           <div
-            class="absolute inset-0 bg-black/35 backdrop-blur-sm"
+            class="absolute inset-0 bg-black/35"
             @click="closeRefundDrawer"
           />
-          <div class="drawer-panel relative h-full w-full sm:w-[760px] lg:w-[860px] sm:max-w-[95vw] border-l border-border bg-background shadow-2xl overflow-y-auto">
-            <div class="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur px-4 py-3 sm:px-6 sm:py-4">
+          <div class="drawer-panel relative h-full w-full sm:w-[760px] lg:w-[860px] sm:max-w-[95vw] border-l border-border bg-background shadow-md overflow-y-auto">
+            <div class="sticky top-0 z-10 border-b border-border bg-background/95 px-4 py-3 sm:px-6 sm:py-4">
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                   <h3 class="text-lg font-semibold text-foreground leading-tight">
@@ -1153,7 +1153,7 @@
             </div>
 
             <div class="p-4 sm:p-6 space-y-5">
-              <div class="rounded-2xl border border-border/60 bg-muted/30 p-4">
+              <div class="rounded-lg border border-border/60 bg-muted/30 p-4">
                 <div class="grid gap-3 sm:grid-cols-2">
                   <div>
                     <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
@@ -1240,7 +1240,7 @@
               </div>
             </div>
 
-            <div class="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur px-4 py-3 sm:px-6 sm:py-4">
+            <div class="sticky bottom-0 border-t border-border bg-background/95 px-4 py-3 sm:px-6 sm:py-4">
               <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <Button
                   variant="outline"

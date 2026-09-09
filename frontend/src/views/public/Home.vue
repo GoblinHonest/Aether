@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-white dark:bg-[#17171a]">
     <!-- Nav -->
-    <nav class="sticky top-0 z-50 border-b border-[#e5e6eb] bg-white/85 backdrop-blur-md dark:border-[#2e2e2f] dark:bg-[#17171a]/85">
+    <nav class="sticky top-0 z-50 border-b border-[#e5e6eb] bg-white/85 dark:border-[#2e2e2f] dark:bg-[#17171a]/85">
       <div class="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6 md:px-8">
         <router-link
           to="/"
@@ -208,7 +208,7 @@
     <!-- CTA band -->
     <section class="border-t border-[#e5e6eb] dark:border-[#2e2e2f]">
       <div class="mx-auto max-w-[1200px] px-6 py-16 md:px-8">
-        <div class="flex flex-col items-center gap-6 rounded-2xl border border-[#bedaff] bg-[#e8f3ff] px-8 py-12 text-center dark:border-[#0e2a6e] dark:bg-[#0e1d33]">
+        <div class="flex flex-col items-center gap-6 rounded-lg border border-[#bedaff] bg-[#e8f3ff] px-8 py-12 text-center dark:border-[#0e2a6e] dark:bg-[#0e1d33]">
           <h2 class="text-2xl font-semibold tracking-tight text-[#0e42d2] dark:text-[#94bfff]">
             {{ t('home.ctaTitle') }}
           </h2>

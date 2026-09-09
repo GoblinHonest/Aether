@@ -17,7 +17,7 @@
         />
 
         <!-- 抽屉内容 -->
-        <Card class="drawer-panel relative h-full w-full sm:w-[700px] sm:max-w-[90vw] rounded-none shadow-2xl overflow-y-auto">
+        <Card class="drawer-panel relative h-full w-full sm:w-[700px] sm:max-w-[90vw] rounded-none shadow-md overflow-y-auto">
           <!-- 加载状态 -->
           <div
             v-if="loading"

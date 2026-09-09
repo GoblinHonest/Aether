@@ -16,7 +16,7 @@
       >
         <div
           v-if="isOpen"
-          class="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity pointer-events-auto"
+          class="fixed inset-0 bg-black/40 transition-opacity pointer-events-auto"
           :style="{ zIndex: backdropZIndex }"
           @click="handleBackdropClick"
         />
@@ -34,7 +34,7 @@
         >
           <div
             v-if="isOpen"
-            class="relative flex max-h-[100dvh] w-full transform flex-col overflow-hidden rounded-t-xl border border-x-0 border-b-0 border-border bg-background text-left shadow-2xl transition-all pointer-events-auto sm:my-8 sm:w-full sm:max-h-[calc(100dvh-4rem)] sm:rounded-lg sm:border"
+            class="relative flex max-h-[100dvh] w-full transform flex-col overflow-hidden rounded-t-xl border border-x-0 border-b-0 border-border bg-background text-left shadow-md transition-all pointer-events-auto sm:my-8 sm:w-full sm:max-h-[calc(100dvh-4rem)] sm:rounded-lg sm:border"
             :style="{ zIndex: contentZIndex }"
             :class="maxWidthClass"
             @click.stop
@@ -80,7 +80,7 @@
             <!-- Footer 区域：如果有 footer 插槽，自动添加样式 -->
             <div
               v-if="slots.footer"
-              class="flex shrink-0 flex-col-reverse items-stretch gap-2 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-sm [&>button]:min-h-min [&>button]:w-full [&>button]:whitespace-normal [&>button]:py-2 sm:flex-row-reverse sm:flex-wrap sm:items-center sm:gap-3 sm:bg-muted/10 sm:px-6 sm:py-4 sm:[&>button]:w-auto"
+              class="flex shrink-0 flex-col-reverse items-stretch gap-2 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 [&>button]:min-h-min [&>button]:w-full [&>button]:whitespace-normal [&>button]:py-2 sm:flex-row-reverse sm:flex-wrap sm:items-center sm:gap-3 sm:bg-muted/10 sm:px-6 sm:py-4 sm:[&>button]:w-auto"
             >
               <slot name="footer" />
             </div>

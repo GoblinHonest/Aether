@@ -7,7 +7,7 @@
     @update:model-value="emit('update:modelValue', $event)"
   >
     <div class="max-h-[calc(100dvh-13rem)] space-y-5 overflow-y-auto overscroll-contain pr-1 sm:max-h-[min(72vh,42rem)] sm:space-y-6 sm:pr-2">
-      <section class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-4 sm:p-5">
+      <section class="space-y-4 rounded-lg border border-border/60 bg-card/70 p-4 sm:p-5">
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
             <h3 class="text-sm font-semibold">
@@ -137,7 +137,7 @@
         </div>
       </section>
 
-      <section class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-4 sm:p-5">
+      <section class="space-y-4 rounded-lg border border-border/60 bg-card/70 p-4 sm:p-5">
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
             <h3 class="text-sm font-semibold">
@@ -211,7 +211,7 @@
         </div>
       </section>
 
-      <section class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-4 sm:p-5">
+      <section class="space-y-4 rounded-lg border border-border/60 bg-card/70 p-4 sm:p-5">
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
             <h3 class="text-sm font-semibold">
@@ -368,7 +368,7 @@
 
       <section
         v-if="isClaudeCode"
-        class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-4 sm:p-5"
+        class="space-y-4 rounded-lg border border-border/60 bg-card/70 p-4 sm:p-5"
       >
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">

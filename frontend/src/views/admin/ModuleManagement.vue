@@ -44,7 +44,7 @@
           <div
             v-for="tool in filteredBuiltinTools"
             :key="tool.name"
-            class="group relative border rounded-2xl p-6 transition-all duration-200  border-border bg-card hover:border-primary/20 cursor-pointer"
+            class="group relative border rounded-lg p-6 transition-all duration-200  border-border bg-card hover:border-primary/20 cursor-pointer"
             @click="router.push(tool.href)"
           >
             <div class="flex items-start gap-4 mb-3">
@@ -104,7 +104,7 @@
         <div
           v-for="module in filteredModules"
           :key="module.name"
-          class="group relative border rounded-2xl p-6 transition-all duration-200 "
+          class="group relative border rounded-lg p-6 transition-all duration-200 "
           :class="[
             {
               'bg-muted/40 border-muted': !module.available,

@@ -1547,7 +1547,7 @@ function formatJsonDraft(
 </script>
 
 <style scoped>
-.content-block :deep(.rounded-2xl) {
+.content-block :deep(.rounded-lg) {
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;

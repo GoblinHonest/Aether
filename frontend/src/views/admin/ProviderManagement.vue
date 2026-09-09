@@ -129,7 +129,7 @@
                 align="center"
                 :filter-active="filterModel !== 'all'"
                 :filter-title="legacyT('筛选模型')"
-                filter-content-class="w-64 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+                filter-content-class="w-64 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
               >
                 {{ legacyT('资源统计') }}
                 <template #filter="{ close }">
@@ -146,7 +146,7 @@
                 :sortable="false"
                 :filter-active="filterApiFormat !== 'all'"
                 :filter-title="legacyT('筛选 API 格式')"
-                filter-content-class="w-72 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+                filter-content-class="w-72 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
               >
                 {{ legacyT('端点健康') }}
                 <template #filter="{ close }">
@@ -164,7 +164,7 @@
                 align="center"
                 :filter-active="filterStatus !== 'all'"
                 :filter-title="legacyT('筛选状态')"
-                filter-content-class="w-40 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+                filter-content-class="w-40 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
               >
                 {{ legacyT('状态') }}
                 <template #filter="{ close }">

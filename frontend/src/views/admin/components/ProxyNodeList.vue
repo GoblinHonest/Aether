@@ -20,7 +20,7 @@
             align="center"
             :filter-active="filterStatus !== 'all'"
             :filter-title="legacyT('筛选状态')"
-            filter-content-class="w-36 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+            filter-content-class="w-36 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
           >
             {{ legacyT('状态') }}
             <template #filter="{ close }">

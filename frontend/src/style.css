@@ -150,7 +150,7 @@
     --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.08), 0 8px 10px -1px hsl(0 0% 0% / 0.06);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.15);
 
-    --shell-glass: rgba(255, 255, 255, 0.8);
+    --shell-glass: #ffffff;
     --shell-border: rgba(0, 0, 0, 0.08);
     --shell-shadow: 0 25px 65px rgba(0, 0, 0, 0.06);
     --shell-sidebar-shadow: 0 45px 95px rgba(0, 0, 0, 0.04);
@@ -263,7 +263,7 @@
     --sidebar-border: #484849;
     --sidebar-ring: #f6f6f6;
 
-    --shell-glass: rgba(10, 10, 10, 0.68);
+    --shell-glass: #17171a;
     --shell-border: rgba(255, 255, 255, 0.08);
     --shell-shadow: 0 25px 65px rgba(0, 0, 0, 0.5);
     --shell-sidebar-shadow: 0 45px 95px rgba(0, 0, 0, 0.55);

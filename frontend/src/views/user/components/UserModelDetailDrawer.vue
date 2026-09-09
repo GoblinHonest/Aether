@@ -8,12 +8,12 @@
       >
         <!-- 背景遮罩 -->
         <div
-          class="absolute inset-0 bg-black/30 backdrop-blur-sm"
+          class="absolute inset-0 bg-black/30"
           @click="handleClose"
         />
 
         <!-- 抽屉内容 -->
-        <Card class="relative h-full w-full sm:w-[700px] sm:max-w-[90vw] rounded-none shadow-2xl overflow-y-auto">
+        <Card class="relative h-full w-full sm:w-[700px] sm:max-w-[90vw] rounded-none shadow-md overflow-y-auto">
           <!-- 标题栏 -->
           <div class="sticky top-0 z-10 bg-background border-b p-4 sm:p-6">
             <div class="flex items-start justify-between gap-3 sm:gap-4">

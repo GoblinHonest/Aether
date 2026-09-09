@@ -125,7 +125,7 @@
                 :sortable="false"
                 :filter-active="filters.days !== 7"
                 filter-title="筛选时间范围"
-                filter-content-class="w-32 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+                filter-content-class="w-32 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
               >
                 时间
                 <template #filter="{ close }">
@@ -146,7 +146,7 @@
                 :sortable="false"
                 :filter-active="filters.eventType !== '__all__'"
                 filter-title="筛选事件类型"
-                filter-content-class="w-48 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+                filter-content-class="w-48 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
               >
                 事件类型
                 <template #filter="{ close }">

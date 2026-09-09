@@ -715,7 +715,7 @@
                 <SelectTrigger
                   :id="`ccswitch-model-${field.key}`"
                   :data-testid="`ccswitch-model-select-${field.key}`"
-                  class="h-11 rounded-2xl border-border/60 bg-card/80 font-mono text-xs"
+                  class="h-11 rounded-lg border-border/60 bg-card/80 font-mono text-xs"
                 >
                   <SelectValue placeholder="选择模型 ID" />
                 </SelectTrigger>

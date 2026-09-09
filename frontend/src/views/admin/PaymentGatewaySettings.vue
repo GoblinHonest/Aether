@@ -138,7 +138,7 @@
                     <div
                       v-if="paymentHelpOpen === 'alipay'"
                       id="alipay-payment-help"
-                      class="absolute left-0 top-full z-[240] mt-2 w-[320px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 backdrop-blur supports-[backdrop-filter]:bg-card/90"
+                      class="absolute left-0 top-full z-[240] mt-2 w-[320px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
                       role="dialog"
                       aria-label="支付宝支付模式说明"
                     >
@@ -201,7 +201,7 @@
                     <div
                       v-if="paymentHelpOpen === 'wxpay'"
                       id="wxpay-payment-help"
-                      class="absolute left-0 top-full z-[240] mt-2 w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 backdrop-blur supports-[backdrop-filter]:bg-card/90"
+                      class="absolute left-0 top-full z-[240] mt-2 w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
                       role="dialog"
                       aria-label="微信支付模式说明"
                     >

@@ -13,7 +13,7 @@
         <div
           v-for="(scheme, index) in colorSchemes"
           :key="index"
-          class="relative bg-white dark:bg-[#262624] rounded-2xl p-6 border border-[#e5e6eb] dark:border-[rgba(227,224,211,0.16)] cursor-pointer transition-all  hover:scale-[1.02]"
+          class="relative bg-white dark:bg-[#262624] rounded-lg p-6 border border-[#e5e6eb] dark:border-[rgba(227,224,211,0.16)] cursor-pointer transition-all  hover:scale-[1.02]"
           :class="{ 'ring-2 ring-primary': selectedScheme === index }"
           @click="selectScheme(index)"
         >
@@ -106,11 +106,11 @@
       <Teleport to="body">
         <div
           v-if="showPreview"
-          class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
           @click="showPreview = false"
         >
           <div
-            class="bg-white dark:bg-[#262624] rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl"
+            class="bg-white dark:bg-[#262624] rounded-xl p-8 max-w-lg w-full mx-4 shadow-md"
             @click.stop
           >
             <div class="flex items-center justify-between mb-6">

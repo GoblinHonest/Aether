@@ -7,7 +7,7 @@
   >
     <!-- GLOBAL TEXTURE (removed for MiMo clean design) -->
     <template #notice>
-      <div class="flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 rounded-3xl bg-orange-500 px-6 py-3 text-white shadow-2xl ring-1 ring-white/30">
+      <div class="flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 rounded-xl bg-orange-500 px-6 py-3 text-white shadow-md ring-1 ring-white/30">
         <div class="flex min-w-0 items-center gap-3">
           <AlertTriangle class="h-5 w-5 shrink-0" />
           <span class="break-words">{{ t('auth.expired') }}</span>
@@ -178,7 +178,7 @@
 
     <template #header>
       <!-- Mobile Header (matches Home page style) -->
-      <header class="lg:hidden fixed top-0 left-0 right-0 z-50 border-b border-[var(--shell-border)] bg-[var(--shell-glass)] backdrop-blur-xl transition-all">
+      <header class="lg:hidden fixed top-0 left-0 right-0 z-50 border-b border-[var(--shell-border)] bg-[var(--shell-glass)] transition-all">
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6">
           <div class="flex min-w-0 items-center justify-between gap-2">
             <!-- Logo & Brand -->
@@ -341,7 +341,7 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
       </header>
 
       <!-- Desktop Page Header -->
-<header class="hidden lg:flex min-h-16 gap-4 px-8 py-3 items-center justify-between shrink-0 border-b border-[#000]/5 dark:border-white/8 sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#17171a]/90">
+<header class="hidden lg:flex min-h-16 gap-4 px-8 py-3 items-center justify-between shrink-0 border-b border-[#000]/5 dark:border-white/8 sticky top-0 z-40 bg-white dark:bg-[#17171a]">
         <div class="flex min-w-0 flex-col gap-0.5">
           <div class="flex min-w-0 flex-wrap items-center gap-2 text-sm text-muted-foreground">
             <template
@@ -414,17 +414,6 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
           <LanguageSwitcher />
           <!-- Theme Toggle -->
           <ThemeModeButton />
-          <!-- GitHub Link -->
-          <a
-            href="https://github.com/fawney19/Aether"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition"
-            :title="t('common.githubRepository')"
-            :aria-label="t('common.githubRepository')"
-          >
-            <GithubIcon class="h-4 w-4" />
-          </a>
         </div>
       </header>
     </template>
@@ -543,7 +532,6 @@ import {
   Search,
 } from 'lucide-vue-next'
 
-import GithubIcon from '@/components/icons/GithubIcon.vue'
 import { prefetchNavigationTarget } from '@/utils/adminNavigationPrefetch'
 import { sanitizeMarkdown } from '@/utils/sanitize'
 import { useI18n, type MessageKey } from '@/i18n'

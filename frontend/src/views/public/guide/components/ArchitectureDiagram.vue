@@ -307,7 +307,7 @@ const shadows = computed(() => {
         <!-- Dashed box: abs positioned in outer 760x420 container -->
         <!-- center X=380, w=400 => left=180. top=98, h=112 => bottom=210 -->
         <div
-          class="absolute left-[180px] top-[98px] w-[400px] h-[112px] rounded-2xl flex flex-col items-center gap-1.5 px-5 py-[10px] z-20"
+          class="absolute left-[180px] top-[98px] w-[400px] h-[112px] rounded-lg flex flex-col items-center gap-1.5 px-5 py-[10px] z-20"
           :style="{ border: `1.5px dashed ${colors.coreBorder}` }"
         >
           <div

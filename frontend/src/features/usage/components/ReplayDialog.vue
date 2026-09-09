@@ -7,10 +7,10 @@
         @click.self="handleClose"
       >
         <div
-          class="absolute inset-0 bg-black/30 backdrop-blur-sm"
+          class="absolute inset-0 bg-black/30"
           @click="handleClose"
         />
-        <Card class="relative w-full max-w-6xl max-h-[85vh] min-h-[60vh] mx-4 shadow-2xl flex flex-col">
+        <Card class="relative w-full max-w-6xl max-h-[85vh] min-h-[60vh] mx-4 shadow-md flex flex-col">
           <!-- 头部：标题 + 提供商/Key 选择 + 发送 -->
           <div class="px-4 py-2.5 border-b flex items-center gap-3 shrink-0 flex-wrap">
             <h3 class="text-sm font-semibold shrink-0">

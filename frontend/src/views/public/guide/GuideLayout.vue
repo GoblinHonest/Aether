@@ -105,7 +105,7 @@
 
     <template #header>
       <!-- Mobile Header -->
-      <header class="lg:hidden fixed top-0 left-0 right-0 z-50 border-b border-[var(--shell-border)] bg-[var(--shell-glass)] backdrop-blur-xl transition-all">
+      <header class="lg:hidden fixed top-0 left-0 right-0 z-50 border-b border-[var(--shell-border)] bg-[var(--shell-glass)] transition-all">
         <div class="mx-auto max-w-7xl px-6 py-4">
           <div class="flex items-center justify-between">
             <RouterLink
@@ -207,7 +207,7 @@
       </header>
 
       <!-- Desktop Page Header -->
-      <header class="hidden lg:flex h-16 px-8 items-center justify-between shrink-0 border-b border-[#2a2a2b]/5 dark:border-white/5 sticky top-0 z-40 backdrop-blur-md bg-[#ffffff]/90 dark:bg-[#17171a]/90">
+      <header class="hidden lg:flex h-16 px-8 items-center justify-between shrink-0 border-b border-[#e5e6eb] dark:border-white/5 sticky top-0 z-40 bg-white dark:bg-[#17171a]">
         <div class="flex flex-col gap-0.5">
           <div class="flex items-center gap-2 text-sm text-muted-foreground">
             <RouterLink
@@ -227,13 +227,6 @@
 
         <div class="flex items-center gap-2">
           <ThemeModeButton />
-          <a
-            href="#"
-            class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition"
-            title="ManyCode"
-          >
-            <GithubIcon class="h-4 w-4" />
-          </a>
           <LanguageSwitcher />
         </div>
       </header>
@@ -271,13 +264,13 @@
       >
         <div
           v-if="lightboxSrc"
-          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm cursor-zoom-out"
+          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 cursor-zoom-out"
           @click="lightboxSrc = ''"
         >
           <img
             :src="lightboxSrc"
             :alt="lightboxAlt"
-            class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-md"
             @click.stop
           >
         </div>
@@ -294,7 +287,6 @@ import {
   ChevronRight,
   X
 } from 'lucide-vue-next'
-import GithubIcon from '@/components/icons/GithubIcon.vue'
 import HeaderLogo from '@/components/HeaderLogo.vue'
 import LanguageSwitcher from '@/components/common/LanguageSwitcher.vue'
 import ThemeModeButton from '@/components/common/ThemeModeButton.vue'

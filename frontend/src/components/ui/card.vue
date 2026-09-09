@@ -24,7 +24,7 @@ const variants = {
   default: 'rounded-lg border border-border bg-card text-card-foreground',
 
   // 玻璃态卡片 - 半透明背景+模糊效果,用于嵌套内容/次要层级
-  glass: 'rounded-lg border border-border bg-card/50 text-card-foreground backdrop-blur-sm',
+  glass: 'rounded-lg border border-border bg-card/50 text-card-foreground',
 
   // 提升卡片 - 用于模态对话框/强调内容
   elevated: 'rounded-lg border border-border bg-card text-card-foreground shadow-sm',

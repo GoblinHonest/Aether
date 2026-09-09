@@ -184,7 +184,7 @@
                   align="center"
                   :filter-active="statusFilter !== 'all'"
                   filter-title="筛选状态"
-                  filter-content-class="w-44 p-1 rounded-2xl border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+                  filter-content-class="w-44 p-1 rounded-lg border-border bg-card text-foreground shadow-md"
                   :style="{ width: desktopColumnWidths.status }"
                 >
                   状态
@@ -379,7 +379,7 @@
                       </PopoverTrigger>
                       <PopoverContent
                         v-if="scoreDesktopPopoverOpenKeyId === key.key_id"
-                        class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 backdrop-blur supports-[backdrop-filter]:bg-card/90"
+                        class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
                         side="bottom"
                         align="end"
                         :side-offset="8"
@@ -668,7 +668,7 @@
                         </PopoverTrigger>
                         <PopoverContent
                           v-if="scoreMobilePopoverOpenKeyId === key.key_id"
-                          class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 backdrop-blur supports-[backdrop-filter]:bg-card/90"
+                          class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
                           side="bottom"
                           align="end"
                           :side-offset="8"

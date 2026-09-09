@@ -254,7 +254,7 @@
 
         <div
           v-if="planMode !== 'empty'"
-          class="mx-auto w-full max-w-[880px] rounded-2xl border border-border/60 bg-muted/10 p-6"
+          class="mx-auto w-full max-w-[880px] rounded-lg border border-border/60 bg-muted/10 p-6"
         >
           <div class="grid grid-cols-1 gap-x-4 gap-y-3 xl:grid-cols-12">
             <div class="border-b border-border/70 pb-2 xl:col-span-12">
@@ -382,7 +382,7 @@
               <Textarea
                 id="plan-description"
                 v-model="form.description"
-                class="min-h-[72px] resize-y rounded-2xl bg-muted/70"
+                class="min-h-[72px] resize-y rounded-lg bg-muted/70"
                 rows="2"
                 placeholder="简短说明套餐权益"
               />
@@ -645,7 +645,7 @@
 
           <div
             v-if="showWalletCreditConfig"
-            class="space-y-3 rounded-2xl border border-border/60 bg-muted/20 p-4"
+            class="space-y-3 rounded-lg border border-border/60 bg-muted/20 p-4"
           >
             <div class="flex items-center justify-between gap-3">
               <div>
@@ -704,7 +704,7 @@
 
           <div
             v-if="showDailyQuotaConfig"
-            class="space-y-3 rounded-2xl border border-border/60 bg-muted/20 p-4"
+            class="space-y-3 rounded-lg border border-border/60 bg-muted/20 p-4"
           >
             <div class="flex items-center justify-between gap-3">
               <div>
@@ -775,7 +775,7 @@
 
           <div
             v-if="showMembershipGroupConfig"
-            class="space-y-3 rounded-2xl border border-border/60 bg-muted/20 p-4"
+            class="space-y-3 rounded-lg border border-border/60 bg-muted/20 p-4"
           >
             <div class="flex items-center justify-between gap-3">
               <div>
@@ -826,7 +826,7 @@
             </div>
           </div>
 
-          <div class="space-y-3 rounded-2xl border border-border/60 bg-muted/20 p-4">
+          <div class="space-y-3 rounded-lg border border-border/60 bg-muted/20 p-4">
             <div class="flex items-center justify-between gap-3">
               <div>
                 <Label class="text-sm font-medium">使用限制</Label>

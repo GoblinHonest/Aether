@@ -5,7 +5,7 @@
       <div
         v-if="tooltip.visible && tooltip.day"
         ref="tooltipRef"
-        class="fixed z-50 w-[200px] max-w-[calc(100vw-1rem)] break-words rounded-lg border border-border/70 bg-background px-3 py-2 text-xs backdrop-blur pointer-events-none"
+        class="fixed z-50 w-[200px] max-w-[calc(100vw-1rem)] break-words rounded-lg border border-border/70 bg-background px-3 py-2 text-xs pointer-events-none"
         :style="tooltipStyle"
       >
         <p class="font-medium">

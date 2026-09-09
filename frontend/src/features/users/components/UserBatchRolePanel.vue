@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4 rounded-2xl border bg-background p-4 shadow-sm">
+  <div class="space-y-4 rounded-lg border bg-background p-4 shadow-sm">
     <div class="flex items-start gap-3">
       <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
         <UserCog class="h-4 w-4" />

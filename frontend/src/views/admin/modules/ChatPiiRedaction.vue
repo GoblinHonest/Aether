@@ -27,7 +27,7 @@
     </PageHeader>
 
     <div class="mt-6 space-y-6">
-      <section class="rounded-2xl border border-border bg-card p-5">
+      <section class="rounded-lg border border-border bg-card p-5">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div class="space-y-1">
             <div

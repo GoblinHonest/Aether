@@ -9,12 +9,12 @@
       >
         <!-- 背景遮罩 -->
         <div
-          class="absolute inset-0 bg-black/30 backdrop-blur-sm"
+          class="absolute inset-0 bg-black/30"
           @click="handleClose"
         />
 
         <!-- 抽屉内容 -->
-        <Card class="relative h-full w-full sm:w-[800px] sm:max-w-[90vw] rounded-none shadow-2xl flex flex-col">
+        <Card class="relative h-full w-full sm:w-[800px] sm:max-w-[90vw] rounded-none shadow-md flex flex-col">
           <!-- 固定头部 - 整合基本信息 -->
           <div class="sticky top-0 z-10 bg-background border-b px-3 sm:px-6 py-3 sm:py-4 flex-shrink-0">
             <!-- 第一行：标题、模型、状态、操作按钮 -->
@@ -3176,7 +3176,7 @@ useEscapeKey(() => {
 }
 
 /* 内容区融合：子组件的 Card 不再需要自己的边框和圆角，与表头栏融为一体 */
-.content-block :deep(.rounded-2xl) {
+.content-block :deep(.rounded-lg) {
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;

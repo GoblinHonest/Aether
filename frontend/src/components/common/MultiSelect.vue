@@ -39,13 +39,13 @@
       />
       <div
         v-if="isOpen"
-        class="z-[90] overflow-hidden rounded-2xl border border-border bg-card text-foreground shadow-2xl backdrop-blur-xl"
+        class="z-[90] overflow-hidden rounded-lg border border-border bg-card text-foreground shadow-md"
         :class="teleport ? 'fixed' : 'absolute mt-1 w-full'"
         :style="dropdownStyle"
       >
         <div
           v-if="showSearch"
-          class="sticky top-0 z-10 border-b border-border/60 bg-card/95 p-1 backdrop-blur supports-[backdrop-filter]:bg-card/85"
+          class="sticky top-0 z-10 border-b border-border/60 bg-card/95 p-1"
         >
           <div class="relative">
             <Search
@@ -63,7 +63,7 @@
         <div class="max-h-64 overflow-y-auto p-1">
           <div
             v-if="hasOptions"
-            class="sticky top-0 z-10 flex cursor-pointer items-center gap-2 rounded-lg border-b border-border/60 bg-card/95 px-3 py-2 backdrop-blur hover:bg-muted/50 supports-[backdrop-filter]:bg-card/85"
+            class="sticky top-0 z-10 flex cursor-pointer items-center gap-2 rounded-lg border-b border-border/60 bg-card/95 px-3 py-2 hover:bg-muted/50"
             @click="toggleAll"
           >
             <input

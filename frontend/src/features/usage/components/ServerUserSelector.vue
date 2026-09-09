@@ -6,7 +6,7 @@
     <button
       v-if="dropdown"
       type="button"
-      class="flex h-8 w-full min-w-0 cursor-pointer items-center justify-between gap-2 rounded-2xl border border-border/60 bg-card/80 px-4 py-2 text-left text-xs text-foreground shadow-sm backdrop-blur transition-all focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/40"
+      class="flex h-8 w-full min-w-0 cursor-pointer items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/80 px-4 py-2 text-left text-xs text-foreground shadow-sm transition-all focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/40"
       @click="toggleOpen"
     >
       <span class="truncate">{{ selectedLabel }}</span>

@@ -131,7 +131,7 @@ const copyJson = () => {
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
-  background: hsl(var(--card));
+  background: var(--card);
   box-shadow: 0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent);
 }
 
@@ -142,13 +142,13 @@ const copyJson = () => {
   gap: 0.75rem;
   padding: 0.35rem 0.55rem 0.35rem 0.75rem;
   border-bottom: 1px solid var(--border);
-  background: hsl(var(--muted) / 0.55);
+  background: color-mix(in srgb, var(--muted) 55.0000%, transparent);
 }
 
 .json-panel-title {
   font-size: 0.72rem;
   font-weight: 600;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   letter-spacing: 0.02em;
 }
 
@@ -167,26 +167,26 @@ const copyJson = () => {
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .json-panel-action:hover {
-  background: hsl(var(--muted));
-  color: hsl(var(--foreground));
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .json-panel-action.is-disabled,
 .json-panel-action:disabled {
-  color: hsl(var(--muted-foreground) / 0.4);
+  color: color-mix(in srgb, var(--muted-foreground) 40%, transparent);
   cursor: not-allowed;
 }
 
 .json-panel-action.is-disabled:hover,
 .json-panel-action:disabled:hover {
   background: transparent;
-  color: hsl(var(--muted-foreground) / 0.4);
+  color: color-mix(in srgb, var(--muted-foreground) 40%, transparent);
 }
 
 .json-panel-content :deep(.json-viewer) {

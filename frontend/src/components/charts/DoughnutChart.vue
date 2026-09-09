@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useI18n } from '@/i18n'
+import { chartUiColors, useChartThemeVersion } from './theme'
 import {
   Chart as ChartJS,
   ArcElement,
@@ -39,34 +40,38 @@ interface Props {
 
 const chartRef = ref<HTMLCanvasElement>()
 const { locale } = useI18n()
+const themeVersion = useChartThemeVersion()
 let chart: ChartJS<'doughnut'> | null = null
 
-const defaultOptions: ChartOptions<'doughnut'> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  cutout: '60%',
-  plugins: {
-    legend: {
-      position: 'right',
-      labels: {
-        color: 'rgb(107, 114, 128)',
-        usePointStyle: true,
-        padding: 16,
-        font: { size: 11 }
-      }
-    },
-    tooltip: {
-      backgroundColor: 'rgb(31, 41, 55)',
-      titleColor: 'rgb(243, 244, 246)',
-      bodyColor: 'rgb(243, 244, 246)',
-      borderColor: 'rgb(75, 85, 99)',
-      borderWidth: 1,
-      callbacks: {
-        label: (context) => {
-          const value = context.raw as number
-          const total = (context.dataset.data as number[]).reduce((a, b) => a + b, 0)
-          const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
-          return `${context.label}: $${value.toFixed(4)} (${percentage}%)`
+function makeDefaultOptions(): ChartOptions<'doughnut'> {
+  const ui = chartUiColors()
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '60%',
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: {
+          color: ui.muted,
+          usePointStyle: true,
+          padding: 16,
+          font: { size: 11 }
+        }
+      },
+      tooltip: {
+        backgroundColor: ui.tooltipBg,
+        titleColor: ui.tooltipFg,
+        bodyColor: ui.tooltipFg,
+        borderColor: ui.border,
+        borderWidth: 1,
+        callbacks: {
+          label: (context) => {
+            const value = context.raw as number
+            const total = (context.dataset.data as number[]).reduce((a, b) => a + b, 0)
+            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
+            return `${context.label}: $${value.toFixed(4)} (${percentage}%)`
+          }
         }
       }
     }
@@ -80,7 +85,7 @@ function createChart() {
     type: 'doughnut',
     data: props.data,
     options: {
-      ...defaultOptions,
+      ...makeDefaultOptions(),
       locale: locale.value,
       ...props.options
     }
@@ -107,9 +112,9 @@ onUnmounted(() => {
 })
 
 watch(() => props.data, updateChart, { deep: true })
-watch([() => props.options, locale], () => {
+watch([() => props.options, locale, themeVersion], () => {
   if (chart) {
-    chart.options = { ...defaultOptions, locale: locale.value, ...props.options }
+    chart.options = { ...makeDefaultOptions(), locale: locale.value, ...props.options }
     chart.update()
   }
 }, { deep: true })

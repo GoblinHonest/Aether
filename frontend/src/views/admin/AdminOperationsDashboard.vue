@@ -1039,6 +1039,7 @@ import {
 import { Badge, Button, Card, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui'
 import { LoadingState, TimeRangePicker } from '@/components/common'
 import LineChart from '@/components/charts/LineChart.vue'
+import { hexToRgba, useChartPalette } from '@/components/charts/theme'
 import DoughnutChart from '@/components/charts/DoughnutChart.vue'
 import { adminApi, type ErrorDistributionItem, type PercentileItem, type ProviderPerformanceResponse } from '@/api/admin'
 import { cacheApi, redisCacheApi, type CacheStats, type RedisCacheCategoriesResponse } from '@/api/cache'
@@ -1616,14 +1617,16 @@ const kpiCards = computed<Array<{
   },
 ])
 
+const palette = useChartPalette()
+
 const trafficChartData = computed<ChartData<'line'>>(() => ({
   labels: timeSeries.value.map(item => String(item.date ?? item.bucket ?? item.time ?? '')),
   datasets: [
     {
       label: '请求',
       data: timeSeries.value.map(item => numeric(item.total_requests ?? item.requests)),
-      borderColor: 'rgb(14, 165, 233)',
-      backgroundColor: 'rgba(14, 165, 233, 0.12)',
+      borderColor: palette.value[0],
+      backgroundColor: hexToRgba(palette.value[0], 0.12),
       tension: 0.25,
       pointRadius: 2,
       yAxisID: 'y',
@@ -1631,8 +1634,8 @@ const trafficChartData = computed<ChartData<'line'>>(() => ({
     {
       label: 'Tokens',
       data: timeSeries.value.map(seriesTokenTotal),
-      borderColor: 'rgb(245, 158, 11)',
-      backgroundColor: 'rgba(245, 158, 11, 0.12)',
+      borderColor: palette.value[5],
+      backgroundColor: hexToRgba(palette.value[5], 0.12),
       tension: 0.25,
       pointRadius: 2,
       yAxisID: 'y1',
@@ -1657,21 +1660,21 @@ const latencyChartData = computed<ChartData<'line'>>(() => ({
     {
       label: 'P90 请求',
       data: percentiles.value.map(item => item.p90_response_time_ms ?? null),
-      borderColor: 'rgb(124, 58, 237)',
+      borderColor: palette.value[2],
       tension: 0.25,
       pointRadius: 2,
     },
     {
       label: 'P99 请求',
       data: percentiles.value.map(item => item.p99_response_time_ms ?? null),
-      borderColor: 'rgb(239, 68, 68)',
+      borderColor: palette.value[6],
       tension: 0.25,
       pointRadius: 2,
     },
     {
       label: 'P90 首字',
       data: percentiles.value.map(item => item.p90_first_byte_time_ms ?? null),
-      borderColor: 'rgb(14, 165, 233)',
+      borderColor: palette.value[0],
       tension: 0.25,
       pointRadius: 2,
     },

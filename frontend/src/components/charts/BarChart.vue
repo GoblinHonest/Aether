@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useI18n } from '@/i18n'
+import { chartUiColors, hexToRgba, useChartThemeVersion } from './theme'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -45,69 +46,66 @@ interface Props {
 
 const chartRef = ref<HTMLCanvasElement>()
 const { locale } = useI18n()
+const themeVersion = useChartThemeVersion()
 let chart: ChartJS<'bar'> | null = null
 
-const defaultOptions: ChartOptions<'bar'> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  interaction: {
-    mode: 'index',
-    intersect: false
-  },
-  scales: {
-    x: {
-      stacked: true,
-      grid: {
-        color: 'rgba(156, 163, 175, 0.1)'
+function makeDefaultOptions(): ChartOptions<'bar'> {
+  const ui = chartUiColors()
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    scales: {
+      x: {
+        stacked: true,
+        grid: { color: hexToRgba(ui.border, 0.6) },
+        ticks: { color: ui.muted }
       },
-      ticks: {
-        color: 'rgb(107, 114, 128)'
+      y: {
+        stacked: true,
+        grid: { color: hexToRgba(ui.border, 0.6) },
+        ticks: { color: ui.muted }
       }
     },
-    y: {
-      stacked: true,
-      grid: {
-        color: 'rgba(156, 163, 175, 0.1)'
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          color: ui.muted,
+          usePointStyle: true,
+          padding: 16
+        }
       },
-      ticks: {
-        color: 'rgb(107, 114, 128)'
+      tooltip: {
+        backgroundColor: ui.tooltipBg,
+        titleColor: ui.tooltipFg,
+        bodyColor: ui.tooltipFg,
+        borderColor: ui.border,
+        borderWidth: 1
       }
-    }
-  },
-  plugins: {
-    legend: {
-      position: 'top',
-      labels: {
-        color: 'rgb(107, 114, 128)',
-        usePointStyle: true,
-        padding: 16
-      }
-    },
-    tooltip: {
-      backgroundColor: 'rgb(31, 41, 55)',
-      titleColor: 'rgb(243, 244, 246)',
-      bodyColor: 'rgb(243, 244, 246)',
-      borderColor: 'rgb(75, 85, 99)',
-      borderWidth: 1
     }
   }
 }
 
 function buildChartOptions(): ChartOptions<'bar'> {
+  const base = makeDefaultOptions()
   const stackedOptions = props.stacked ? {
     scales: {
-      x: { ...defaultOptions.scales?.x, stacked: true },
-      y: { ...defaultOptions.scales?.y, stacked: true }
+      x: { ...base.scales?.x, stacked: true },
+      y: { ...base.scales?.y, stacked: true }
     }
   } : {
     scales: {
-      x: { ...defaultOptions.scales?.x, stacked: false },
-      y: { ...defaultOptions.scales?.y, stacked: false }
+      x: { ...base.scales?.x, stacked: false },
+      y: { ...base.scales?.y, stacked: false }
     }
   }
 
   return {
-    ...defaultOptions,
+    ...base,
     ...stackedOptions,
     locale: locale.value,
     ...props.options

@@ -510,17 +510,17 @@ onMounted(async () => {
   padding: 0.625rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: hsl(var(--foreground));
-  background: hsl(var(--muted) / 0.5);
-  border: 1px solid hsl(var(--border) / 0.6);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--muted) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .oauth-btn:hover {
-  background: hsl(var(--muted));
-  border-color: hsl(var(--primary) / 0.5);
+  background: var(--muted);
+  border-color: color-mix(in srgb, var(--primary) 50%, transparent);
 }
 
 .oauth-icon {
@@ -540,16 +540,16 @@ onMounted(async () => {
   justify-content: center;
   width: 3rem;
   height: 3rem;
-  background: hsl(var(--muted) / 0.5);
-  border: 1px solid hsl(var(--border) / 0.6);
+  background: color-mix(in srgb, var(--muted) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .oauth-icon-btn:hover {
-  background: hsl(var(--muted));
-  border-color: hsl(var(--primary) / 0.5);
+  background: var(--muted);
+  border-color: color-mix(in srgb, var(--primary) 50%, transparent);
   transform: translateY(-1px);
 }
 
@@ -565,7 +565,7 @@ onMounted(async () => {
 
 .auth-type-tabs {
   display: flex;
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: 1px solid var(--border);
 }
 
 .auth-tab {
@@ -573,7 +573,7 @@ onMounted(async () => {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -593,15 +593,15 @@ onMounted(async () => {
 }
 
 .auth-tab:hover:not(.active) {
-  color: hsl(var(--foreground));
+  color: var(--foreground);
 }
 
 .auth-tab.active {
-  color: hsl(var(--primary));
+  color: var(--primary);
   font-weight: 600;
 }
 
 .auth-tab.active::after {
-  background: hsl(var(--primary));
+  background: var(--primary);
 }
 </style>

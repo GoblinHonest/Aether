@@ -400,10 +400,10 @@ async function handleImport() {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--muted-foreground) / 0.2);
+  background-color: color-mix(in srgb, var(--muted-foreground) 20%, transparent);
   border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--muted-foreground) / 0.4);
+  background-color: color-mix(in srgb, var(--muted-foreground) 40%, transparent);
 }
 </style>

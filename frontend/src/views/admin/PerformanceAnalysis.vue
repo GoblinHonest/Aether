@@ -859,6 +859,7 @@ import {
   type GatewayMetricsSummary,
 } from '@/api/monitoring'
 import LineChart from '@/components/charts/LineChart.vue'
+import { useChartPalette } from '@/components/charts/theme'
 import { LoadingState, TimeRangePicker } from '@/components/common'
 import { ErrorDistributionChart, PercentileChart } from '@/components/stats'
 import Badge from '@/components/ui/badge.vue'
@@ -1226,13 +1227,15 @@ async function loadLiveData(options: { silent?: boolean } = {}) {
   }
 }
 
+const palette = useChartPalette()
+
 const errorTrendChartData = computed(() => ({
   labels: errorTrend.value.map(item => item.date),
   datasets: [
     {
       label: legacyT('错误数'),
       data: errorTrend.value.map(item => item.total),
-      borderColor: 'rgb(239, 68, 68)',
+      borderColor: palette.value[6],
       tension: 0.25,
       pointRadius: 2
     }

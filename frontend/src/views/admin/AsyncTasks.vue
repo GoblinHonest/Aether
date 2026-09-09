@@ -1419,7 +1419,7 @@ onUnmounted(() => {
 }
 
 .time-arrow {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
 }
 
 .time-duration {
@@ -1428,7 +1428,7 @@ onUnmounted(() => {
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.65rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 </style>

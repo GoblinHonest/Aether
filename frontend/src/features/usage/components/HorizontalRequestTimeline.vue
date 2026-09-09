@@ -2499,7 +2499,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
   /* 优化滚动体验 */
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: hsl(var(--border)) transparent;
+  scrollbar-color: var(--border) transparent;
 }
 
 /* Webkit 滚动条样式 */
@@ -2512,12 +2512,12 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 .minimal-track::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
+  background: var(--border);
   border-radius: 3px;
 }
 
 .minimal-track::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
 }
 
 .minimal-node-group {
@@ -2542,7 +2542,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.65rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   white-space: nowrap;
   max-width: 80px;
   overflow: hidden;
@@ -2625,7 +2625,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .sub-dot.active {
   opacity: 1;
   transform: scale(1.15);
-  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 3px currentColor;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 3px currentColor;
 }
 
 /* 子节点状态颜色 */
@@ -2633,7 +2633,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .sub-dot.status-failed { background: #ef4444; color: #ef4444; }
 .sub-dot.status-cancelled { background: #f59e0b; color: #f59e0b; }
 .sub-dot.status-pending { background: #3b82f6; color: #3b82f6; }
-.sub-dot.status-skipped { background: hsl(var(--foreground)); color: hsl(var(--foreground)); }
+.sub-dot.status-skipped { background: var(--foreground); color: var(--foreground); }
 .sub-dot.status-available { background: #d1d5db; color: #d1d5db; }
 
 /* 选中状态：呼吸动画 + 涟漪效果 */
@@ -2696,7 +2696,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .node-dot.status-failed { color: #ef4444; }
 .node-dot.status-cancelled { color: #f59e0b; }
 .node-dot.status-pending { color: #3b82f6; }
-.node-dot.status-skipped { color: hsl(var(--foreground)); }
+.node-dot.status-skipped { color: var(--foreground); }
 .node-dot.status-available { color: #d1d5db; }
 
 /* 连接线容器 */
@@ -2715,21 +2715,21 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .node-line {
   width: 100%;
   height: 2px;
-  background: hsl(var(--border));
+  background: var(--border);
 }
 
 /* 格式转换分界线 */
 .node-line.conversion-boundary {
   background: none;
   height: 0;
-  border-top: 2px dashed hsl(var(--muted-foreground) / 0.4);
+  border-top: 2px dashed color-mix(in srgb, var(--muted-foreground) 40%, transparent);
 }
 
 /* 详情面板 */
 .detail-panel {
   margin-top: 1rem;
-  background: hsl(var(--muted) / 0.3);
-  border: 1px solid hsl(var(--border));
+  background: color-mix(in srgb, var(--muted) 30%, transparent);
+  border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
 }
@@ -2739,8 +2739,8 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0rem;
-  border-bottom: 1px solid hsl(var(--border));
-  background: hsl(var(--muted) / 0.4);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
 }
 
 .panel-title {
@@ -2759,7 +2759,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .title-dot.status-failed { background: #ef4444; }
 .title-dot.status-cancelled { background: #f59e0b; }
 .title-dot.status-pending { background: #3b82f6; }
-.title-dot.status-skipped { background: hsl(var(--foreground)); }
+.title-dot.status-skipped { background: var(--foreground); }
 .title-dot.status-available { background: #d1d5db; }
 
 .title-text {
@@ -2779,18 +2779,18 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   justify-content: center;
   width: 28px;
   height: 28px;
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--background));
+  border: 1px solid var(--border);
+  background: var(--background);
   border-radius: 6px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: hsl(var(--muted));
-  color: hsl(var(--foreground));
-  border-color: hsl(var(--muted-foreground) / 0.3);
+  background: var(--muted);
+  color: var(--foreground);
+  border-color: color-mix(in srgb, var(--muted-foreground) 30%, transparent);
 }
 
 .nav-btn:disabled {
@@ -2801,7 +2801,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .nav-info {
   font-size: 0.8rem;
   font-weight: 500;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   padding: 0 0.5rem;
   min-width: 50px;
   text-align: center;
@@ -2813,7 +2813,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
 /* 头部分隔符 */
 .header-divider {
-  color: hsl(var(--border));
+  color: var(--border);
   margin: 0 0.5rem;
   font-size: 1rem;
 }
@@ -2852,13 +2852,13 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 .status-tag.status-skipped {
-  background: hsl(var(--foreground) / 0.08);
-  color: hsl(var(--foreground));
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  color: var(--foreground);
 }
 
 .status-tag.status-available {
-  background: hsl(var(--muted));
-  color: hsl(var(--muted-foreground));
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 
 /* 缓存亲和标签 */
@@ -2868,9 +2868,9 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   padding: 0.15rem 0.5rem;
   font-size: 0.7rem;
   font-weight: 500;
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 0.1);
-  border: 1px solid hsl(var(--primary) / 0.2);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
   border-radius: 9999px;
   margin-left: 0.75rem;
 }
@@ -2882,8 +2882,8 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   padding: 0.15rem 0.5rem;
   font-size: 0.7rem;
   font-weight: 500;
-  color: hsl(var(--muted-foreground));
-  background: hsl(var(--muted) / 0.5);
+  color: var(--muted-foreground);
+  background: color-mix(in srgb, var(--muted) 50%, transparent);
   border-radius: 4px;
 }
 
@@ -2900,17 +2900,17 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   justify-content: center;
   width: 20px;
   height: 20px;
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--background));
+  border: 1px solid var(--border);
+  background: var(--background);
   border-radius: 9999px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .attempt-nav-btn:hover:not(:disabled) {
-  background: hsl(var(--muted));
-  color: hsl(var(--foreground));
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .attempt-nav-btn:disabled {
@@ -2936,7 +2936,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
 .info-label {
   font-size: 0.7rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 500;
@@ -2954,15 +2954,15 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   font-size: 1.1rem;
   font-weight: 600;
   font-family: ui-monospace, monospace;
-  color: hsl(var(--primary));
+  color: var(--primary);
 }
 
 .info-value code {
   font-size: 0.7rem;
   padding: 0.15rem 0.375rem;
-  background: hsl(var(--muted));
+  background: var(--muted);
   border-radius: 4px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-family: ui-monospace, monospace;
 }
 
@@ -2977,9 +2977,9 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .format-code {
   font-size: 0.75rem;
   padding: 0.1rem 0.3rem;
-  background: hsl(var(--muted));
+  background: var(--muted);
   border-radius: 3px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-family: ui-monospace, monospace;
 }
 
@@ -2991,9 +2991,9 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .key-preview {
   font-size: 0.75rem;
   padding: 0.1rem 0.3rem;
-  background: hsl(var(--muted));
+  background: var(--muted);
   border-radius: 3px;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-family: ui-monospace, monospace;
 }
 
@@ -3005,9 +3005,9 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   margin-left: 0.375rem;
   font-size: 0.65rem;
   font-weight: 500;
-  color: hsl(var(--primary) / 0.8);
-  background: hsl(var(--primary) / 0.08);
-  border: 1px solid hsl(var(--primary) / 0.2);
+  color: color-mix(in srgb, var(--primary) 80%, transparent);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
   border-radius: 3px;
 }
 
@@ -3037,43 +3037,43 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   font-weight: 500;
   border-radius: 4px;
   white-space: nowrap;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid var(--border);
 }
 
 .pool-reason-tag.pool-sticky {
-  color: hsl(var(--chart-4));
-  border-color: hsl(var(--chart-4) / 0.3);
-  background: hsl(var(--chart-4) / 0.08);
+  color: var(--chart-4);
+  border-color: color-mix(in srgb, var(--chart-4) 30%, transparent);
+  background: color-mix(in srgb, var(--chart-4) 8%, transparent);
 }
 
 .pool-reason-tag.pool-lru {
-  color: hsl(var(--chart-2));
-  border-color: hsl(var(--chart-2) / 0.3);
-  background: hsl(var(--chart-2) / 0.08);
+  color: var(--chart-2);
+  border-color: color-mix(in srgb, var(--chart-2) 30%, transparent);
+  background: color-mix(in srgb, var(--chart-2) 8%, transparent);
 }
 
 .pool-reason-tag.pool-random,
 .pool-reason-tag.pool-tiebreak {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
 }
 
 .pool-cost-warn {
   font-size: 0.65rem;
-  color: hsl(var(--chart-5));
+  color: var(--chart-5);
   font-weight: 500;
 }
 
 .pool-skip-type {
   font-weight: 500;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
 }
 
 .image-progress-block {
   margin-top: 0.875rem;
   padding: 0.75rem;
-  border: 1px solid hsl(var(--border) / 0.7);
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
   border-radius: 8px;
-  background: hsl(var(--background) / 0.72);
+  background: color-mix(in srgb, var(--background) 72%, transparent);
 }
 
 .image-progress-header {
@@ -3097,7 +3097,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   font-size: 0.7rem;
   font-weight: 600;
   white-space: nowrap;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid var(--border);
 }
 
 .image-progress-phase.phase-connecting,
@@ -3138,7 +3138,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
 .image-progress-label {
   font-size: 0.68rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 
@@ -3146,7 +3146,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   min-width: 0;
   font-size: 0.82rem;
   font-weight: 600;
-  color: hsl(var(--foreground));
+  color: var(--foreground);
 }
 
 .image-progress-code {
@@ -3158,8 +3158,8 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   white-space: nowrap;
   padding: 0.12rem 0.35rem;
   border-radius: 4px;
-  background: hsl(var(--muted));
-  color: hsl(var(--muted-foreground));
+  background: var(--muted);
+  color: var(--muted-foreground);
   font-size: 0.72rem;
   font-family: ui-monospace, monospace;
 }
@@ -3181,21 +3181,21 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   justify-content: center;
   padding: 0.25rem;
   margin-left: 0.25rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   border-radius: 4px;
   transition: all 0.15s ease;
 }
 
 .provider-link:hover {
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 0.1);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
 /* 时间范围 */
 .time-range {
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px dashed hsl(var(--border));
+  border-top: 1px dashed var(--border);
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
@@ -3203,7 +3203,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
 .time-label {
   font-size: 0.7rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 500;
@@ -3218,7 +3218,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 .time-arrow {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
 }
 
 /* 时间范围值 - 紧凑布局 */
@@ -3241,7 +3241,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.65rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 
@@ -3249,7 +3249,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .usage-section {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 1px dashed hsl(var(--border));
+  border-top: 1px dashed var(--border);
 }
 
 .usage-grid {
@@ -3257,8 +3257,8 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   flex-direction: column;
   gap: 0.375rem;
   padding: 0.5rem 0.75rem;
-  background: hsl(var(--muted) / 0.2);
-  border: 1px solid hsl(var(--border) / 0.5);
+  background: color-mix(in srgb, var(--muted) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
   border-radius: 8px;
 }
 
@@ -3275,7 +3275,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
 .usage-label {
   font-size: 0.75rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   width: 56px;
   flex-shrink: 0;
 }
@@ -3301,7 +3301,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .usage-divider {
   width: 1px;
   height: 16px;
-  background: hsl(var(--border));
+  background: var(--border);
   margin: 0 1rem;
 }
 
@@ -3309,7 +3309,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 .skip-reason {
   margin-top: 1rem;
   padding: 0.75rem;
-  background: hsl(var(--muted) / 0.5);
+  background: color-mix(in srgb, var(--muted) 50%, transparent);
   border-radius: 8px;
   display: flex;
   gap: 0.75rem;
@@ -3317,12 +3317,12 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 .reason-label {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   flex-shrink: 0;
 }
 
 .reason-value {
-  color: hsl(var(--foreground));
+  color: var(--foreground);
 }
 
 .reason-content {
@@ -3333,7 +3333,7 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 }
 
 .reason-detail {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   line-height: 1.45;
   word-break: break-word;
 }
@@ -3342,8 +3342,8 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   margin-right: 0.4rem;
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
-  background: hsl(var(--background) / 0.8);
-  color: hsl(var(--foreground));
+  background: color-mix(in srgb, var(--background) 80%, transparent);
+  color: var(--foreground);
   font-size: 0.8rem;
 }
 
@@ -3378,8 +3378,8 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
   border-radius: 999px;
   font-size: 0.72rem;
   font-family: ui-monospace, monospace;
-  background: hsl(var(--muted));
-  color: hsl(var(--muted-foreground));
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 
 .error-status-badge.is-success {
@@ -3426,14 +3426,14 @@ function getDisplayStatus(attempt: CandidateRecord | null | undefined): string {
 
 .extra-toggle {
   font-size: 0.8rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   cursor: pointer;
   padding: 0.5rem 0;
   user-select: none;
 }
 
 .extra-toggle:hover {
-  color: hsl(var(--foreground));
+  color: var(--foreground);
 }
 
 .extra-json-panel {

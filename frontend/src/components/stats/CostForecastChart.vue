@@ -31,6 +31,7 @@
 import { computed } from 'vue'
 import { useI18n } from '@/i18n'
 import LineChart from '@/components/charts/LineChart.vue'
+import { hexToRgba, useChartPalette } from '@/components/charts/theme'
 import { LoadingState } from '@/components/common'
 import { formatCurrency } from '@/utils/format'
 
@@ -53,6 +54,8 @@ const labels = computed(() => [
   ...props.forecast.map(item => item.date)
 ])
 
+const palette = useChartPalette()
+
 const chartData = computed(() => {
   const historyValues = props.history.map(item => item.total_cost)
   const forecastValues = props.forecast.map(item => item.total_cost)
@@ -62,16 +65,16 @@ const chartData = computed(() => {
       {
         label: t('chart.actualCost'),
         data: historyValues.concat(new Array(forecastValues.length).fill(null)),
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.15)',
+        borderColor: palette.value[0],
+        backgroundColor: hexToRgba(palette.value[0], 0.15),
         tension: 0.25,
         pointRadius: 2
       },
       {
         label: t('chart.forecastCost'),
         data: new Array(historyValues.length).fill(null).concat(forecastValues),
-        borderColor: 'rgb(234, 179, 8)',
-        backgroundColor: 'rgba(234, 179, 8, 0.15)',
+        borderColor: palette.value[5],
+        backgroundColor: hexToRgba(palette.value[5], 0.15),
         borderDash: [6, 4],
         tension: 0.25,
         pointRadius: 2

@@ -906,6 +906,7 @@ import { TimeRangePicker } from "@/components/common";
 import BarChart from "@/components/charts/BarChart.vue";
 import DoughnutChart from "@/components/charts/DoughnutChart.vue";
 import LineChart from "@/components/charts/LineChart.vue";
+import { chartUiColors, hexToRgba, useChartPalette } from "@/components/charts/theme";
 import {
   Users,
   Activity,
@@ -1359,6 +1360,8 @@ const providerCostChartOptions = computed<ChartOptions<"doughnut">>(() => ({
 }));
 
 // 每日使用趋势（折线图）- 普通用户
+const palette = useChartPalette()
+const axisUi = chartUiColors()
 const dailyUsageTrendChartData = computed<ChartData<"line">>(() => {
   // 管理员不需要此图表，直接返回空数据
   if (isAdmin.value || dailyStats.value.length === 0) {
@@ -1371,8 +1374,8 @@ const dailyUsageTrendChartData = computed<ChartData<"line">>(() => {
       {
         label: getI18nLocale() === 'en-US' ? 'Requests' : '请求数',
         data: dailyStats.value.map((stat) => stat.requests),
-        borderColor: 'rgba(22, 93, 255, 0.9)',
-        backgroundColor: 'rgba(22, 93, 255, 0.08)',
+        borderColor: hexToRgba(palette.value[0], 0.9),
+        backgroundColor: hexToRgba(palette.value[0], 0.08),
         fill: true,
         tension: 0.3,
         yAxisID: "y",
@@ -1380,8 +1383,8 @@ const dailyUsageTrendChartData = computed<ChartData<"line">>(() => {
       {
         label: "Tokens (K)",
         data: dailyStats.value.map((stat) => stat.tokens / 1000),
-        borderColor: "rgba(20, 201, 201, 0.8)",
-        backgroundColor: "rgba(20, 201, 201, 0.1)",
+        borderColor: hexToRgba(palette.value[1], 0.8),
+        backgroundColor: hexToRgba(palette.value[1], 0.1),
         fill: true,
         tension: 0.3,
         yAxisID: "y1",
@@ -1413,11 +1416,11 @@ const dailyUsageTrendChartOptions = computed<ChartOptions<"line">>(() => {
         title: {
           display: true,
           text: getI18nLocale() === 'en-US' ? 'Requests' : '请求数',
-          color: '#999',
+          color: axisUi.muted,
           font: { size: 11 },
         },
-        ticks: { font: { size: 11 }, color: '#999' },
-        grid: { color: '#f5f5f5' }
+        ticks: { font: { size: 11 }, color: axisUi.muted },
+        grid: { color: hexToRgba(axisUi.border, 0.6) }
       },
       y1: {
         type: "linear",
@@ -1426,7 +1429,7 @@ const dailyUsageTrendChartOptions = computed<ChartOptions<"line">>(() => {
         title: {
           display: true,
           text: "Tokens (K)",
-          color: "rgb(107, 114, 128)",
+          color: axisUi.muted,
           font: { size: 10 },
         },
         ticks: { font: { size: 10 } },

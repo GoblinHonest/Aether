@@ -3,9 +3,9 @@
     <canvas ref="chartRef" />
     <div
       v-if="crosshairStats"
-      class="absolute top-2 right-2 max-w-[calc(100%-1rem)] break-words bg-gray-800/90 text-gray-100 px-3 py-2 rounded-lg text-sm border border-gray-600"
+      class="absolute top-2 right-2 max-w-[calc(100%-1rem)] break-words bg-popover/95 text-popover-foreground px-3 py-2 rounded-lg text-sm border border-border shadow-md"
     >
-      <div class="font-medium text-yellow-400">
+      <div class="font-medium text-[color:var(--chart-4)]">
         {{ t('chart.crosshairValue', { value: crosshairStats.yValue.toFixed(1) }) }}
       </div>
       <!-- 单个 dataset 时显示简单统计 -->
@@ -13,8 +13,8 @@
         v-if="crosshairStats.datasets.length === 1"
         class="mt-1"
       >
-        <span class="text-green-400">{{ crosshairStats.datasets[0].belowCount }}</span> / {{ crosshairStats.datasets[0].totalCount }} {{ t('chart.pointsBelow') }}
-        <span class="ml-2 text-blue-400">({{ crosshairStats.datasets[0].belowPercent.toFixed(1) }}%)</span>
+        <span class="text-[color:var(--chart-5)]">{{ crosshairStats.datasets[0].belowCount }}</span> / {{ crosshairStats.datasets[0].totalCount }} {{ t('chart.pointsBelow') }}
+        <span class="ml-2 text-primary">({{ crosshairStats.datasets[0].belowPercent.toFixed(1) }}%)</span>
       </div>
       <!-- 多个 dataset 时按模型分别显示 -->
       <div
@@ -30,15 +30,15 @@
             class="w-2 h-2 rounded-full flex-shrink-0"
             :style="{ backgroundColor: ds.color }"
           />
-          <span class="text-gray-300 truncate max-w-[80px]">{{ ds.label }}:</span>
-          <span class="text-green-400">{{ ds.belowCount }}</span>/<span class="text-gray-400">{{ ds.totalCount }}</span>
-          <span class="text-blue-400">({{ ds.belowPercent.toFixed(0) }}%)</span>
+          <span class="text-popover-foreground truncate max-w-[80px]">{{ ds.label }}:</span>
+          <span class="text-[color:var(--chart-5)]">{{ ds.belowCount }}</span>/<span class="text-muted-foreground">{{ ds.totalCount }}</span>
+          <span class="text-primary">({{ ds.belowPercent.toFixed(0) }}%)</span>
         </div>
         <!-- 总计 -->
-        <div class="flex items-center gap-2 pt-1 border-t border-gray-600 mt-1">
-          <span class="text-gray-300">{{ t('chart.total') }}:</span>
-          <span class="text-green-400">{{ crosshairStats.totalBelowCount }}</span>/<span class="text-gray-400">{{ crosshairStats.totalCount }}</span>
-          <span class="text-blue-400">({{ crosshairStats.totalBelowPercent.toFixed(1) }}%)</span>
+        <div class="flex items-center gap-2 pt-1 border-t border-border mt-1">
+          <span class="text-popover-foreground">{{ t('chart.total') }}:</span>
+          <span class="text-[color:var(--chart-5)]">{{ crosshairStats.totalBelowCount }}</span>/<span class="text-muted-foreground">{{ crosshairStats.totalCount }}</span>
+          <span class="text-primary">({{ crosshairStats.totalBelowPercent.toFixed(1) }}%)</span>
         </div>
       </div>
     </div>
@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import type { TimeScatterChartData, TimeScatterPoint } from './types'
 import { getI18nLocale, useI18n } from '@/i18n'
+import { chartUiColors, hexToRgba, useChartThemeVersion } from './theme'
 import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue'
 import {
   Chart as ChartJS,
@@ -117,6 +118,7 @@ interface GapInfo {
 
 const chartRef = ref<HTMLCanvasElement>()
 const { locale, t } = useI18n()
+const themeVersion = useChartThemeVersion()
 let chart: ChartJS<'scatter', TimeScatterPoint[]> | null = null
 
 const crosshairY = ref<number | null>(null)
@@ -155,7 +157,7 @@ const crosshairStats = computed<CrosshairStats | null>(() => {
     if (dsTotal > 0) {
       datasetStats.push({
         label: dataset.label || t('chart.unknown'),
-        color: (dataset.backgroundColor as string) || 'rgba(59, 130, 246, 0.7)',
+        color: (dataset.backgroundColor as string) || hexToRgba(chartUiColors().primary, 0.7),
         belowCount,
         totalCount: dsTotal,
         belowPercent: (belowCount / dsTotal) * 100
@@ -328,7 +330,9 @@ function formatDuration(ms: number): string {
   return `${minutes}m`
 }
 
-const defaultOptions = computed<ChartOptions<'scatter'>>(() => ({
+const defaultOptions = computed<ChartOptions<'scatter'>>(() => {
+  const ui = chartUiColors()
+  return {
   locale: locale.value,
   responsive: true,
   maintainAspectRatio: false,
@@ -349,10 +353,10 @@ const defaultOptions = computed<ChartOptions<'scatter'>>(() => ({
         tooltipFormat: 'HH:mm'
       },
       grid: {
-        color: 'rgba(156, 163, 175, 0.1)'
+        color: hexToRgba(ui.border, 0.6)
       },
       ticks: {
-        color: 'rgb(107, 114, 128)',
+        color: ui.muted,
         maxRotation: 0,
         autoSkip: true,
         maxTicksLimit: 10
@@ -363,10 +367,10 @@ const defaultOptions = computed<ChartOptions<'scatter'>>(() => ({
       min: 0,
       max: 100,  // 显示值范围 0-100
       grid: {
-        color: 'rgba(156, 163, 175, 0.1)'
+        color: hexToRgba(ui.border, 0.6)
       },
       ticks: {
-        color: 'rgb(107, 114, 128)',
+        color: ui.muted,
         // 自定义刻度值：在实际值 0, 2, 5, 10, 30, 60, 120 处显示
         callback(this: Scale, tickValue: string | number) {
           const displayVal = Number(tickValue)
@@ -386,7 +390,7 @@ const defaultOptions = computed<ChartOptions<'scatter'>>(() => ({
       title: {
         display: true,
         text: t('chart.intervalAxis'),
-        color: 'rgb(107, 114, 128)'
+        color: ui.muted
       },
       afterBuildTicks(scale: Scale) {
         // 在特定实际值处设置刻度
@@ -403,10 +407,10 @@ const defaultOptions = computed<ChartOptions<'scatter'>>(() => ({
       display: false
     },
     tooltip: {
-      backgroundColor: 'rgb(31, 41, 55)',
-      titleColor: 'rgb(243, 244, 246)',
-      bodyColor: 'rgb(243, 244, 246)',
-      borderColor: 'rgb(75, 85, 99)',
+      backgroundColor: ui.tooltipBg,
+      titleColor: ui.tooltipFg,
+      bodyColor: ui.tooltipFg,
+      borderColor: ui.border,
       borderWidth: 1,
       callbacks: {
         title: (contexts) => {
@@ -458,7 +462,8 @@ const defaultOptions = computed<ChartOptions<'scatter'>>(() => ({
 
     chartInstance.draw()
   }
-}))
+  }
+})
 
 // 修改 crosshairPlugin 使用显示值
 const crosshairPluginWithTransform: Plugin<'scatter'> = {
@@ -480,7 +485,7 @@ const crosshairPluginWithTransform: Plugin<'scatter'> = {
     ctx.beginPath()
     ctx.moveTo(chartArea.left, yPixel)
     ctx.lineTo(chartArea.right, yPixel)
-    ctx.strokeStyle = 'rgba(250, 204, 21, 0.8)'
+    ctx.strokeStyle = hexToRgba(chartUiColors().primary, 0.85)
     ctx.lineWidth = 2
     ctx.setLineDash([6, 4])
     ctx.stroke()
@@ -511,7 +516,7 @@ const gapMarkerPlugin: Plugin<'scatter'> = {
       const y2 = chartArea.bottom
 
       ctx.beginPath()
-      ctx.strokeStyle = 'rgba(156, 163, 175, 0.5)'
+      ctx.strokeStyle = hexToRgba(chartUiColors().border, 0.9)
       ctx.lineWidth = 1.5
       ctx.setLineDash([])
 
@@ -523,7 +528,7 @@ const gapMarkerPlugin: Plugin<'scatter'> = {
       ctx.stroke()
 
       // 绘制间隙时长标签
-      ctx.fillStyle = 'rgba(107, 114, 128, 0.8)'
+      ctx.fillStyle = chartUiColors().muted
       ctx.font = '10px sans-serif'
       ctx.textAlign = 'center'
       const label = formatDuration(gap.duration)
@@ -593,7 +598,7 @@ watch(
   ],
   updateChart
 )
-watch([() => props.options, defaultOptions], () => {
+watch([() => props.options, defaultOptions, themeVersion], () => {
   if (chart) {
     chart.options = {
       ...defaultOptions.value,

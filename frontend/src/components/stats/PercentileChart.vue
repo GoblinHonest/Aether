@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import LineChart from '@/components/charts/LineChart.vue'
+import { useChartPalette } from '@/components/charts/theme'
 import { LoadingState } from '@/components/common'
 import type { PercentileItem } from '@/api/admin'
 
@@ -54,6 +55,8 @@ function msToSeconds(ms: number | null | undefined): number | null {
   return ms / 1000
 }
 
+const palette = useChartPalette()
+
 const chartData = computed(() => {
   const p50Key = props.mode === 'response' ? 'p50_response_time_ms' : 'p50_first_byte_time_ms'
   const p90Key = props.mode === 'response' ? 'p90_response_time_ms' : 'p90_first_byte_time_ms'
@@ -65,21 +68,21 @@ const chartData = computed(() => {
       {
         label: 'P50',
         data: props.series.map(item => msToSeconds(item[p50Key])),
-        borderColor: 'rgb(59, 130, 246)',
+        borderColor: palette.value[0],
         tension: 0.25,
         pointRadius: 2
       },
       {
         label: 'P90',
         data: props.series.map(item => msToSeconds(item[p90Key])),
-        borderColor: 'rgb(234, 179, 8)',
+        borderColor: palette.value[5],
         tension: 0.25,
         pointRadius: 2
       },
       {
         label: 'P99',
         data: props.series.map(item => msToSeconds(item[p99Key])),
-        borderColor: 'rgb(239, 68, 68)',
+        borderColor: palette.value[6],
         tension: 0.25,
         pointRadius: 2
       }

@@ -147,6 +147,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { Card, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
 import LineChart from '@/components/charts/LineChart.vue'
+import { useChartPalette } from '@/components/charts/theme'
 import { LoadingState, TimeRangePicker } from '@/components/common'
 import { LeaderboardTable } from '@/components/stats'
 import { adminApi, type LeaderboardItem } from '@/api/admin'
@@ -310,13 +311,15 @@ async function loadUserPanels() {
   return userPanelsLoadPromise
 }
 
+const palette = useChartPalette()
+
 const seriesChartData = computed(() => ({
   labels: series.value.map(item => item.date),
   datasets: [
     {
       label: '成本',
       data: series.value.map(item => item.total_cost),
-      borderColor: 'rgb(59, 130, 246)',
+      borderColor: palette.value[0],
       tension: 0.25,
       pointRadius: 2
     }
@@ -329,14 +332,14 @@ const comparisonChartData = computed(() => ({
     {
       label: '当前用户',
       data: series.value.map(item => item.total_cost),
-      borderColor: 'rgb(59, 130, 246)',
+      borderColor: palette.value[0],
       tension: 0.25,
       pointRadius: 2
     },
     {
       label: '对比用户',
       data: comparisonSeries.value.map(item => item.total_cost),
-      borderColor: 'rgb(234, 179, 8)',
+      borderColor: palette.value[5],
       tension: 0.25,
       pointRadius: 2
     }

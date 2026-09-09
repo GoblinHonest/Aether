@@ -154,29 +154,29 @@ defineExpose({
   text-align: center;
   font-size: 1.5rem;
   font-weight: 600;
-  border: 2px solid hsl(var(--border));
+  border: 2px solid var(--border);
   border-radius: var(--radius);
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background-color: var(--background);
+  color: var(--foreground);
   transition: all 0.2s;
 }
 
 .code-digit:focus {
   outline: none;
-  border-color: hsl(var(--primary));
-  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
 .code-digit:hover:not(:focus) {
-  border-color: hsl(var(--primary) / 0.5);
+  border-color: color-mix(in srgb, var(--primary) 50%, transparent);
 }
 
 .code-digit.error {
-  border-color: hsl(var(--destructive));
+  border-color: var(--destructive);
 }
 
 .code-digit.error:focus {
-  box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 10%, transparent);
 }
 
 /* Prevent spinner buttons on number inputs */

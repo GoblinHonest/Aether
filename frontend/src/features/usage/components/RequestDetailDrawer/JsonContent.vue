@@ -197,7 +197,7 @@ watch([() => props.data, () => props.bodyDocument, () => props.expandDepth], () 
 }
 
 .json-line:hover {
-  background: hsl(var(--muted) / 0.4);
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
 }
 
 .line-number-area {
@@ -207,8 +207,8 @@ watch([() => props.data, () => props.bodyDocument, () => props.expandDepth], () 
   align-items: center;
   justify-content: flex-end;
   padding-right: 8px;
-  background: hsl(var(--muted) / 0.2);
-  border-right: 1px solid hsl(var(--border));
+  background: color-mix(in srgb, var(--muted) 20%, transparent);
+  border-right: 1px solid var(--border);
   user-select: none;
 }
 
@@ -219,14 +219,14 @@ watch([() => props.data, () => props.bodyDocument, () => props.expandDepth], () 
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: hsl(var(--muted-foreground) / 0.6);
+  color: color-mix(in srgb, var(--muted-foreground) 60%, transparent);
   margin-right: 2px;
   border-radius: 2px;
 }
 
 .fold-button:hover {
-  color: hsl(var(--foreground));
-  background: hsl(var(--muted) / 0.8);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--muted) 80%, transparent);
 }
 
 .fold-icon {
@@ -235,7 +235,7 @@ watch([() => props.data, () => props.bodyDocument, () => props.expandDepth], () 
 }
 
 .line-number {
-  color: hsl(var(--muted-foreground) / 0.5);
+  color: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
   min-width: 20px;
   text-align: right;
 }
@@ -261,7 +261,7 @@ watch([() => props.data, () => props.bodyDocument, () => props.expandDepth], () 
 }
 
 .line-content.clickable-collapsed:hover :deep(.token-ellipsis) {
-  background: hsl(var(--primary) / 0.2);
+  background: color-mix(in srgb, var(--primary) 20%, transparent);
   border-radius: 2px;
 }
 
@@ -300,7 +300,7 @@ watch([() => props.data, () => props.bodyDocument, () => props.expandDepth], () 
 }
 
 :deep(.collapsed-info) {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-style: italic;
   margin-left: 8px;
   font-size: 12px;
@@ -340,6 +340,6 @@ watch([() => props.data, () => props.bodyDocument, () => props.expandDepth], () 
 }
 
 .theme-dark .line-number-area {
-  background: hsl(var(--muted) / 0.3);
+  background: color-mix(in srgb, var(--muted) 30%, transparent);
 }
 </style>

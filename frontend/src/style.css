@@ -11,6 +11,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark-mode accent text stays readable on near-black surfaces (4.9:1),
+   solid primary buttons keep arcoblue-6 with white text (5.2:1). */
+.dark .text-primary { color: #4080ff; }
+
 @layer base {
   :root {
     /* QoderWake neutral palette */
@@ -124,6 +128,9 @@
     --chart-3: #722ed1;
     --chart-4: #ff7d00;
     --chart-5: #00b42a;
+    --chart-6: #f7ba1e;
+    --chart-7: #f53f3f;
+    --chart-8: #86909c;
 
     --sidebar: #f2f3f5;
     --sidebar-foreground: #4e5969;
@@ -236,8 +243,8 @@
     --card-foreground: #f6f6f6;
     --popover: #232324;
     --popover-foreground: #f6f6f6;
-    --primary: #4080ff;
-    --primary-foreground: #232324;
+    --primary: #165dff;
+    --primary-foreground: #ffffff;
     --secondary: #141414;
     --secondary-foreground: #f6f6f6;
     --muted: #141414;
@@ -254,6 +261,9 @@
     --chart-3: #a871e3;
     --chart-4: #ff9a2e;
     --chart-5: #9fdb1d;
+    --chart-6: #ffcf3d;
+    --chart-7: #f53f3f;
+    --chart-8: #6b7785;
     --sidebar: #232324;
     --sidebar-foreground: #ababac;
     --sidebar-primary: #f6f6f6;

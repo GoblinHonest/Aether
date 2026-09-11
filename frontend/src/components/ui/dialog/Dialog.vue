@@ -16,7 +16,7 @@
       >
         <div
           v-if="isOpen"
-          class="fixed inset-0 bg-black/40 transition-opacity pointer-events-auto"
+          class="fixed inset-0 bg-[#1d2129]/60 transition-opacity pointer-events-auto"
           :style="{ zIndex: backdropZIndex }"
           @click="handleBackdropClick"
         />
@@ -25,16 +25,16 @@
       <div class="relative flex h-full items-end justify-center overflow-hidden text-center sm:items-center sm:p-0 pointer-events-none">
         <!-- 对话框内容 -->
         <Transition
-          enter-active-class="duration-300 ease-out"
-          enter-from-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          enter-to-class="opacity-100 translate-y-0 sm:scale-100"
-          leave-active-class="duration-200 ease-in"
-          leave-from-class="opacity-100 translate-y-0 sm:scale-100"
-          leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          enter-active-class="duration-200 ease-out"
+          enter-from-class="opacity-0 translate-y-2 scale-95 sm:translate-y-0 sm:scale-95"
+          enter-to-class="opacity-100 translate-y-0 scale-100"
+          leave-active-class="duration-150 ease-in"
+          leave-from-class="opacity-100 translate-y-0 scale-100"
+          leave-to-class="opacity-0 translate-y-2 scale-95 sm:translate-y-0 sm:scale-95"
         >
           <div
             v-if="isOpen"
-            class="relative flex max-h-[100dvh] w-full transform flex-col overflow-hidden rounded-t-xl border border-x-0 border-b-0 border-border bg-background text-left shadow-md transition-all pointer-events-auto sm:my-8 sm:w-full sm:max-h-[calc(100dvh-4rem)] sm:rounded-lg sm:border"
+            class="relative flex max-h-[100dvh] w-full transform flex-col overflow-hidden rounded-t bg-background text-left shadow-[0_4px_16px_rgba(29,33,41,0.12)] transition-all pointer-events-auto sm:my-8 sm:w-full sm:max-h-[calc(100dvh-4rem)] sm:rounded dark:shadow-[0_8px_24px_rgba(0,0,0,0.55)]"
             :style="{ zIndex: contentZIndex }"
             :class="maxWidthClass"
             @click.stop
@@ -43,31 +43,40 @@
             <slot name="header">
               <div
                 v-if="title"
-                class="shrink-0 border-b border-border px-4 pb-3 pt-4 sm:px-6 sm:py-4"
+                class="relative shrink-0 px-5 pb-3 pt-4"
               >
                 <div class="flex items-center gap-3">
                   <div
                     v-if="icon"
-                    class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 flex-shrink-0"
+                    class="flex h-8 w-8 items-center justify-center rounded bg-[#e8f3ff] flex-shrink-0 dark:bg-[#0e1d33]"
                     :class="iconClass"
                   >
                     <component
                       :is="icon"
-                      class="h-5 w-5 text-primary"
+                      class="h-4 w-4 text-[#165dff] dark:text-[#4080ff]"
                     />
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h3 class="break-words text-balance text-base font-semibold leading-tight text-foreground sm:text-lg">
+                    <h3 class="break-words text-balance text-base font-medium leading-tight text-foreground">
                       {{ title }}
                     </h3>
                     <p
                       v-if="description"
-                      class="mt-0.5 break-words text-pretty text-xs leading-4 text-muted-foreground"
+                      class="mt-1 break-words text-pretty text-xs leading-4 text-muted-foreground"
                     >
                       {{ description }}
                     </p>
                   </div>
                   <slot name="header-actions" />
+                  <button
+                    v-if="!persistent"
+                    type="button"
+                    class="-mr-2 flex h-7 w-7 shrink-0 items-center justify-center self-start rounded text-[#86909c] transition-colors hover:bg-[#f2f3f5] hover:text-[#4e5969] dark:text-[#929293] dark:hover:bg-[#2a2a2b]"
+                    aria-label="Close"
+                    @click="handleClose"
+                  >
+                    <X class="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </slot>
@@ -80,7 +89,7 @@
             <!-- Footer 区域：如果有 footer 插槽，自动添加样式 -->
             <div
               v-if="slots.footer"
-              class="flex shrink-0 flex-col-reverse items-stretch gap-2 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 [&>button]:min-h-min [&>button]:w-full [&>button]:whitespace-normal [&>button]:py-2 sm:flex-row-reverse sm:flex-wrap sm:items-center sm:gap-3 sm:bg-muted/10 sm:px-6 sm:py-4 sm:[&>button]:w-auto"
+              class="flex shrink-0 flex-col-reverse items-stretch gap-3 px-5 pb-5 pt-1 [&>button]:min-h-min [&>button]:w-full [&>button]:whitespace-normal [&>button]:py-2 sm:flex-row-reverse sm:flex-wrap sm:items-center [&>button]:w-auto"
             >
               <slot name="footer" />
             </div>
@@ -93,6 +102,7 @@
 
 <script setup lang="ts">
 import { computed, provide, useSlots, type Component } from 'vue'
+import { X } from 'lucide-vue-next'
 import { useEscapeKey } from '@/composables/useEscapeKey'
 import { DIALOG_CONTEXT_KEY } from './context'
 
@@ -170,7 +180,7 @@ const maxWidthClass = computed(() => {
 
 const contentBodyClass = computed(() => [
   'min-h-0 min-w-0 overflow-y-auto overscroll-contain',
-  props.noPadding ? '' : 'px-4 py-3 sm:px-6',
+  props.noPadding ? '' : 'px-5 py-5',
 ].filter(Boolean).join(' '))
 
 // Z-index computed values for nested dialogs support

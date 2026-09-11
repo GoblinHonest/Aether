@@ -5,18 +5,32 @@
     @update:model-value="handleClose"
   >
     <template #header>
-      <div class="border-b border-border px-6 py-4">
+      <div class="px-5 pb-3 pt-4">
         <div class="flex items-center gap-3">
-          <component
-            :is="icon"
-            class="h-5 w-5 flex-shrink-0"
-            :class="iconColorClass"
-          />
+          <div
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded"
+            :class="iconBoxClass"
+          >
+            <component
+              :is="icon"
+              class="h-5 w-5"
+              :class="iconColorClass"
+            />
+          </div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-lg font-semibold text-foreground leading-tight">
+            <h3 class="text-base font-medium leading-tight text-foreground">
               {{ displayTitle }}
             </h3>
           </div>
+          <button
+            v-if="!loading"
+            type="button"
+            class="-mr-2 flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#86909c] transition-colors hover:bg-[#f2f3f5] hover:text-[#4e5969] dark:text-[#929293] dark:hover:bg-[#2a2a2b]"
+            aria-label="Close"
+            @click="handleCancel"
+          >
+            <X class="h-4 w-4" />
+          </button>
         </div>
       </div>
     </template>
@@ -70,7 +84,7 @@
 import { computed } from 'vue'
 import { Dialog } from '@/components/ui'
 import Button from '@/components/ui/button.vue'
-import { AlertTriangle, AlertCircle, Info, Trash2, HelpCircle, Loader2 } from 'lucide-vue-next'
+import { AlertTriangle, AlertCircle, Info, Trash2, HelpCircle, Loader2, X } from 'lucide-vue-next'
 import { useI18n } from '@/i18n'
 
 export type AlertType = 'danger' | 'destructive' | 'warning' | 'info' | 'question'
@@ -163,15 +177,31 @@ const iconColorClass = computed(() => {
   switch (props.type) {
     case 'danger':
     case 'destructive':
-      return 'text-rose-600 dark:text-rose-400'
+      return 'text-[#f53f3f] dark:text-[#f76965]'
     case 'warning':
-      return 'text-amber-600 dark:text-amber-400'
+      return 'text-[#ff7d00] dark:text-[#ff9a2e]'
     case 'info':
-      return 'text-primary'
+      return 'text-[#165dff] dark:text-[#4080ff]'
     case 'question':
-      return 'text-gray-600 dark:text-muted-foreground'
+      return 'text-[#4e5969] dark:text-[#ababac]'
     default:
-      return 'text-primary'
+      return 'text-[#165dff] dark:text-[#4080ff]'
+  }
+})
+
+const iconBoxClass = computed(() => {
+  switch (props.type) {
+    case 'danger':
+    case 'destructive':
+      return 'bg-[#f53f3f]/10 dark:bg-[#f53f3f]/15'
+    case 'warning':
+      return 'bg-[#ff7d00]/10 dark:bg-[#ff7d00]/15'
+    case 'info':
+      return 'bg-[#165dff]/10 dark:bg-[#4080ff]/15'
+    case 'question':
+      return 'bg-[#86909c]/15 dark:bg-[#ababac]/15'
+    default:
+      return 'bg-[#165dff]/10 dark:bg-[#4080ff]/15'
   }
 })
 

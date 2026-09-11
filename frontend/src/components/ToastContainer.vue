@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2">
+  <div class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex w-[min(448px,calc(100vw-2rem))] flex-col items-center gap-2">
     <TransitionGroup
       name="toast"
       tag="div"
@@ -25,37 +25,37 @@ const { toasts, removeToast } = useToast()
 <style scoped>
 /* 进入动画 - 从上方弹入 */
 .toast-enter-active {
-  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+  transition: all 0.2s ease-out;
 }
 
 .toast-enter-from {
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(-12px);
   opacity: 0;
 }
 
 .toast-enter-to {
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
   opacity: 1;
 }
 
 /* 弹出动画 - 向上消失 */
 .toast-leave-active {
-  transition: all 0.2s ease-out;
+  transition: all 0.15s ease-in;
 }
 
 .toast-leave-from {
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
   opacity: 1;
 }
 
 .toast-leave-to {
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(-12px);
   opacity: 0;
 }
 
 /* 移动动画 */
 .toast-move {
-  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+  transition: all 0.2s ease-out;
 }
 
 /* 响应式调整 */

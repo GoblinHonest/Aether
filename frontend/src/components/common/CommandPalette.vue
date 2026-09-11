@@ -17,7 +17,7 @@
 
         <div
           ref="panelRef"
-          class="relative w-[min(560px,calc(100vw-2rem))] overflow-hidden rounded-lg border border-[#e5e6eb] bg-white shadow-[0_16px_36px_rgba(0,0,0,0.14)] dark:border-[#484849] dark:bg-[#232324]"
+          class="relative w-[min(560px,calc(100vw-2rem))] overflow-hidden rounded bg-white shadow-[0_8px_24px_rgba(0,0,0,0.12)] dark:bg-[#232324] dark:shadow-[0_12px_32px_rgba(0,0,0,0.55)]"
           role="dialog"
           aria-modal="true"
           :aria-label="t('palette.title')"
@@ -28,7 +28,7 @@
               ref="inputRef"
               v-model="query"
               type="text"
-              class="h-12 w-full bg-transparent text-sm text-[#1d2129] outline-none placeholder:text-[#a9aeb8] dark:text-[#f6f6f6] dark:placeholder:text-[#78787a]"
+              class="h-10 w-full bg-transparent text-sm text-[#1d2129] outline-none placeholder:text-[#a9aeb8] dark:text-[#f6f6f6] dark:placeholder:text-[#78787a]"
               :placeholder="t('palette.placeholder')"
               @keydown.down.prevent="move(1)"
               @keydown.up.prevent="move(-1)"

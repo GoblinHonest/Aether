@@ -201,8 +201,20 @@ fn frontend_path_targets_static_asset(path: &str) -> bool {
 }
 
 async fn serve_static_asset(static_dir: &PathBuf, request: Request) -> Response {
+    let path = request.uri().path().to_string();
     match ServeDir::new(static_dir).oneshot(request).await {
-        Ok(response) => response.into_response(),
+        Ok(mut response) => {
+            // 带 hash 的静态资源（/assets/*.js, /assets/*.css）加缓存头
+            // 文件名含 hash，内容变化时文件名也变，安全缓存
+            if path.starts_with("/assets/") {
+                let headers = response.headers_mut();
+                headers.insert(
+                    CACHE_CONTROL,
+                    HeaderValue::from_static("public, max-age=86400, must-revalidate"),
+                );
+            }
+            response.into_response()
+        }
         Err(err) => {
             warn!(error = %err, "failed to serve frontend static asset");
             axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response()

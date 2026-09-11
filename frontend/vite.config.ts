@@ -52,6 +52,9 @@ export default defineConfig(({ mode }) => {
       minify: 'esbuild',
       rollupOptions: {
         output: {
+          // 合并小 chunk，减少 HTTP 请求数（远程访问优化）
+          experimentalMinChunkSize: 80000,
+          chunkSizeWarningLimit: 600,
           // 手动分块以优化加载性能
           manualChunks: {
             // Vue 核心库

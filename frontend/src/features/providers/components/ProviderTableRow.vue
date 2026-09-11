@@ -200,17 +200,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import {
-  Edit,
-  Eye,
-  Trash2,
-  Power,
-  KeyRound,
-  ExternalLink,
-  Pencil,
-  Check,
-  X,
-} from 'lucide-vue-next'
+import { IconEdit as Edit, IconEye as Eye, IconDelete as Trash2, IconPoweroff as Power, IconSafe as KeyRound, IconLaunch as ExternalLink, IconEdit as Pencil, IconCheck as Check, IconClose as X } from '@arco-design/web-vue/es/icon'
 import Button from '@/components/ui/button.vue'
 import Badge from '@/components/ui/badge.vue'
 import TableRow from '@/components/ui/table-row.vue'

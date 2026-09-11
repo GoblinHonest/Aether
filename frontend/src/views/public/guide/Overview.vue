@@ -1,16 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import {
-  Code,
-  Server,
-  Key,
-  Container,
-  Shield,
-  Monitor,
-  Check,
-  Copy,
-  Zap,
-} from 'lucide-vue-next'
+import { IconCode as Code, IconSafe as Key, IconSafe as Shield, IconDesktop as Monitor, IconCheck as Check, IconCopy as Copy, IconThunderbolt as Zap } from '@arco-design/web-vue/es/icon'
+import { Server, Container } from 'lucide-vue-next'
 import { panelClasses } from './guide-config'
 
 // 部署步骤数据
@@ -102,7 +93,7 @@ function copyStep(stepId: string, code: string) {
         class="mt-6"
       >
         <!-- Tab 切换 -->
-<div class="flex max-w-full overflow-x-auto border-b border-[#eee] dark:border-[rgba(255,255,255,0.08)] px-5">
+        <div class="flex max-w-full overflow-x-auto border-b border-[#eee] dark:border-[rgba(255,255,255,0.08)] px-5">
           <button
             v-for="(tab, idx) in [
               { icon: Container, label: 'Docker 预构建镜像' },
@@ -131,7 +122,7 @@ function copyStep(stepId: string, code: string) {
           <div
             v-for="(step, idx) in productionSteps"
             :key="idx"
-            class="group rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] overflow-hidden transition-colors"
+            class="group rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] overflow-hidden transition-colors"
             :class="step.optional ? 'border-dashed opacity-80' : ''"
           >
             <div class="flex items-center gap-3 px-4 py-3">
@@ -159,7 +150,7 @@ function copyStep(stepId: string, code: string) {
               >
                 <Check
                   v-if="copiedStep === `prod-${idx}`"
-                  class="h-3.5 w-3.5 text-green-500"
+                  class="h-3.5 w-3.5 text-[#00b42a]"
                 />
                 <Copy
                   v-else
@@ -180,7 +171,7 @@ function copyStep(stepId: string, code: string) {
           <div
             v-for="(step, idx) in developmentSteps"
             :key="idx"
-            class="group rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] overflow-hidden transition-colors"
+            class="group rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] overflow-hidden transition-colors"
           >
             <div class="flex items-center gap-3 px-4 py-3">
               <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#2a2a2b] text-white">
@@ -201,7 +192,7 @@ function copyStep(stepId: string, code: string) {
               >
                 <Check
                   v-if="copiedStep === `dev-${idx}`"
-                  class="h-3.5 w-3.5 text-green-500"
+                  class="h-3.5 w-3.5 text-[#00b42a]"
                 />
                 <Copy
                   v-else
@@ -231,7 +222,7 @@ function copyStep(stepId: string, code: string) {
             loading="lazy"
             src="/guide/quickstart-create-model.webp"
             alt="创建统一模型"
-            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
+            class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
           >
         </div>
 
@@ -241,7 +232,7 @@ function copyStep(stepId: string, code: string) {
             loading="lazy"
             src="/guide/quickstart-add-provider.webp"
             alt="添加提供商"
-            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
+            class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
           >
         </div>
 
@@ -252,13 +243,13 @@ function copyStep(stepId: string, code: string) {
               loading="lazy"
               src="/guide/quickstart-add-endpoint-1.webp"
               alt="添加端点 1"
-              class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
+              class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
             >
             <img
               loading="lazy"
               src="/guide/quickstart-add-endpoint-2.webp"
               alt="添加端点 2"
-              class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
+              class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
             >
           </div>
         </div>
@@ -269,7 +260,7 @@ function copyStep(stepId: string, code: string) {
             loading="lazy"
             src="/guide/quickstart-add-key.webp"
             alt="添加密钥"
-            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
+            class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
           >
         </div>
 
@@ -280,13 +271,13 @@ function copyStep(stepId: string, code: string) {
               loading="lazy"
               src="/guide/quickstart-link-model-1.webp"
               alt="关联全局模型 1"
-              class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
+              class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
             >
             <img
               loading="lazy"
               src="/guide/quickstart-link-model-2.webp"
               alt="关联全局模型 2"
-              class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
+              class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] w-full"
             >
           </div>
         </div>
@@ -297,7 +288,7 @@ function copyStep(stepId: string, code: string) {
             loading="lazy"
             src="/guide/quickstart-model-mapping.webp"
             alt="模型映射"
-            class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
+            class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-4 w-full"
           >
         </div>
       </div>
@@ -367,7 +358,7 @@ function copyStep(stepId: string, code: string) {
         loading="lazy"
         src="/guide/quickstart-reverse-proxy.webp"
         alt="反向代理配置示例"
-        class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-6 w-full max-w-2xl"
+        class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-6 w-full max-w-2xl"
       >
     </section>
 

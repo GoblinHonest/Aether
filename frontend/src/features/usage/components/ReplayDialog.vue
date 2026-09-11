@@ -113,7 +113,7 @@
                 >
                   <Check
                     v-if="requestCopied"
-                    class="w-3 h-3 text-green-500"
+                    class="w-3 h-3 text-[#00b42a]"
                   />
                   <Copy
                     v-else
@@ -198,7 +198,7 @@
                 >
                   <Check
                     v-if="responseCopied"
-                    class="w-3 h-3 text-green-500"
+                    class="w-3 h-3 text-[#00b42a]"
                   />
                   <Copy
                     v-else
@@ -230,8 +230,8 @@
                   v-else-if="replayError"
                   class="px-4 py-4"
                 >
-                  <div class="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3">
-                    <p class="text-sm text-red-600 dark:text-red-400">
+                  <div class="rounded-lg bg-[#ffece8] dark:bg-[#4a000a]/20 border border-[#fbaca3] dark:border-[#770813] p-3">
+                    <p class="text-sm text-[#cb272d] dark:text-[#f76560]">
                       {{ replayError }}
                     </p>
                   </div>
@@ -333,7 +333,7 @@ import Card from '@/components/ui/card.vue'
 import Badge from '@/components/ui/badge.vue'
 import Button from '@/components/ui/button.vue'
 import Separator from '@/components/ui/separator.vue'
-import { X, Play, Loader2, ChevronRight, Copy, Check } from 'lucide-vue-next'
+import { IconClose as X, IconPlayArrow as Play, IconLoading as Loader2, IconRight as ChevronRight, IconCopy as Copy, IconCheck as Check } from '@arco-design/web-vue/es/icon'
 import { log } from '@/utils/logger'
 
 interface ProviderOption {

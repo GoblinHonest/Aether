@@ -1,5 +1,5 @@
 import { ref, computed, type Ref } from 'vue'
-import { CalendarCheck, RefreshCw } from 'lucide-vue-next'
+import { IconCalendar as CalendarCheck, IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
 import { useToast } from '@/composables/useToast'
 import { adminApi } from '@/api/admin'
 import { log } from '@/utils/logger'

@@ -122,7 +122,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { Copy } from 'lucide-vue-next'
+import { IconCopy as Copy } from '@arco-design/web-vue/es/icon'
 import { referralApi, type ReferralDashboardResponse } from '@/api/referrals'
 import { Button, Card, Input, Label } from '@/components/ui'
 import { useClipboard } from '@/composables/useClipboard'

@@ -117,8 +117,8 @@ describe('ProviderKeyActionCluster', () => {
       recoverTitle: '',
       circuitBreakerTitle: '',
       circuitProbeCountdown: '',
-      healthScoreBarClass: 'bg-red-500',
-      healthScoreTextClass: 'text-red-600',
+      healthScoreBarClass: 'bg-[#f53f3f]',
+      healthScoreTextClass: 'text-[#cb272d]',
       proxyPopoverOpen: false,
       proxyNodeName: '',
     })
@@ -140,8 +140,8 @@ describe('ProviderKeyActionCluster', () => {
       recoverTitle: 'Recover key',
       circuitBreakerTitle: 'Circuit is open',
       circuitProbeCountdown: ' 2m',
-      healthScoreBarClass: 'bg-red-500',
-      healthScoreTextClass: 'text-red-600',
+      healthScoreBarClass: 'bg-[#f53f3f]',
+      healthScoreTextClass: 'text-[#cb272d]',
       proxyPopoverOpen: true,
       proxyNodeName: 'Tokyo',
     })

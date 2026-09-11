@@ -4,7 +4,7 @@ import {
   SelectItemIndicator,
   SelectItemText,
 } from 'radix-vue'
-import { Check } from 'lucide-vue-next'
+import { IconCheck as Check } from '@arco-design/web-vue/es/icon'
 import { cn } from '@/lib/utils'
 import {
   computed,

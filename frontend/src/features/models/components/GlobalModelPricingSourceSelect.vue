@@ -89,7 +89,7 @@
     </div>
     <p
       v-if="localOnly"
-      class="mt-1 text-[10px] text-amber-600 dark:text-amber-400"
+      class="mt-1 text-[10px] text-[#d25f00] dark:text-[#ffb357]"
     >
       {{ t('models.pricingSource.pendingDatabase') }}
     </p>
@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2, RefreshCw } from 'lucide-vue-next'
+import { IconLoading as Loader2, IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
 
 import type { ModelsDevModelItem } from '@/api/models-dev'
 import { useI18n } from '@/i18n'

@@ -186,7 +186,7 @@
                       v-for="item in group.items"
                       :key="item.href"
                       :to="item.href"
-                      class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+                      class="flex items-center gap-2.5 px-3 py-2.5 rounded text-sm font-medium transition-all"
                       :class="isNavActive(item.href)
                         ? 'bg-[#2a2a2b]/10 dark:bg-[#2a2a2b]/20 text-[#2a2a2b] dark:text-[#e5e5e5]'
                         : 'text-[#666666] dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#2a2a2b] dark:hover:text-white'"
@@ -270,7 +270,7 @@
           <img
             :src="lightboxSrc"
             :alt="lightboxAlt"
-            class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-md"
+            class="max-w-[90vw] max-h-[90vh] object-contain rounded shadow-md"
             @click.stop
           >
         </div>
@@ -282,11 +282,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import {
-  Menu,
-  ChevronRight,
-  X
-} from 'lucide-vue-next'
+import { IconMenu as Menu, IconRight as ChevronRight, IconClose as X } from '@arco-design/web-vue/es/icon'
 import HeaderLogo from '@/components/HeaderLogo.vue'
 import LanguageSwitcher from '@/components/common/LanguageSwitcher.vue'
 import ThemeModeButton from '@/components/common/ThemeModeButton.vue'

@@ -90,7 +90,7 @@
           </div>
           <div
             v-if="walletBalance?.unlimited"
-            class="text-xs text-amber-600 dark:text-amber-400"
+            class="text-xs text-[#d25f00] dark:text-[#ffb357]"
           >
             当前账号处于无限制模式，余额仅用于账务统计。
           </div>
@@ -132,7 +132,7 @@
 
         <div
           v-if="latestRedeem"
-          class="rounded-xl border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground space-y-1.5"
+          class="rounded border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground space-y-1.5"
         >
           <div>
             已兑换批次: <span class="font-medium text-foreground">{{ latestRedeem.batch_name }}</span>
@@ -209,7 +209,7 @@
 
           <div
             v-if="selectedRechargeOption?.usd_exchange_rate"
-            class="rounded-xl border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground"
+            class="rounded border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground"
           >
             预计支付:
             <span class="font-medium text-foreground">
@@ -234,7 +234,7 @@
 
           <div
             v-if="latestRecharge"
-            class="rounded-xl border border-border/60 bg-muted/30 p-3 space-y-1.5"
+            class="rounded border border-border/60 bg-muted/30 p-3 space-y-1.5"
           >
             <div class="text-xs text-muted-foreground">
               最新订单: <span class="font-medium text-foreground">{{ latestRecharge.order.order_no }}</span>
@@ -288,7 +288,7 @@
 
           <div
             v-if="!loadingRefundEligibility && refundableOrders.length === 0"
-            class="rounded-xl border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground"
+            class="rounded border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground"
           >
             当前没有开启用户自助退款的可退充值订单。
           </div>
@@ -350,7 +350,7 @@
             />
           </div>
 
-          <div class="rounded-xl border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground">
+          <div class="rounded border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground">
             仅开启“允许用户退款”的支付方式可由用户自助提交退款申请。
           </div>
 
@@ -414,11 +414,11 @@
                           <div class="flex items-center gap-2">
                             <Badge
                               variant="outline"
-                              class="font-mono border-amber-500/40 text-amber-700 dark:text-amber-300"
+                              class="font-mono border-[#ff7d00]/40 text-[#a64b00] dark:text-[#ffcf8b]"
                             >
                               {{ dailyUsageCategoryLabel(true) }}
                             </Badge>
-                            <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span class="inline-flex h-2 w-2 rounded-full bg-[#00b42a] animate-pulse" />
                             <span class="text-[11px] text-muted-foreground">
                               Live
                             </span>
@@ -428,7 +428,7 @@
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell class="text-rose-600 dark:text-rose-400">
+                      <TableCell class="text-[#cb272d] dark:text-[#f76560]">
                         -{{ todayUsage.total_cost.toFixed(4) }}
                       </TableCell>
                       <TableCell class="text-xs text-muted-foreground">
@@ -460,7 +460,7 @@
                           </div>
                         </TableCell>
                         <TableCell
-                          :class="item.data.amount >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'"
+                          :class="item.data.amount >= 0 ? 'text-[#009a29] dark:text-[#23c343]' : 'text-[#cb272d] dark:text-[#f76560]'"
                         >
                           {{ item.data.amount >= 0 ? '+' : '' }}{{ item.data.amount.toFixed(4) }}
                         </TableCell>
@@ -479,7 +479,7 @@
                           <div class="space-y-1">
                             <Badge
                               variant="outline"
-                              class="font-mono border-amber-500/40 text-amber-700 dark:text-amber-300"
+                              class="font-mono border-[#ff7d00]/40 text-[#a64b00] dark:text-[#ffcf8b]"
                             >
                               {{ dailyUsageCategoryLabel(false) }}
                             </Badge>
@@ -488,7 +488,7 @@
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell class="text-rose-600 dark:text-rose-400">
+                        <TableCell class="text-[#cb272d] dark:text-[#f76560]">
                           -{{ item.data.total_cost.toFixed(4) }}
                         </TableCell>
                         <TableCell class="text-xs text-muted-foreground">

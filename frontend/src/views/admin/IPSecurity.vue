@@ -402,7 +402,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Plus, Trash2, ShieldX, ShieldCheck, AlertCircle } from 'lucide-vue-next'
+import { IconPlus as Plus, IconDelete as Trash2, IconSafe as ShieldCheck, IconExclamationCircle as AlertCircle } from '@arco-design/web-vue/es/icon'
+import { ShieldX } from 'lucide-vue-next'
 import {
   Card,
   Button,

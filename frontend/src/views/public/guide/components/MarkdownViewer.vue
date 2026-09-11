@@ -43,7 +43,7 @@ const renderMarkdown = () => {
     const rawHtml = marked.parse(props.content) as string
     renderedHtml.value = sanitizeMarkdown(rawHtml)
   } catch {
-    renderedHtml.value = '<p class="text-red-500">Failed to render content</p>'
+    renderedHtml.value = '<p class="text-[#f53f3f]">Failed to render content</p>'
   }
 }
 
@@ -110,7 +110,7 @@ onMounted(() => {
 
 /* Code Blocks & Inline Code */
 .markdown-body pre {
-  @apply p-4 rounded-xl overflow-x-auto mb-6 text-sm;
+  @apply p-4 rounded overflow-x-auto mb-6 text-sm;
   background: var(--color-background-soft);
   border: 1px solid var(--color-border-soft);
   font-family: var(--monospace) !important;
@@ -160,7 +160,7 @@ onMounted(() => {
 
 /* Images */
 .markdown-body img {
-  @apply max-w-full rounded-xl border object-contain mx-auto mb-6;
+  @apply max-w-full rounded border object-contain mx-auto mb-6;
   border-color: var(--color-border-soft);
   max-height: 600px;
 }

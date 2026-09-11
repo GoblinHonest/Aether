@@ -27,7 +27,7 @@
     </template>
 
     <div class="space-y-4">
-      <div class="rounded-xl border border-border/60 bg-muted/20 p-4">
+      <div class="rounded border border-border/60 bg-muted/20 p-4">
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div class="space-y-1">
             <div class="text-xs text-muted-foreground">
@@ -76,7 +76,7 @@
         </div>
       </div>
 
-      <div class="relative rounded-xl border border-border/60 bg-background p-3">
+      <div class="relative rounded border border-border/60 bg-background p-3">
         <div
           ref="paymentElementRoot"
           class="min-h-[360px]"
@@ -93,7 +93,7 @@
 
       <div
         v-if="errorMessage"
-        class="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300"
+        class="rounded border border-[#f53f3f]/30 bg-[#f53f3f]/10 px-4 py-3 text-sm text-[#a1151e] dark:text-[#f98981]"
       >
         {{ errorMessage }}
       </div>
@@ -124,7 +124,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { loadStripe, type Stripe, type StripeElements, type StripePaymentElement } from '@stripe/stripe-js'
-import { Loader2 } from 'lucide-vue-next'
+import { IconLoading as Loader2 } from '@arco-design/web-vue/es/icon'
 import { Badge, Button, Dialog, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui'
 import {
   getStripePaymentInstructions,

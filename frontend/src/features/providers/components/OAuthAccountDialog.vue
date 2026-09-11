@@ -16,7 +16,7 @@
           <button
             class="flex items-center justify-center w-8 h-8 rounded-md transition-colors shrink-0"
             :class="selectedProxyNodeId
-              ? 'text-blue-500 bg-blue-500/10 hover:bg-blue-500/20'
+              ? 'text-[#4080ff] bg-[#4080ff]/10 hover:bg-[#4080ff]/20'
               : 'text-muted-foreground hover:text-foreground hover:bg-muted'"
             :title="selectedProxyNodeId ? `${legacyT('代理')}: ${getSelectedNodeLabel()}` : legacyT('设置代理节点')"
           >
@@ -143,7 +143,7 @@
 
               <div
                 v-if="device.status === 'error' || device.status === 'expired'"
-                class="rounded-xl border border-destructive/20 bg-destructive/5 p-5"
+                class="rounded border border-destructive/20 bg-destructive/5 p-5"
               >
                 <div class="flex flex-col items-center text-center space-y-3">
                   <div class="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
@@ -228,7 +228,7 @@
                       v-model="device.callback_url"
                       :disabled="device.completing"
                       :placeholder="deviceCallbackPlaceholder"
-                      class="min-h-[150px] text-xs font-mono break-all !rounded-xl"
+                      class="min-h-[150px] text-xs font-mono break-all !rounded"
                       spellcheck="false"
                     />
                   </div>
@@ -272,7 +272,7 @@
                 <!-- 错误/过期 -->
                 <div
                   v-if="device.status === 'error' || device.status === 'expired'"
-                  class="rounded-xl border border-destructive/20 bg-destructive/5 p-5"
+                  class="rounded border border-destructive/20 bg-destructive/5 p-5"
                 >
                   <div class="flex flex-col items-center text-center space-y-3">
                     <div class="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
@@ -350,7 +350,7 @@
                         v-model="device.callback_url"
                         :disabled="device.completing"
                         :placeholder="deviceCallbackPlaceholder"
-                        class="h-full min-h-0 overflow-y-auto text-xs font-mono break-all !rounded-xl"
+                        class="h-full min-h-0 overflow-y-auto text-xs font-mono break-all !rounded"
                         spellcheck="false"
                       />
                     </div>
@@ -360,7 +360,7 @@
                 <!-- Builder ID / Identity Center: 等待用户授权 -->
                 <div
                   v-else-if="device.session_id && device.status === 'pending'"
-                  class="rounded-xl border border-border bg-muted/20 p-5"
+                  class="rounded border border-border bg-muted/20 p-5"
                 >
                   <div class="flex flex-col items-center text-center space-y-4">
                     <div class="relative">
@@ -410,13 +410,13 @@
                         <div class="flex-1 h-1 rounded-full bg-muted overflow-hidden">
                           <div
                             class="h-full rounded-full transition-all duration-1000 ease-linear"
-                            :class="totp.remaining.value <= 5 ? 'bg-red-500' : 'bg-primary'"
+                            :class="totp.remaining.value <= 5 ? 'bg-[#f53f3f]' : 'bg-primary'"
                             :style="{ width: `${(totp.remaining.value / 30) * 100}%` }"
                           />
                         </div>
                         <span
                           class="text-[10px] font-mono tabular-nums shrink-0"
-                          :class="totp.remaining.value <= 5 ? 'text-red-500' : 'text-muted-foreground'"
+                          :class="totp.remaining.value <= 5 ? 'text-[#f53f3f]' : 'text-muted-foreground'"
                         >{{ totp.remaining.value }}s</span>
                       </div>
                     </div>
@@ -597,7 +597,7 @@
                     v-model="oauth.callback_url"
                     :disabled="oauthBusy"
                     :placeholder="oauthCallbackPlaceholder"
-                    class="h-full min-h-[120px] overflow-y-auto text-xs font-mono break-all !rounded-xl"
+                    class="h-full min-h-[120px] overflow-y-auto text-xs font-mono break-all !rounded"
                     data-testid="oauth-callback-textarea"
                     spellcheck="false"
                   />
@@ -628,7 +628,7 @@
               :disabled="cookieAuthorizing"
               :placeholder="legacyT('每行粘贴一个 sessionKey Cookie 值或完整 Cookie 请求头，最多 20 个')"
               aria-describedby="claude-session-cookie-status"
-              class="h-[200px] min-h-[200px] overflow-y-auto pb-7 text-xs font-mono break-words !rounded-xl"
+              class="h-[200px] min-h-[200px] overflow-y-auto pb-7 text-xs font-mono break-words !rounded"
               data-testid="claude-cookie-input"
               autocomplete="off"
               spellcheck="false"
@@ -724,14 +724,14 @@
               :manual-description="importManualDescription"
               :paste-toggle-text="importPasteToggleText"
               :file-toggle-text="importFileToggleText"
-              textarea-class="min-h-[200px] text-xs font-mono break-all !rounded-xl"
+              textarea-class="min-h-[200px] text-xs font-mono break-all !rounded"
               @error="handleImportInputError"
             />
           </template>
 
           <div
             v-if="importTask && !isWindsurfEmailPasswordImport"
-            class="rounded-xl border border-border bg-muted/20 p-3 space-y-2"
+            class="rounded border border-border bg-muted/20 p-3 space-y-2"
           >
             <div class="flex items-center justify-between text-xs">
               <span class="font-medium">
@@ -787,7 +787,7 @@
             v-model="agentIdentityInput"
             :disabled="creatingAgentIdentity"
             :placeholder="legacyT('粘贴 AT 或 ChatGPT auth/session JSON')"
-            class="min-h-[200px] text-xs font-mono break-all !rounded-xl"
+            class="min-h-[200px] text-xs font-mono break-all !rounded"
             autocomplete="off"
             spellcheck="false"
           />
@@ -854,16 +854,8 @@ import {
   ComboboxTrigger,
   ComboboxViewport,
 } from 'radix-vue'
-import {
-  UserPlus,
-  Copy,
-  ExternalLink,
-  Globe,
-  AlertCircle,
-  ShieldCheck,
-  ChevronsUpDown,
-  Check,
-} from 'lucide-vue-next'
+import { IconCopy as Copy, IconLaunch as ExternalLink, IconExclamationCircle as AlertCircle, IconSafe as ShieldCheck, IconCheck as Check } from '@arco-design/web-vue/es/icon'
+import { UserPlus, Globe, ChevronsUpDown } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
 import { useClipboard } from '@/composables/useClipboard'
 import { useTotp } from '@/composables/useTotp'

@@ -84,7 +84,7 @@
 import { computed } from 'vue'
 import { Dialog } from '@/components/ui'
 import Button from '@/components/ui/button.vue'
-import { AlertTriangle, AlertCircle, Info, Trash2, HelpCircle, Loader2, X } from 'lucide-vue-next'
+import { IconExclamationCircle as AlertTriangle, IconExclamationCircle as AlertCircle, IconInfo as Info, IconDelete as Trash2, IconQuestionCircle as HelpCircle, IconLoading as Loader2, IconClose as X } from '@arco-design/web-vue/es/icon'
 import { useI18n } from '@/i18n'
 
 export type AlertType = 'danger' | 'destructive' | 'warning' | 'info' | 'question'

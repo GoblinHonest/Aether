@@ -219,11 +219,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
-import {
-  Loader2,
-  Search,
-  Copy,
-} from 'lucide-vue-next'
+import { IconLoading as Loader2, IconSearch as Search, IconCopy as Copy } from '@arco-design/web-vue/es/icon'
 import { useToast } from '@/composables/useToast'
 import { useClipboard } from '@/composables/useClipboard'
 import {

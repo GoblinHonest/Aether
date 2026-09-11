@@ -227,7 +227,7 @@
                                 v-if="keyEntry.key.circuit_breaker_open || (keyEntry.key.health_score ?? 1) < 0.5"
                                 variant="ghost"
                                 size="icon"
-                                class="h-6 w-6 text-green-600"
+                                class="h-6 w-6 text-[#009a29]"
                                 title="刷新健康状态"
                                 @click.stop="handleRecoverKey(keyEntry.key.id, keyEntry.endpoint?.api_format || formatGroup.api_format)"
                               >
@@ -500,7 +500,7 @@
                                         <!-- 刷新健康按钮 -->
                                         <button
                                           v-if="key.circuit_breaker_open || (key.health_score ?? 1) < 0.5"
-                                          class="p-0.5 rounded hover:bg-muted/50 text-green-600 shrink-0"
+                                          class="p-0.5 rounded hover:bg-muted/50 text-[#009a29] shrink-0"
                                           title="刷新健康状态"
                                           @click.stop="handleRecoverKey(key.id, providerEntry.endpoint?.api_format || formatGroup.api_format)"
                                         >
@@ -583,16 +583,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import {
-  RefreshCw,
-  Loader2,
-  ArrowDown,
-  ChevronDown,
-  Route,
-  AlertCircle,
-  Power,
-  Link
-} from 'lucide-vue-next'
+import { IconRefresh as RefreshCw, IconLoading as Loader2, IconArrowDown as ArrowDown, IconDown as ChevronDown, IconExclamationCircle as AlertCircle, IconPoweroff as Power, IconLink as Link } from '@arco-design/web-vue/es/icon'
+import { Route } from 'lucide-vue-next'
 import Card from '@/components/ui/card.vue'
 import Badge from '@/components/ui/badge.vue'
 import Button from '@/components/ui/button.vue'
@@ -1135,12 +1127,12 @@ function getKeyPriorityGroups(keys: RoutingKeyInfo[]): KeyPriorityGroup[] {
 // 获取提供商状态样式
 function getProviderStatusClass(provider: RoutingProviderInfo): string {
   if (!provider.is_active) {
-    return 'bg-gray-400'
+    return 'bg-[#86909c]'
   }
   if (!provider.model_is_active) {
-    return 'bg-yellow-500'
+    return 'bg-[#ff7d00]'
   }
-  return 'bg-green-500'
+  return 'bg-[#00b42a]'
 }
 
 // 获取格式分组中提供商节点圆点样式（提供商优先模式）
@@ -1196,16 +1188,16 @@ function getGlobalKeyCardClass(entry: GlobalKeyEntry, groupIndex: number, keyInd
 
 // 健康度进度条颜色（score 为 0-1 小数格式）
 function getHealthScoreBarColor(score: number): string {
-  if (score >= 0.8) return 'bg-green-500 dark:bg-green-400'
-  if (score >= 0.5) return 'bg-yellow-500 dark:bg-yellow-400'
-  return 'bg-red-500 dark:bg-red-400'
+  if (score >= 0.8) return 'bg-[#00b42a] dark:bg-[#23c343]'
+  if (score >= 0.5) return 'bg-[#ff7d00] dark:bg-[#ffb357]'
+  return 'bg-[#f53f3f] dark:bg-[#f76560]'
 }
 
 // 健康度文字颜色（score 为 0-1 小数格式）
 function getHealthScoreTextColor(score: number): string {
-  if (score >= 0.8) return 'text-green-600 dark:text-green-400'
-  if (score >= 0.5) return 'text-yellow-600 dark:text-yellow-400'
-  return 'text-red-600 dark:text-red-400'
+  if (score >= 0.8) return 'text-[#009a29] dark:text-[#23c343]'
+  if (score >= 0.5) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#cb272d] dark:text-[#f76560]'
 }
 
 // 获取计费标签
@@ -1224,19 +1216,19 @@ function getBillingLabel(provider: RoutingProviderInfo): string {
 // 获取 Key 状态样式（score 为 0-1 小数格式）
 function getKeyStatusClass(key: RoutingKeyInfo): string {
   if (!key.is_active) {
-    return 'bg-gray-400'
+    return 'bg-[#86909c]'
   }
   if (key.circuit_breaker_open) {
-    return 'bg-red-500'
+    return 'bg-[#f53f3f]'
   }
   const score = key.health_score ?? 1
   if (score < 0.5) {
-    return 'bg-red-500'
+    return 'bg-[#f53f3f]'
   }
   if (score < 0.8) {
-    return 'bg-yellow-500'
+    return 'bg-[#ff7d00]'
   }
-  return 'bg-green-500'
+  return 'bg-[#00b42a]'
 }
 
 // 获取 Key 提示信息

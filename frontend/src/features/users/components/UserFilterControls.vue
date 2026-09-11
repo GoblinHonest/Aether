@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Search } from 'lucide-vue-next'
+import { IconSearch as Search } from '@arco-design/web-vue/es/icon'
 import Input from '@/components/ui/input.vue'
 import Select from '@/components/ui/select.vue'
 import SelectTrigger from '@/components/ui/select-trigger.vue'

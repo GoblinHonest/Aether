@@ -175,7 +175,7 @@ describe('ExternalModelsAccessControl', () => {
     expect(select?.getAttribute('data-model-value')).toBe('proxy-1')
     expect(select?.getAttribute('data-disabled')).toBe('false')
     expect(root.querySelector('[data-testid="external-models-access-trigger"]')
-      ?.classList.contains('text-blue-500')).toBe(true)
+      ?.classList.contains('text-[#4080ff]')).toBe(true)
     expect(root.querySelector('[data-testid="external-models-access-clear"]')).not.toBeNull()
   })
 

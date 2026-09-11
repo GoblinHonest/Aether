@@ -140,7 +140,7 @@
             </p>
             <p
               v-if="showAutoFetchWarning"
-              class="text-xs text-amber-600 dark:text-amber-400"
+              class="text-xs text-[#d25f00] dark:text-[#ffb357]"
             >
               {{ autoFetchWarningMessage }}
             </p>
@@ -198,7 +198,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { Dialog, Button, Input, Label, Switch } from '@/components/ui'
-import { SquarePen } from 'lucide-vue-next'
+import { IconEdit as SquarePen } from '@arco-design/web-vue/es/icon'
 import { useToast } from '@/composables/useToast'
 import { useConfirm } from '@/composables/useConfirm'
 import { useFormDialog } from '@/composables/useFormDialog'

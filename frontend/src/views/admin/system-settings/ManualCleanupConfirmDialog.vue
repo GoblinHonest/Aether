@@ -74,7 +74,7 @@
         </div>
         <p
           v-if="mode === 'before_now'"
-          class="mt-2 text-xs text-amber-600"
+          class="mt-2 text-xs text-[#d25f00]"
         >
           当前时刻之前模式只允许清理详细请求体和压缩请求体，不会清请求头或整条记录。
         </p>
@@ -525,9 +525,9 @@ function cleanupStatusLabel(status: string): string {
 }
 
 function cleanupStatusClass(status: string): string {
-  if (status === 'processing') return 'text-amber-500'
+  if (status === 'processing') return 'text-[#ff7d00]'
   if (status === 'failed') return 'text-destructive'
-  return 'text-emerald-500'
+  return 'text-[#00b42a]'
 }
 
 function cleanupSummaryText(summary: Record<string, unknown>): string {

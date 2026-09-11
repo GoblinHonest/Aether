@@ -134,7 +134,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Plus, Search, Shuffle } from 'lucide-vue-next'
+import { IconPlus as Plus, IconSearch as Search } from '@arco-design/web-vue/es/icon'
+import { Shuffle } from 'lucide-vue-next'
 import { Button, Input, RefreshButton, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
 import { useI18n } from '@/i18n'
 import type { ProxyNodeStatusFilterOption } from './proxy-node-types'

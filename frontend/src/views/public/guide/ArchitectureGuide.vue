@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Network, ArrowRight } from 'lucide-vue-next'
+import { IconArrowRight as ArrowRight } from '@arco-design/web-vue/es/icon'
+import { Network } from 'lucide-vue-next'
 import { panelClasses } from './guide-config'
 import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
 </script>
@@ -56,7 +57,7 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
               <span class="text-xs font-medium font-mono text-[#2a2a2b]">3.</span>
               <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">跨平台格式转换</span>
             </div>
-            <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-[#f5f5f5]/50 dark:bg-[rgba(227,224,211,0.05)] p-3 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
+            <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-[#f5f5f5]/50 dark:bg-[rgba(227,224,211,0.05)] p-3 rounded border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
               <div class="flex-1 bg-white dark:bg-[#17171a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
                 兼容格式入口
               </div>
@@ -97,7 +98,7 @@ import ArchitectureDiagram from './components/ArchitectureDiagram.vue'
               <span class="text-xs font-medium font-mono text-[#2a2a2b]">4.</span>
               <span class="text-sm font-medium text-[#262624] dark:text-[#f1ead8]">同生态原生透传</span>
             </div>
-            <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-[#f5f5f5]/50 dark:bg-[rgba(227,224,211,0.05)] p-3 rounded-xl border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
+            <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2 bg-[#f5f5f5]/50 dark:bg-[rgba(227,224,211,0.05)] p-3 rounded border border-[#eee] dark:border-[rgba(227,224,211,0.06)]">
               <div class="flex-1 bg-white dark:bg-[#17171a] border border-[#eee] dark:border-white/10 rounded-lg py-2 px-3 text-center text-xs font-medium text-[#262624] dark:text-white/80">
                 原生 API 入口
               </div>

@@ -329,7 +329,8 @@ import {
   SelectItem,
   Switch,
 } from '@/components/ui'
-import { Server, SquarePen } from 'lucide-vue-next'
+import { IconEdit as SquarePen } from '@arco-design/web-vue/es/icon'
+import { Server } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
 import { useFormDialog } from '@/composables/useFormDialog'
 import { useI18n } from '@/i18n'

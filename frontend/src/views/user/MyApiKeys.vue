@@ -140,7 +140,7 @@
 
               <!-- 费用 -->
               <TableCell class="py-4">
-                <span class="text-sm font-semibold text-amber-600 dark:text-amber-500">
+                <span class="text-sm font-semibold text-[#d25f00] dark:text-[#ff7d00]">
                   ${{ (apiKey.total_cost_usd || 0).toFixed(4) }}
                 </span>
               </TableCell>
@@ -366,7 +366,7 @@
                 </span>
               </div>
               <div class="flex items-center gap-3 text-xs">
-                <span class="text-amber-600 dark:text-amber-500 font-semibold">
+                <span class="text-[#d25f00] dark:text-[#ff7d00] font-semibold">
                   ${{ (apiKey.total_cost_usd || 0).toFixed(4) }}
                 </span>
                 <span class="text-muted-foreground">•</span>
@@ -576,8 +576,8 @@
       <template #header>
         <div class="border-b border-border px-6 py-4">
           <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex-shrink-0">
-              <CheckCircle class="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#aff0b5] dark:bg-[#003d0c]/30 flex-shrink-0">
+              <CheckCircle class="h-5 w-5 text-[#009a29] dark:text-[#23c343]" />
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="text-lg font-semibold text-foreground leading-tight">
@@ -852,7 +852,7 @@
               >
                 <CheckCircle
                   v-if="installCopied"
-                  class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400"
+                  class="h-3.5 w-3.5 text-[#009a29] dark:text-[#23c343]"
                 />
                 <Copy
                   v-else
@@ -940,7 +940,8 @@ import {
   TableRow
 } from '@/components/ui'
 import RefreshButton from '@/components/ui/refresh-button.vue'
-import { Plus, Key, Copy, Trash2, Loader2, Activity, CheckCircle, Power, SquarePen, Terminal, Download } from 'lucide-vue-next'
+import { IconPlus as Plus, IconSafe as Key, IconCopy as Copy, IconDelete as Trash2, IconLoading as Loader2, IconCheckCircle as CheckCircle, IconPoweroff as Power, IconEdit as SquarePen, IconCodeBlock as Terminal, IconDownload as Download } from '@arco-design/web-vue/es/icon'
+import { Activity } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
 import { log } from '@/utils/logger'
 import { parseApiError } from '@/utils/errorParser'

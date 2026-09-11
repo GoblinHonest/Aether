@@ -187,25 +187,25 @@
                     <span class="mt-2 flex min-h-5 flex-wrap gap-1">
                       <span
                         v-if="item.supportsReasoning"
-                        class="inline-flex items-center gap-1 rounded-md border border-violet-500/20 bg-violet-500/10 px-1.5 py-0.5 text-[9px] font-medium text-violet-700 dark:text-violet-300"
+                        class="inline-flex items-center gap-1 rounded-md border border-[#722ed1]/20 bg-[#722ed1]/10 px-1.5 py-0.5 text-[9px] font-medium text-[#3c108f] dark:text-[#a871e3]"
                       >
                         <BrainCircuit class="h-2.5 w-2.5" />推理
                       </span>
                       <span
                         v-if="item.supportsVision"
-                        class="inline-flex items-center gap-1 rounded-md border border-sky-500/20 bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-medium text-sky-700 dark:text-sky-300"
+                        class="inline-flex items-center gap-1 rounded-md border border-[#165dff]/20 bg-[#165dff]/10 px-1.5 py-0.5 text-[9px] font-medium text-[#072ca6] dark:text-[#6aa1ff]"
                       >
                         <Eye class="h-2.5 w-2.5" />视觉
                       </span>
                       <span
                         v-if="item.supportsToolCall"
-                        class="inline-flex items-center gap-1 rounded-md border border-amber-500/20 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-medium text-amber-700 dark:text-amber-300"
+                        class="inline-flex items-center gap-1 rounded-md border border-[#ff7d00]/20 bg-[#ff7d00]/10 px-1.5 py-0.5 text-[9px] font-medium text-[#a64b00] dark:text-[#ffcf8b]"
                       >
                         <Wrench class="h-2.5 w-2.5" />工具
                       </span>
                       <span
                         v-if="item.supportsStructuredOutput"
-                        class="inline-flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-medium text-emerald-700 dark:text-emerald-300"
+                        class="inline-flex items-center gap-1 rounded-md border border-[#00b42a]/20 bg-[#00b42a]/10 px-1.5 py-0.5 text-[9px] font-medium text-[#007d20] dark:text-[#4cd263]"
                       >
                         <Braces class="h-2.5 w-2.5" />结构化
                       </span>
@@ -552,7 +552,7 @@
                           <span class="block truncate font-mono text-[9px] text-muted-foreground">{{ candidate.providerId }}</span>
                           <span
                             v-if="getOnlinePricingCandidateUnavailableReason(candidate)"
-                            class="block truncate text-[10px] text-rose-600 dark:text-rose-400"
+                            class="block truncate text-[10px] text-[#cb272d] dark:text-[#f76560]"
                           >{{ getOnlinePricingCandidateUnavailableReason(candidate) }}</span>
                         </span>
                         <span
@@ -820,11 +820,8 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from 'vue'
-import {
-  Loader2, Layers, SquarePen,
-  Search, ChevronLeft, ChevronRight, Plus, Trash2, Check,
-  BrainCircuit, Eye, Wrench, Braces, Database, PackageOpen, RefreshCw, TriangleAlert
-} from 'lucide-vue-next'
+import { IconLoading as Loader2, IconLayers as Layers, IconEdit as SquarePen, IconSearch as Search, IconLeft as ChevronLeft, IconRight as ChevronRight, IconPlus as Plus, IconDelete as Trash2, IconCheck as Check, IconEye as Eye, IconTool as Wrench, IconStorage as Database, IconArchive as PackageOpen, IconRefresh as RefreshCw, IconExclamationCircle as TriangleAlert } from '@arco-design/web-vue/es/icon'
+import { BrainCircuit, Braces } from 'lucide-vue-next'
 import {
   Dialog, Button, Input, Label, Checkbox,
   Tabs, TabsContent, TabsList, TabsTrigger,

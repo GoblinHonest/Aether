@@ -406,7 +406,7 @@ import {
   TabsTrigger,
   Textarea,
 } from '@/components/ui'
-import { Loader2, Plus, RefreshCw, Search, SquarePen } from 'lucide-vue-next'
+import { IconLoading as Loader2, IconPlus as Plus, IconRefresh as RefreshCw, IconSearch as Search, IconEdit as SquarePen } from '@arco-design/web-vue/es/icon'
 import { getProviderModels } from '@/api/endpoints/models'
 import { batchUpdatePoolKeys } from '@/api/endpoints/pool'
 import { formatApiFormat, sortApiFormats, type UpstreamModel } from '@/api/endpoints/types'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { HelpCircle, ChevronRight } from 'lucide-vue-next'
+import { IconQuestionCircle as HelpCircle, IconRight as ChevronRight } from '@arco-design/web-vue/es/icon'
 
 const faqs = reactive([
   {
@@ -43,7 +43,7 @@ const toggleFaq = (index: number) => {
         <div
           v-for="(faq, index) in faqs"
           :key="faq.id"
-          class="bg-white/50 dark:bg-white/5 border border-[#eee] dark:border-[rgba(227,224,211,0.06)] rounded-xl overflow-hidden transition-all"
+          class="bg-white/50 dark:bg-white/5 border border-[#eee] dark:border-[rgba(227,224,211,0.06)] rounded overflow-hidden transition-all"
         >
           <button
             class="w-full flex items-center justify-between p-5 text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors"

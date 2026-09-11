@@ -185,7 +185,8 @@
 </template>
 
 <script setup lang="ts">
-import { User, Bot, Settings, Wrench, AlertCircle, ChevronRight, FileText, Image as ImageIcon } from 'lucide-vue-next'
+import { IconUser as User, IconSettings as Settings, IconTool as Wrench, IconExclamationCircle as AlertCircle, IconRight as ChevronRight, IconFile as FileText, IconImage as ImageIcon } from '@arco-design/web-vue/es/icon'
+import { Bot } from 'lucide-vue-next'
 import Badge from '@/components/ui/badge.vue'
 import type { RenderBlock } from '../../conversation'
 

@@ -100,7 +100,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
-import { Check, ChevronDown, Search } from 'lucide-vue-next'
+import { IconCheck as Check, IconDown as ChevronDown, IconSearch as Search } from '@arco-design/web-vue/es/icon'
 
 import { Input } from '@/components/ui'
 import { usersApi } from '@/api/users'

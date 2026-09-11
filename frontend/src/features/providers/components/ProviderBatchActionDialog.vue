@@ -11,7 +11,7 @@
     <div class="space-y-3.5">
       <!-- 步骤 1：选择动作（顶部分段控件） -->
       <div>
-        <div class="grid grid-cols-3 gap-1.5 rounded-xl border bg-muted/30 p-1.5">
+        <div class="grid grid-cols-3 gap-1.5 rounded border bg-muted/30 p-1.5">
           <button
             v-for="action in actionOptions"
             :key="action.value"
@@ -159,7 +159,7 @@
           <span>已选 <span class="font-semibold tabular-nums text-foreground">{{ selectedCount }}</span></span>
           <span class="text-border">·</span>
           <span>本页 <span class="tabular-nums">{{ providers.length }}</span></span>
-          <span class="text-emerald-600 dark:text-emerald-400">活跃 <span class="tabular-nums">{{ activeProviderCount }}</span></span>
+          <span class="text-[#009a29] dark:text-[#23c343]">活跃 <span class="tabular-nums">{{ activeProviderCount }}</span></span>
           <span>停用 <span class="tabular-nums">{{ inactiveProviderCount }}</span></span>
         </div>
         <div class="flex items-center gap-2">
@@ -185,7 +185,8 @@
 
 <script setup lang="ts">
 import { computed, ref, watch, type Component } from 'vue'
-import { AlertTriangle, Power, PowerOff, Search, Trash2, Users } from 'lucide-vue-next'
+import { IconExclamationCircle as AlertTriangle, IconPoweroff as Power, IconSearch as Search, IconDelete as Trash2, IconUserGroup as Users } from '@arco-design/web-vue/es/icon'
+import { PowerOff } from 'lucide-vue-next'
 import { Badge, Button, Checkbox, Dialog, Input } from '@/components/ui'
 import {
   deleteProvider,
@@ -228,7 +229,7 @@ const actionOptions: ProviderBatchActionOption[] = [
 ]
 
 const SEGMENT_ACCENT: Record<ProviderBatchAction, string> = {
-  enable: 'bg-background text-emerald-600 shadow-sm ring-1 ring-emerald-500/25 dark:text-emerald-400',
+  enable: 'bg-background text-[#009a29] shadow-sm ring-1 ring-[#00b42a]/25 dark:text-[#23c343]',
   disable: 'bg-background text-primary shadow-sm ring-1 ring-primary/25',
   delete: 'bg-background text-destructive shadow-sm ring-1 ring-destructive/30',
 }

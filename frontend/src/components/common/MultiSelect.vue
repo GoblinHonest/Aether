@@ -54,7 +54,7 @@
             <Input
               v-model="searchQuery"
               :placeholder="localizedSearchPlaceholder"
-              class="h-9 rounded-xl border-border/60 bg-background/80 pl-9 pr-3 text-sm"
+              class="h-9 rounded border-border/60 bg-background/80 pl-9 pr-3 text-sm"
               @keydown.stop
             />
           </div>
@@ -127,7 +127,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import { ChevronDown, Search } from 'lucide-vue-next'
+import { IconDown as ChevronDown, IconSearch as Search } from '@arco-design/web-vue/es/icon'
 import { Input } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { matchesSearchQuery } from '@/utils/search'

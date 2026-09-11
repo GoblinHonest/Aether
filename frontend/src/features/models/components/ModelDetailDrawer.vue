@@ -535,16 +535,8 @@
 <script setup lang="ts">
 import { getI18nLocale } from '@/i18n'
 import { ref, watch, computed } from 'vue'
-import {
-  X,
-  Building2,
-  Edit,
-  Power,
-  Copy,
-  Layers,
-  BarChart3,
-  Video
-} from 'lucide-vue-next'
+import { IconClose as X, IconEdit as Edit, IconPoweroff as Power, IconCopy as Copy, IconLayers as Layers, IconBarChart as BarChart3, IconVideoCamera as Video } from '@arco-design/web-vue/es/icon'
+import { Building2 } from 'lucide-vue-next'
 import { useEscapeKey } from '@/composables/useEscapeKey'
 import { useClipboard } from '@/composables/useClipboard'
 import Card from '@/components/ui/card.vue'

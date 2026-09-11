@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { RefreshCw } from 'lucide-vue-next'
+import { IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
 
 withDefaults(defineProps<{
   title: string

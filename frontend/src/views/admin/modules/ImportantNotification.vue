@@ -128,7 +128,7 @@
 
               <RouterLink
                 to="/admin/modules/server-chan"
-                class="inline-flex h-11 items-center rounded-xl border border-border/60 bg-card/60 px-4 text-sm font-semibold text-foreground hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                class="inline-flex h-11 items-center rounded border border-border/60 bg-card/60 px-4 text-sm font-semibold text-foreground hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
               >
                 配置 Server 酱推送
               </RouterLink>
@@ -153,7 +153,7 @@
 
               <RouterLink
                 to="/admin/modules/bark"
-                class="inline-flex h-11 items-center rounded-xl border border-border/60 bg-card/60 px-4 text-sm font-semibold text-foreground hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                class="inline-flex h-11 items-center rounded border border-border/60 bg-card/60 px-4 text-sm font-semibold text-foreground hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
               >
                 配置 Bark 推送
               </RouterLink>
@@ -382,7 +382,7 @@
             class="flex items-center justify-between gap-4 rounded-md border border-border px-3 py-2 text-sm"
           >
             <span>{{ formatChannel(item.channel) }}</span>
-            <span :class="item.success ? 'text-green-600 dark:text-green-400' : 'text-destructive'">
+            <span :class="item.success ? 'text-[#009a29] dark:text-[#23c343]' : 'text-destructive'">
               {{ item.message }}
             </span>
           </div>
@@ -395,7 +395,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { Plus, Send, Trash2 } from 'lucide-vue-next'
+import { IconPlus as Plus, IconSend as Send, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
 import {
   Badge,
   Button,

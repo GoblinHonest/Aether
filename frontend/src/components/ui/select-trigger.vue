@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ClassValue } from 'clsx'
 import { SelectTrigger as SelectTriggerPrimitive } from 'radix-vue'
-import { ChevronDown } from 'lucide-vue-next'
+import { IconDown as ChevronDown } from '@arco-design/web-vue/es/icon'
 import { cn } from '@/lib/utils'
 import { computed } from 'vue'
 

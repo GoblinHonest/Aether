@@ -28,7 +28,7 @@
           </span>
           <span
             v-else-if="selectedModels.length === 0 && isAutoFetchMode"
-            class="h-7 px-2.5 text-xs rounded-md flex items-center bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0"
+            class="h-7 px-2.5 text-xs rounded-md flex items-center bg-[#ff7d00]/10 text-[#d25f00] dark:text-[#ffb357] shrink-0"
           >
             未选择模型
           </span>
@@ -352,18 +352,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue'
-import {
-  Shield,
-  Search,
-  Loader2,
-  Plus,
-  Check,
-  ChevronDown,
-  Lock,
-  LockOpen,
-  RefreshCw,
-  Zap
-} from 'lucide-vue-next'
+import { IconSafe as Shield, IconSearch as Search, IconLoading as Loader2, IconPlus as Plus, IconCheck as Check, IconDown as ChevronDown, IconLock as Lock, IconRefresh as RefreshCw, IconThunderbolt as Zap } from '@arco-design/web-vue/es/icon'
+import { LockOpen } from 'lucide-vue-next'
 import { Dialog, Button, Input } from '@/components/ui'
 import { useToast } from '@/composables/useToast'
 import { useConfirm } from '@/composables/useConfirm'

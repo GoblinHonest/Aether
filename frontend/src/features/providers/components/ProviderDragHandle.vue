@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { GripVertical } from 'lucide-vue-next'
+import { IconDragDotVertical as GripVertical } from '@arco-design/web-vue/es/icon'
 import Button from '@/components/ui/button.vue'
 import { useI18n } from '@/i18n'
 

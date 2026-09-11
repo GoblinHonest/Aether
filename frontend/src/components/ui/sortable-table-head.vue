@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { ClassValue } from 'clsx'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, useSlots } from 'vue'
-import { ArrowDown, ArrowUp, ArrowUpDown, ListFilter } from 'lucide-vue-next'
+import { IconArrowDown as ArrowDown, IconArrowUp as ArrowUp, IconFilter as ListFilter } from '@arco-design/web-vue/es/icon'
+import { ArrowUpDown } from 'lucide-vue-next'
 
 import { cn } from '@/lib/utils'
 import { useI18n } from '@/i18n'

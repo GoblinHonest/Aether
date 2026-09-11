@@ -284,7 +284,7 @@
   <Teleport to="body">
     <div
       v-if="draggingProvider"
-      class="pointer-events-none fixed z-[100] w-[200px] truncate rounded-xl border border-primary/40 bg-card px-3 py-2 text-sm font-medium text-foreground shadow-lg"
+      class="pointer-events-none fixed z-[100] w-[200px] truncate rounded border border-primary/40 bg-card px-3 py-2 text-sm font-medium text-foreground shadow-lg"
       :style="dragPreviewStyle"
       aria-hidden="true"
     >

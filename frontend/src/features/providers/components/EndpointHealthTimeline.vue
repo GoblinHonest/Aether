@@ -87,7 +87,7 @@ const segments = computed(() => {
       const cellStartTime = new Date(startTimeUtc + index * timePerGrid)
       const cellEndTime = new Date(startTimeUtc + (index + 1) * timePerGrid)
       return {
-        color: 'bg-gray-300 dark:bg-gray-600',
+        color: 'bg-[#a9aeb8] dark:bg-[#4e5969]',
         tooltip: buildSegmentTooltip('unknown', cellStartTime, cellEndTime, [])
       }
     })

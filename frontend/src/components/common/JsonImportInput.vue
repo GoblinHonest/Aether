@@ -14,7 +14,7 @@
       data-testid="json-import-mode-panels"
     >
       <div
-        class="rounded-xl border-2 border-dashed transition-all duration-150 cursor-pointer"
+        class="rounded border-2 border-dashed transition-all duration-150 cursor-pointer"
         :class="[
           isDragging
             ? 'border-primary bg-primary/5'
@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Upload } from 'lucide-vue-next'
+import { IconUpload as Upload } from '@arco-design/web-vue/es/icon'
 import { Label, Textarea } from '@/components/ui'
 import { useI18n } from '@/i18n'
 
@@ -131,7 +131,7 @@ const props = withDefaults(defineProps<{
   manualDescription: '',
   pasteToggleText: '或手动粘贴 JSON',
   fileToggleText: '或选择 JSON 文件导入',
-  textareaClass: 'min-h-[220px] text-xs font-mono break-all !rounded-xl',
+  textareaClass: 'min-h-[220px] text-xs font-mono break-all !rounded',
 })
 
 const emit = defineEmits<{

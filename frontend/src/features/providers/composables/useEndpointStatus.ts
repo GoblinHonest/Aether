@@ -57,9 +57,9 @@ export function getHealthScoreColor(score: number | undefined | null): string {
   if (score === undefined || score === null || !Number.isFinite(score)) {
     return 'bg-muted-foreground/40'
   }
-  if (score >= 0.8) return 'bg-green-500'
-  if (score >= 0.5) return 'bg-amber-500'
-  return 'bg-red-500'
+  if (score >= 0.8) return 'bg-[#00b42a]'
+  if (score >= 0.5) return 'bg-[#ff7d00]'
+  return 'bg-[#f53f3f]'
 }
 
 /**

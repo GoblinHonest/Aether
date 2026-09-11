@@ -48,7 +48,7 @@
             @click="router.push(tool.href)"
           >
             <div class="flex items-start gap-4 mb-3">
-              <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors bg-primary/15 text-primary">
+              <div class="w-11 h-11 rounded flex items-center justify-center shrink-0 transition-colors bg-primary/15 text-primary">
                 <component
                   :is="tool.icon"
                   class="w-5 h-5"
@@ -128,10 +128,10 @@
             <div
               class="w-2.5 h-2.5 rounded-full ring-2 ring-offset-2 ring-offset-background"
               :class="{
-                'bg-green-500 ring-green-500/30': module.active,
-                'bg-amber-500 ring-amber-500/30': module.available && module.enabled && !module.active,
-                'bg-gray-300 ring-gray-300/30': module.available && !module.enabled,
-                'bg-red-400 ring-red-400/30': !module.available
+                'bg-[#00b42a] ring-[#00b42a]/30': module.active,
+                'bg-[#ff7d00] ring-[#ff7d00]/30': module.available && module.enabled && !module.active,
+                'bg-[#a9aeb8] ring-[#a9aeb8]/30': module.available && !module.enabled,
+                'bg-[#f76560] ring-[#f76560]/30': !module.available
               }"
             />
           </div>
@@ -139,7 +139,7 @@
           <!-- 模块图标和名称 -->
           <div class="flex items-start gap-4 mb-3">
             <div
-              class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+              class="w-11 h-11 rounded flex items-center justify-center shrink-0 transition-colors"
               :class="module.active
                 ? 'bg-primary/15 text-primary'
                 : 'bg-muted text-muted-foreground group-hover:bg-muted/80'"
@@ -171,7 +171,7 @@
           <!-- 不可用提示 -->
           <div
             v-if="!module.available"
-            class="mt-4 text-xs text-orange-700 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/50 rounded-lg px-3 py-2"
+            class="mt-4 text-xs text-[#a64b00] dark:text-[#ffb357] bg-[#ffefcf] dark:bg-[#4a2000]/50 rounded-lg px-3 py-2"
           >
             模块不可用，请检查环境变量和依赖库
           </div>
@@ -243,17 +243,8 @@
 import { useI18n } from '@/i18n'
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  RefreshCw,
-  Puzzle,
-  Users,
-  Shield,
-  Gauge,
-  Link,
-  Search,
-  Settings,
-  RotateCcw,
-} from 'lucide-vue-next'
+import { IconRefresh as RefreshCw, IconUserGroup as Users, IconSafe as Shield, IconDashboard as Gauge, IconLink as Link, IconSearch as Search, IconSettings as Settings, IconUndo as RotateCcw } from '@arco-design/web-vue/es/icon'
+import { Puzzle } from 'lucide-vue-next'
 import Button from '@/components/ui/button.vue'
 import Switch from '@/components/ui/switch.vue'
 import Input from '@/components/ui/input.vue'

@@ -349,7 +349,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { parseApiError } from '@/utils/errorParser'
-import { Loader2, Layers, SquarePen, Plus, Trash2 } from 'lucide-vue-next'
+import { IconLoading as Loader2, IconLayers as Layers, IconEdit as SquarePen, IconPlus as Plus, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
 import {
   Dialog,
   Button,

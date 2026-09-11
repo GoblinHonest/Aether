@@ -205,7 +205,7 @@
                       <span
                         v-else
                         class="text-sm font-medium tabular-nums"
-                        :class="isNegativeWalletAmount(getApiKeyWalletTotalBalance(apiKey)) ? 'text-rose-600' : 'text-foreground'"
+                        :class="isNegativeWalletAmount(getApiKeyWalletTotalBalance(apiKey)) ? 'text-[#cb272d]' : 'text-foreground'"
                       >
                         {{ formatWalletAmount(getApiKeyWalletTotalBalance(apiKey), '-') }}
                       </span>
@@ -470,7 +470,7 @@
                       <p
                         v-else
                         class="text-sm font-medium tabular-nums leading-none"
-                        :class="isNegativeWalletAmount(getApiKeyWalletTotalBalance(apiKey)) ? 'text-rose-600' : 'text-foreground'"
+                        :class="isNegativeWalletAmount(getApiKeyWalletTotalBalance(apiKey)) ? 'text-[#cb272d]' : 'text-foreground'"
                       >
                         {{ formatWalletAmount(getApiKeyWalletTotalBalance(apiKey), '-') }}
                       </p>
@@ -581,7 +581,7 @@
                   <Button
                     variant="outline"
                     size="sm"
-                    class="col-span-2 h-8 border-rose-200 text-xs text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:hover:bg-rose-950/40"
+                    class="col-span-2 h-8 border-[#fbaca3] text-xs text-[#cb272d] hover:bg-[#ffece8] dark:border-[#4a000a]/60 dark:hover:bg-[#4a000a]/40"
                     @click="deleteApiKey(apiKey)"
                   >
                     <Trash2 class="mr-1.5 h-3.5 w-3.5" />
@@ -623,8 +623,8 @@
       <template #header>
         <div class="border-b border-border px-6 py-4">
           <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex-shrink-0">
-              <CheckCircle class="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#aff0b5] dark:bg-[#003d0c]/30 flex-shrink-0">
+              <CheckCircle class="h-5 w-5 text-[#009a29] dark:text-[#23c343]" />
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="text-lg font-semibold text-foreground leading-tight">
@@ -742,7 +742,7 @@
               >
                 <CheckCircle
                   v-if="installCopied"
-                  class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400"
+                  class="h-3.5 w-3.5 text-[#009a29] dark:text-[#23c343]"
                 />
                 <Copy
                   v-else
@@ -838,18 +838,8 @@ import {
   Label
 } from '@/components/ui'
 
-import {
-  Plus,
-  Key,
-  Trash2,
-  Power,
-  DollarSign,
-  Copy,
-  CheckCircle,
-  SquarePen,
-  Search,
-  Terminal
-} from 'lucide-vue-next'
+import { IconPlus as Plus, IconSafe as Key, IconDelete as Trash2, IconPoweroff as Power, IconCopy as Copy, IconCheckCircle as CheckCircle, IconEdit as SquarePen, IconSearch as Search, IconCodeBlock as Terminal } from '@arco-design/web-vue/es/icon'
+import { DollarSign } from 'lucide-vue-next'
 
 import { StandaloneKeyFormDialog, type StandaloneKeyFormData } from '@/features/api-keys'
 import { parseApiError } from '@/utils/errorParser'

@@ -8,7 +8,7 @@
         variant="ghost"
         size="icon"
         class="h-8 w-8"
-        :class="nodeId ? 'text-blue-600' : ''"
+        :class="nodeId ? 'text-[#165dff]' : ''"
         :disabled="saving"
         :title="title"
       >

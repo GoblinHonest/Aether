@@ -166,7 +166,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Button, Dialog } from '@/components/ui'
-import { X } from 'lucide-vue-next'
+import { IconClose as X } from '@arco-design/web-vue/es/icon'
 
 export interface PoolDemandMetricSample {
   providerId: string
@@ -292,11 +292,11 @@ const summaryCards = computed(() => {
 })
 
 const legendItems = [
-  { label: '目标', dotClass: 'bg-indigo-500' },
-  { label: '热池', dotClass: 'bg-emerald-500' },
-  { label: 'in-flight', dotClass: 'bg-amber-500' },
-  { label: 'EMA', dotClass: 'bg-sky-500' },
-  { label: 'Burst', dotClass: 'bg-red-500' },
+  { label: '目标', dotClass: 'bg-[#165dff]' },
+  { label: '热池', dotClass: 'bg-[#00b42a]' },
+  { label: 'in-flight', dotClass: 'bg-[#ff7d00]' },
+  { label: 'EMA', dotClass: 'bg-[#165dff]' },
+  { label: 'Burst', dotClass: 'bg-[#f53f3f]' },
 ]
 
 const sampleWindowText = computed(() => {

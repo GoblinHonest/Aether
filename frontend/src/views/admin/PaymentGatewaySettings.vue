@@ -138,7 +138,7 @@
                     <div
                       v-if="paymentHelpOpen === 'alipay'"
                       id="alipay-payment-help"
-                      class="absolute left-0 top-full z-[240] mt-2 w-[320px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
+                      class="absolute left-0 top-full z-[240] mt-2 w-[320px] max-w-[calc(100vw-2rem)] overflow-hidden rounded border border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
                       role="dialog"
                       aria-label="支付宝支付模式说明"
                     >
@@ -201,7 +201,7 @@
                     <div
                       v-if="paymentHelpOpen === 'wxpay'"
                       id="wxpay-payment-help"
-                      class="absolute left-0 top-full z-[240] mt-2 w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
+                      class="absolute left-0 top-full z-[240] mt-2 w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden rounded border border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
                       role="dialog"
                       aria-label="微信支付模式说明"
                     >
@@ -421,7 +421,7 @@
 <script setup lang="ts">
 import { getI18nLocale } from '@/i18n'
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { CircleHelp, PlugZap, Plus, Save, Trash2 } from 'lucide-vue-next'
+import { IconQuestionCircle as CircleHelp, IconThunderbolt as PlugZap, IconPlus as Plus, IconSave as Save, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
 import { epayGatewayApi, type EpayChannelConfig, type PaymentGatewayProvider } from '@/api/billing'
 import {
   Badge,

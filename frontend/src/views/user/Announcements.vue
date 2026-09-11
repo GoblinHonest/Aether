@@ -185,7 +185,7 @@
                 <div class="flex items-center justify-center">
                   <Switch
                     :model-value="announcement.is_pinned"
-                    class="data-[state=checked]:bg-emerald-500"
+                    class="data-[state=checked]:bg-[#00b42a]"
                     @update:model-value="toggleAnnouncementPin(announcement, $event)"
                   />
                 </div>
@@ -220,7 +220,7 @@
                   <Button
                     variant="ghost"
                     size="icon"
-                    class="h-9 w-9 hover:bg-rose-500/10 hover:text-rose-600"
+                    class="h-9 w-9 hover:bg-[#f53f3f]/10 hover:text-[#cb272d]"
                     @click="confirmDelete(announcement)"
                   >
                     <Trash2 class="w-4 h-4" />
@@ -295,7 +295,7 @@
                 <span class="text-xs text-muted-foreground">置顶</span>
                 <Switch
                   :model-value="announcement.is_pinned"
-                  class="data-[state=checked]:bg-emerald-500 scale-75"
+                  class="data-[state=checked]:bg-[#00b42a] scale-75"
                   @update:model-value="toggleAnnouncementPin(announcement, $event)"
                 />
               </div>
@@ -452,7 +452,7 @@
               id="pinned"
               v-model="formData.is_pinned"
               type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 cursor-pointer"
+              class="h-4 w-4 rounded border-[#a9aeb8] cursor-pointer"
             >
             <Label
               for="pinned"
@@ -464,7 +464,7 @@
               id="requires-ack"
               v-model="formData.requires_ack"
               type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 cursor-pointer"
+              class="h-4 w-4 rounded border-[#a9aeb8] cursor-pointer"
             >
             <Label
               for="requires-ack"
@@ -479,7 +479,7 @@
               id="active"
               v-model="formData.is_active"
               type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 cursor-pointer"
+              class="h-4 w-4 rounded border-[#a9aeb8] cursor-pointer"
             >
             <Label
               for="active"
@@ -559,7 +559,7 @@
         v-if="viewingAnnouncement"
         class="space-y-4"
       >
-        <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-muted-foreground">
+        <div class="flex items-center gap-3 text-xs text-[#6b7785] dark:text-muted-foreground">
           <span>{{ viewingAnnouncement.author.username }}</span>
           <span>·</span>
           <span>{{ formatFullDate(viewingAnnouncement.created_at) }}</span>
@@ -618,7 +618,8 @@ import SelectValue from '@/components/ui/select-value.vue'
 import SelectContent from '@/components/ui/select-content.vue'
 import SelectItem from '@/components/ui/select-item.vue'
 import { AlertDialog } from '@/components/common'
-import { Bell, AlertCircle, AlertTriangle, Info, Pin, Wrench, Loader2, Plus, SquarePen, Trash2 } from 'lucide-vue-next'
+import { IconNotification as Bell, IconExclamationCircle as AlertCircle, IconExclamationCircle as AlertTriangle, IconInfo as Info, IconTool as Wrench, IconLoading as Loader2, IconPlus as Plus, IconEdit as SquarePen, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
+import { Pin } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
 import { log } from '@/utils/logger'
 import { marked } from 'marked'
@@ -816,11 +817,11 @@ function getAnnouncementIcon(type: string) {
 function getIconColor(type: string) {
   switch (type) {
     case 'important':
-      return 'text-red-500'
+      return 'text-[#f53f3f]'
     case 'warning':
-      return 'text-yellow-500'
+      return 'text-[#ff7d00]'
     case 'maintenance':
-      return 'text-orange-500'
+      return 'text-[#ff7d00]'
     default:
       return 'text-primary'
   }
@@ -829,11 +830,11 @@ function getIconColor(type: string) {
 function getTypeTextColor(type: string): string {
   switch (type) {
     case 'important':
-      return 'text-red-600 dark:text-red-400'
+      return 'text-[#cb272d] dark:text-[#f76560]'
     case 'warning':
-      return 'text-yellow-600 dark:text-yellow-400'
+      return 'text-[#d25f00] dark:text-[#ffb357]'
     case 'maintenance':
-      return 'text-orange-600 dark:text-orange-400'
+      return 'text-[#d25f00] dark:text-[#ffb357]'
     default:
       return 'text-primary'
   }
@@ -855,11 +856,11 @@ function getTypeLabel(type: string): string {
 function getDialogIconClass(type?: string) {
   switch (type) {
     case 'important':
-      return 'bg-rose-100 dark:bg-rose-900/30'
+      return 'bg-[#fdcdc5] dark:bg-[#4a000a]/30'
     case 'warning':
-      return 'bg-amber-100 dark:bg-amber-900/30'
+      return 'bg-[#ffefcf] dark:bg-[#4a2000]/30'
     case 'maintenance':
-      return 'bg-orange-100 dark:bg-orange-900/30'
+      return 'bg-[#ffefcf] dark:bg-[#4a2000]/30'
     default:
       return 'bg-primary/10 dark:bg-primary/20'
   }
@@ -943,11 +944,11 @@ function formatDate(dateString: string): string {
 }
 
 :deep(.prose code) {
-  @apply bg-gray-100 dark:bg-muted px-1 py-0.5 rounded text-sm;
+  @apply bg-[#f2f3f5] dark:bg-muted px-1 py-0.5 rounded text-sm;
 }
 
 :deep(.prose pre) {
-  @apply bg-gray-100 dark:bg-card p-3 rounded-lg overflow-x-auto;
+  @apply bg-[#f2f3f5] dark:bg-card p-3 rounded-lg overflow-x-auto;
 }
 
 .line-clamp-2 {

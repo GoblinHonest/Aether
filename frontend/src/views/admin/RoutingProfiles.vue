@@ -336,7 +336,7 @@
                 size="icon"
                 class="h-8 w-8"
                 :class="draft.enabled
-                  ? 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300'
+                  ? 'text-[#009a29] hover:text-[#007d20] dark:text-[#23c343] dark:hover:text-[#4cd263]'
                   : 'text-muted-foreground/70 hover:text-foreground'"
                 :disabled="saving"
                 :aria-label="draft.enabled ? '禁用策略' : '启用策略'"
@@ -601,51 +601,50 @@
               请先在下方选择一个模型，再配置该模型的优先级模式和调度策略。
             </p>
 
-          <section
-            v-if="sortingScope === 'unified'"
-            class="space-y-4"
-          >
+            <section
+              v-if="sortingScope === 'unified'"
+              class="space-y-4"
+            >
+              <RoutingPriorityPolicyEditor
+                :config="draft.config_json"
+                :model="DEFAULT_ROUTING_POLICY_MODEL"
+                :show-priority-mode="false"
+                :show-scheduling-mode="false"
+                subtitle="统一作用于当前策略的所有模型"
+                @update:config="updateDraftConfig"
+              />
+            </section>
 
-            <RoutingPriorityPolicyEditor
-              :config="draft.config_json"
-              :model="DEFAULT_ROUTING_POLICY_MODEL"
-              :show-priority-mode="false"
-              :show-scheduling-mode="false"
-              subtitle="统一作用于当前策略的所有模型"
-              @update:config="updateDraftConfig"
-            />
-          </section>
-
-          <section v-else>
-            <div class="mb-3">
-              <h3 class="text-sm font-medium">
-                按模型配置
-              </h3>
-              <p class="mt-1 text-xs text-muted-foreground">
-                选择模型后，在下方配置该模型的提供商排序。
-              </p>
-            </div>
-            <div class="flex max-h-[560px] flex-col gap-3 overflow-hidden rounded-lg border border-border/60 p-3">
-              <div class="grid grid-cols-2 gap-3">
-                <Input
-                  v-model="globalModelSearch"
-                  placeholder="搜索模型"
-                  class="w-full"
-                />
-                <div class="grid grid-cols-2 gap-1 rounded-lg bg-muted/40 p-1 text-xs">
-                  <button
-                    v-for="filter in modelFilters"
-                    :key="filter.value"
-                    type="button"
-                    class="h-9 rounded-md px-3 font-medium transition-colors"
-                    :class="modelFilter === filter.value
-                      ? 'bg-primary/10 text-primary ring-1 ring-border'
-                      : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
-                    @click="modelFilter = filter.value"
-                  >
-                    {{ filter.label }}
-                  </button>
-                </div>
+            <section v-else>
+              <div class="mb-3">
+                <h3 class="text-sm font-medium">
+                  按模型配置
+                </h3>
+                <p class="mt-1 text-xs text-muted-foreground">
+                  选择模型后，在下方配置该模型的提供商排序。
+                </p>
+              </div>
+              <div class="flex max-h-[560px] flex-col gap-3 overflow-hidden rounded-lg border border-border/60 p-3">
+                <div class="grid grid-cols-2 gap-3">
+                  <Input
+                    v-model="globalModelSearch"
+                    placeholder="搜索模型"
+                    class="w-full"
+                  />
+                  <div class="grid grid-cols-2 gap-1 rounded-lg bg-muted/40 p-1 text-xs">
+                    <button
+                      v-for="filter in modelFilters"
+                      :key="filter.value"
+                      type="button"
+                      class="h-9 rounded-md px-3 font-medium transition-colors"
+                      :class="modelFilter === filter.value
+                        ? 'bg-primary/10 text-primary ring-1 ring-border'
+                        : 'text-muted-foreground hover:bg-background/60 hover:text-foreground'"
+                      @click="modelFilter = filter.value"
+                    >
+                      {{ filter.label }}
+                    </button>
+                  </div>
                 </div>
 
                 <div
@@ -839,20 +838,7 @@
 import { getI18nLocale } from '@/i18n'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  ChevronDown,
-  ChevronRight,
-  Copy,
-  GripVertical,
-  Key,
-  Layers,
-  Plus,
-  Power,
-  Save,
-  SlidersHorizontal,
-  Star,
-  Trash2,
-} from 'lucide-vue-next'
+import { IconDown as ChevronDown, IconRight as ChevronRight, IconCopy as Copy, IconDragDotVertical as GripVertical, IconSafe as Key, IconLayers as Layers, IconPlus as Plus, IconPoweroff as Power, IconSave as Save, IconSettings as SlidersHorizontal, IconStar as Star, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
 
 import { PageContainer } from '@/components/layout'
 import {

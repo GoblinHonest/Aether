@@ -119,7 +119,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
-import { AlertCircle, Zap, Settings, ChevronRight, ChevronDown } from 'lucide-vue-next'
+import { IconExclamationCircle as AlertCircle, IconThunderbolt as Zap, IconSettings as Settings, IconRight as ChevronRight, IconDown as ChevronDown } from '@arco-design/web-vue/es/icon'
 import TurnCard from './TurnCard.vue'
 import BlockRenderer from './BlockRenderer.vue'
 import type { RenderResult } from '../../conversation'

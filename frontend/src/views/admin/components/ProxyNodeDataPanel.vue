@@ -232,7 +232,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { AlertTriangle, Loader2, RefreshCw } from 'lucide-vue-next'
+import { IconExclamationCircle as AlertTriangle, IconLoading as Loader2, IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
 import { Badge, Button } from '@/components/ui'
 import { useI18n } from '@/i18n'
 import { formatCompactNumber } from '@/utils/format'
@@ -307,7 +307,7 @@ const summaryStats = computed(() => {
       label: '断开次数',
       value: formatNumber(summary?.disconnects_delta ?? 0),
       hint: '24h delta',
-      tone: (summary?.disconnects_delta ?? 0) > 0 ? 'text-yellow-600 dark:text-yellow-400' : '',
+      tone: (summary?.disconnects_delta ?? 0) > 0 ? 'text-[#d25f00] dark:text-[#ffb357]' : '',
     },
     {
       label: '连接错误',
@@ -548,7 +548,7 @@ function percentFromBytes(value: number | null, total: number | null) {
 function usageTone(value: number | null, warnAt: number, badAt: number) {
   if (value == null || !Number.isFinite(value)) return ''
   if (value >= badAt) return 'text-destructive'
-  if (value >= warnAt) return 'text-yellow-600 dark:text-yellow-400'
+  if (value >= warnAt) return 'text-[#d25f00] dark:text-[#ffb357]'
   return ''
 }
 
@@ -556,7 +556,7 @@ function loadTone(load: number | null, cpuCores: number | null) {
   if (load == null || cpuCores == null || !Number.isFinite(load) || !Number.isFinite(cpuCores) || cpuCores <= 0) return ''
   const ratio = load / cpuCores
   if (ratio >= 1.5) return 'text-destructive'
-  if (ratio >= 1) return 'text-yellow-600 dark:text-yellow-400'
+  if (ratio >= 1) return 'text-[#d25f00] dark:text-[#ffb357]'
   return ''
 }
 
@@ -622,7 +622,7 @@ function formatBucketTime(value: string | null) {
 function uptimeTone(value: number | null) {
   if (value == null) return ''
   if (value < 0.95) return 'text-destructive'
-  if (value < 0.99) return 'text-yellow-600 dark:text-yellow-400'
+  if (value < 0.99) return 'text-[#d25f00] dark:text-[#ffb357]'
   return 'text-primary'
 }
 

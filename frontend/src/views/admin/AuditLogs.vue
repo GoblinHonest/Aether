@@ -435,21 +435,8 @@ import {
   RefreshButton
 } from '@/components/ui'
 import { auditApi } from '@/api/audit'
-import {
-  Download,
-  Shield,
-  Key,
-  Activity,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Globe,
-  X,
-  User,
-  Settings,
-  Search,
-  FilterX
-} from 'lucide-vue-next'
+import { IconDownload as Download, IconSafe as Shield, IconSafe as Key, IconExclamationCircle as AlertTriangle, IconCheckCircle as CheckCircle, IconCloseCircle as XCircle, IconClose as X, IconUser as User, IconSettings as Settings, IconSearch as Search } from '@arco-design/web-vue/es/icon'
+import { Activity, Globe, FilterX } from 'lucide-vue-next'
 
 interface AuditLog {
   id: string

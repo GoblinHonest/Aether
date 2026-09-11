@@ -4,10 +4,10 @@
     :class="containerClass"
   >
     <img
-      :src="'/IMG_20260619_184826.png'"
+      src="/IMG_20260619_184826.png"
       alt="ManyCode"
       class="w-full h-full object-contain"
-    />
+    >
   </div>
 </template>
 

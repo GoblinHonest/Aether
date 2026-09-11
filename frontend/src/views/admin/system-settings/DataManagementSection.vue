@@ -123,19 +123,8 @@
 
 <script setup lang="ts">
 import { computed, ref, markRaw, type Component } from 'vue'
-import {
-  Download,
-  Upload,
-  Settings,
-  Users,
-  Database,
-  Layers3,
-  Trash2,
-  BarChart3,
-  Shield,
-  FileText,
-  PieChart,
-} from 'lucide-vue-next'
+import { IconDownload as Download, IconUpload as Upload, IconSettings as Settings, IconUserGroup as Users, IconStorage as Database, IconLayers as Layers3, IconDelete as Trash2, IconBarChart as BarChart3, IconSafe as Shield, IconFile as FileText } from '@arco-design/web-vue/es/icon'
+import { PieChart } from 'lucide-vue-next'
 import Button from '@/components/ui/button.vue'
 import { Separator } from '@/components/ui'
 import { CardSection } from '@/components/layout'

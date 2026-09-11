@@ -8,7 +8,7 @@
     <div class="flex shrink-0 items-start gap-2 p-4 pb-3">
       <slot name="drag-handle" />
       <div
-        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-base font-semibold"
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded text-base font-semibold"
         :class="provider.is_active ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'"
         aria-hidden="true"
       >
@@ -89,7 +89,7 @@
     </div>
 
     <div class="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain break-words px-4 pb-4">
-      <div class="space-y-2 rounded-xl border border-border/40 bg-muted/20 p-3">
+      <div class="space-y-2 rounded border border-border/40 bg-muted/20 p-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <span class="text-xs text-muted-foreground">{{ legacyT('余额监控') }}</span>
           <Badge
@@ -237,7 +237,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Check, Edit, ExternalLink, Eye, KeyRound, Pencil, Power, Trash2, X } from 'lucide-vue-next'
+import { IconCheck as Check, IconEdit as Edit, IconLaunch as ExternalLink, IconEye as Eye, IconSafe as KeyRound, IconEdit as Pencil, IconPoweroff as Power, IconDelete as Trash2, IconClose as X } from '@arco-design/web-vue/es/icon'
 import Badge from '@/components/ui/badge.vue'
 import Button from '@/components/ui/button.vue'
 import Card from '@/components/ui/card.vue'

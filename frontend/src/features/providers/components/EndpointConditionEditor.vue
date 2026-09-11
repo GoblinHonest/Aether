@@ -82,8 +82,8 @@
             <span
               class="text-[10px] font-semibold px-1.5 py-0.5 rounded"
               :class="modelValue.mode === 'all'
-                ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400'
-                : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'"
+                ? 'bg-[#4080ff]/15 text-[#165dff] dark:text-[#6aa1ff]'
+                : 'bg-[#ff7d00]/15 text-[#d25f00] dark:text-[#ffb357]'"
             >
               {{ modelValue.mode === 'all' ? 'AND' : 'OR' }}
             </span>
@@ -185,7 +185,7 @@
 
 <script setup lang="ts">
 import { Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
-import { ListFilter, Plus, X } from 'lucide-vue-next'
+import { IconFilter as ListFilter, IconPlus as Plus, IconClose as X } from '@arco-design/web-vue/es/icon'
 
 import type { BodyRuleConditionOp } from '@/api/endpoints'
 import {

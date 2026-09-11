@@ -363,7 +363,7 @@
 import { ref, computed, watch } from 'vue'
 import { useSmartPagination } from '@/composables/useSmartPagination'
 import { useModelTest } from '@/composables/useModelTest'
-import { Tag, Plus, Edit, Trash2, ChevronRight, Loader2, Play } from 'lucide-vue-next'
+import { IconTags as Tag, IconPlus as Plus, IconEdit as Edit, IconDelete as Trash2, IconRight as ChevronRight, IconLoading as Loader2, IconPlayArrow as Play } from '@arco-design/web-vue/es/icon'
 import {
   Card, Button, Badge,
 } from '@/components/ui'

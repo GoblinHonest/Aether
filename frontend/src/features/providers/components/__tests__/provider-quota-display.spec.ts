@@ -42,8 +42,8 @@ describe('provider quota display components', () => {
     const { root, unmount } = mount(ProviderQuotaProgressRow, {
       label: 'Daily',
       remainingPercent: 120,
-      meterClass: 'text-green-600',
-      barClass: 'bg-green-500',
+      meterClass: 'text-[#009a29]',
+      barClass: 'bg-[#00b42a]',
       resetText: '2h reset',
     })
 

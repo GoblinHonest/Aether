@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Loader2, AlertCircle } from 'lucide-vue-next'
+import { IconLoading as Loader2, IconExclamationCircle as AlertCircle } from '@arco-design/web-vue/es/icon'
 import Card from '@/components/ui/card.vue'
 import ActivityHeatmap from '@/components/stats/ActivityHeatmap.vue'
 import type { ActivityHeatmap as ActivityHeatmapData } from '@/types/activity'

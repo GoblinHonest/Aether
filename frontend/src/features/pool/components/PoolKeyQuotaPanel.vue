@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="variant === 'mobile'"
-    class="rounded-xl border border-border/50 bg-muted/30 px-3 py-2 text-xs"
+    class="rounded border border-border/50 bg-muted/30 px-3 py-2 text-xs"
   >
     <div class="text-muted-foreground mb-1">
       {{ legacyT('配额') }}

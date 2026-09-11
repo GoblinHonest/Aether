@@ -5,7 +5,7 @@
         <slot name="icon">
           <div
             v-if="icon"
-            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10"
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-primary/10"
           >
             <component
               :is="icon"

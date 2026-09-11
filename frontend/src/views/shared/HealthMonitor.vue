@@ -26,7 +26,7 @@
           <div
             v-for="card in overviewCards"
             :key="card.label"
-            class="rounded-xl border border-border/60 bg-card/70 p-4"
+            class="rounded border border-border/60 bg-card/70 p-4"
           >
             <div class="flex items-start justify-between gap-3">
               <div>
@@ -40,7 +40,7 @@
                   {{ card.value }}
                 </div>
               </div>
-              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/40">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded border border-border/60 bg-muted/40">
                 <component
                   :is="card.icon"
                   class="h-5 w-5 text-muted-foreground"
@@ -73,12 +73,12 @@
               v-for="section in sectionCards"
               :key="section.key"
               type="button"
-              class="group rounded-xl border border-border/60 bg-muted/20 p-4 text-left transition-colors hover:border-primary/50 hover:bg-primary/5"
+              class="group rounded border border-border/60 bg-muted/20 p-4 text-left transition-colors hover:border-primary/50 hover:bg-primary/5"
               @click="scrollToSection(section.id)"
             >
               <div class="flex items-start justify-between gap-3">
                 <div class="flex min-w-0 items-center gap-3">
-                  <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-border/60 bg-card/70 transition-colors group-hover:border-primary/40">
+                  <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded border border-border/60 bg-card/70 transition-colors group-hover:border-primary/40">
                     <component
                       :is="section.icon"
                       class="h-5 w-5 text-muted-foreground"
@@ -113,7 +113,7 @@
                   <p class="text-muted-foreground">
                     异常
                   </p>
-                  <p class="mt-1 font-semibold tabular-nums text-red-600 dark:text-red-400">
+                  <p class="mt-1 font-semibold tabular-nums text-[#cb272d] dark:text-[#f76560]">
                     {{ section.summary.unhealthy }}
                   </p>
                 </div>
@@ -121,7 +121,7 @@
                   <p class="text-muted-foreground">
                     波动
                   </p>
-                  <p class="mt-1 font-semibold tabular-nums text-amber-600 dark:text-amber-400">
+                  <p class="mt-1 font-semibold tabular-nums text-[#d25f00] dark:text-[#ffb357]">
                     {{ section.summary.warning }}
                   </p>
                 </div>
@@ -182,7 +182,8 @@
 <script setup lang="ts">
 import { computed, ref, type Component } from 'vue'
 import { useRoute } from 'vue-router'
-import { Activity, Bot, Gauge, Server, Zap } from 'lucide-vue-next'
+import { IconDashboard as Gauge, IconThunderbolt as Zap } from '@arco-design/web-vue/es/icon'
+import { Activity, Bot, Server } from 'lucide-vue-next'
 import Card from '@/components/ui/card.vue'
 import Badge from '@/components/ui/badge.vue'
 import HealthMonitorCard from '@/features/providers/components/HealthMonitorCard.vue'
@@ -249,14 +250,14 @@ const overviewCards = computed(() => {
       value: endpointSummary.unhealthy,
       description: `${endpointSummary.warning} 个波动 / ${formatCompactNumber(endpointSummary.attempts)} 次请求`,
       icon: Activity,
-      valueClass: endpointSummary.unhealthy > 0 ? 'text-red-600 dark:text-red-400' : ''
+      valueClass: endpointSummary.unhealthy > 0 ? 'text-[#cb272d] dark:text-[#f76560]' : ''
     },
     {
       label: '异常模型',
       value: modelSummary.unhealthy,
       description: `${modelSummary.warning} 个波动 / ${formatCompactNumber(modelSummary.attempts)} 次请求`,
       icon: Bot,
-      valueClass: modelSummary.unhealthy > 0 ? 'text-red-600 dark:text-red-400' : ''
+      valueClass: modelSummary.unhealthy > 0 ? 'text-[#cb272d] dark:text-[#f76560]' : ''
     }
   ]
 
@@ -266,7 +267,7 @@ const overviewCards = computed(() => {
       value: providerSummary.unhealthy,
       description: `${providerSummary.warning} 个波动 / ${providerSummary.empty} 个暂无请求`,
       icon: Server,
-      valueClass: providerSummary.unhealthy > 0 ? 'text-red-600 dark:text-red-400' : ''
+      valueClass: providerSummary.unhealthy > 0 ? 'text-[#cb272d] dark:text-[#f76560]' : ''
     })
   } else {
     cards.push({
@@ -352,9 +353,9 @@ function getStatusBadgeVariant(
 
 function getStatusValueClass(summary: HealthMonitorSectionSummary, loaded: boolean) {
   if (!loaded || summary.total === 0) return ''
-  if (summary.unhealthy > 0) return 'text-red-600 dark:text-red-400'
-  if (summary.warning > 0 || summary.empty > 0) return 'text-amber-600 dark:text-amber-400'
-  return 'text-green-600 dark:text-green-400'
+  if (summary.unhealthy > 0) return 'text-[#cb272d] dark:text-[#f76560]'
+  if (summary.warning > 0 || summary.empty > 0) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#009a29] dark:text-[#23c343]'
 }
 
 function scrollToSection(id: string) {

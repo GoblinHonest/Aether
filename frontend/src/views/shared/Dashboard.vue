@@ -42,7 +42,7 @@
               />
               <!-- 图标固定在右上角 -->
               <div
-                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-lg border border-border bg-card/50 p-2 sm:p-3 shadow-inner"
+                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded sm:rounded-lg border border-border bg-card/50 p-2 sm:p-3 shadow-inner"
                 :class="getStatIconColor(index)"
               >
                 <component
@@ -101,7 +101,7 @@
                 :class="statCardGlows[index % statCardGlows.length]"
               />
               <div
-                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded-xl sm:rounded-lg border border-border bg-card/50 p-2 sm:p-3 shadow-inner"
+                class="absolute top-3 right-3 sm:top-5 sm:right-5 rounded sm:rounded-lg border border-border bg-card/50 p-2 sm:p-3 shadow-inner"
                 :class="getStatIconColor(index)"
               >
                 <component
@@ -367,7 +367,7 @@
             >
               <div
                 v-if="announcements.length > 1"
-                class="absolute left-[7px] w-[2px] bg-slate-200 dark:bg-muted"
+                class="absolute left-[7px] w-[2px] bg-[#e5e6eb] dark:bg-muted"
                 :style="timelineLineStyle"
               />
 
@@ -383,12 +383,12 @@
                   <div class="absolute left-[-18px] top-1 z-10">
                     <span
                       data-announcement-marker
-                      class="flex h-3 w-3 items-center justify-center rounded-full border-2 border-white dark:border-slate-900"
+                      class="flex h-3 w-3 items-center justify-center rounded-full border-2 border-white dark:border-[#1d2129]"
                       :class="[
                         announcement.is_pinned
-                          ? 'bg-amber-500 dark:bg-amber-400'
+                          ? 'bg-[#ff7d00] dark:bg-[#ffb357]'
                           : announcement.is_read
-                            ? 'bg-slate-300 dark:bg-slate-600'
+                            ? 'bg-[#a9aeb8] dark:bg-[#4e5969]'
                             : getAnnouncementDotColor(announcement.type),
                       ]"
                     >
@@ -403,8 +403,8 @@
                     class="flex-1 rounded-lg p-2 transition"
                     :class="[
                       announcement.is_pinned
-                        ? 'hover:bg-amber-50/50 dark:hover:bg-amber-900/10'
-                        : 'hover:bg-slate-50/50 dark:hover:bg-slate-800/30',
+                        ? 'hover:bg-[#fff7e8]/50 dark:hover:bg-[#4a2000]/10'
+                        : 'hover:bg-[#f7f8fa]/50 dark:hover:bg-[#1d2129]/30',
                     ]"
                   >
                     <div class="flex items-center gap-2 mb-1">
@@ -416,7 +416,7 @@
                       </h4>
                       <span
                         v-if="announcement.is_pinned"
-                        class="flex-shrink-0 rounded-full bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 text-[9px] font-medium text-amber-700 dark:text-amber-400"
+                        class="flex-shrink-0 rounded-full bg-[#ffefcf] dark:bg-[#4a2000]/30 px-1.5 py-0.5 text-[9px] font-medium text-[#a64b00] dark:text-[#ffb357]"
                       >
                         置顶
                       </span>
@@ -792,7 +792,7 @@
             <div class="text-muted-foreground text-[10px]">
               总费用
             </div>
-            <div class="font-semibold text-amber-600 dark:text-amber-400">
+            <div class="font-semibold text-[#d25f00] dark:text-[#ffb357]">
               ${{ totalStats.cost.toFixed(4) }}
             </div>
           </div>
@@ -1670,11 +1670,11 @@ function getAnnouncementIcon(type: string) {
 function getAnnouncementIconColor(type: string) {
   switch (type) {
     case "important":
-      return "text-rose-600 dark:text-rose-400";
+      return "text-[#cb272d] dark:text-[#f76560]";
     case "warning":
-      return "text-amber-600 dark:text-amber-400";
+      return "text-[#d25f00] dark:text-[#ffb357]";
     case "maintenance":
-      return "text-orange-600 dark:text-orange-400";
+      return "text-[#d25f00] dark:text-[#ffb357]";
     default:
       return "text-primary dark:text-primary";
   }
@@ -1702,13 +1702,13 @@ function formatAnnouncementDate(dateString: string): string {
 function getAnnouncementDotColor(type: string): string {
   switch (type) {
     case "important":
-      return "bg-rose-500 dark:bg-rose-400";
+      return "bg-[#f53f3f] dark:bg-[#f76560]";
     case "warning":
-      return "bg-amber-500 dark:bg-amber-400";
+      return "bg-[#ff7d00] dark:bg-[#ffb357]";
     case "maintenance":
-      return "bg-orange-500 dark:bg-orange-400";
+      return "bg-[#ff7d00] dark:bg-[#ffb357]";
     default:
-      return "bg-emerald-500 dark:bg-emerald-400";
+      return "bg-[#00b42a] dark:bg-[#23c343]";
   }
 }
 

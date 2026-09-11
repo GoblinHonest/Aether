@@ -25,8 +25,8 @@
         class="p-4"
       >
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-            <CheckCircle class="w-5 h-5 text-green-500" />
+          <div class="w-10 h-10 rounded-lg bg-[#00b42a]/10 flex items-center justify-center">
+            <CheckCircle class="w-5 h-5 text-[#00b42a]" />
           </div>
           <div>
             <p class="text-2xl font-bold">
@@ -43,8 +43,8 @@
         class="p-4"
       >
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-            <Clock class="w-5 h-5 text-amber-500" />
+          <div class="w-10 h-10 rounded-lg bg-[#ff7d00]/10 flex items-center justify-center">
+            <Clock class="w-5 h-5 text-[#ff7d00]" />
           </div>
           <div>
             <p class="text-2xl font-bold">
@@ -61,8 +61,8 @@
         class="p-4"
       >
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-            <Key class="w-5 h-5 text-blue-500" />
+          <div class="w-10 h-10 rounded-lg bg-[#4080ff]/10 flex items-center justify-center">
+            <Key class="w-5 h-5 text-[#4080ff]" />
           </div>
           <div>
             <p class="text-2xl font-bold">
@@ -124,7 +124,7 @@
       </div>
       <div
         v-else
-        class="mb-4 text-sm text-amber-600 bg-amber-50 dark:bg-amber-950/30 rounded-lg p-3"
+        class="mb-4 text-sm text-[#d25f00] bg-[#fff7e8] dark:bg-[#4a2000]/30 rounded-lg p-3"
       >
         暂无可用的 Key，请先配置具有「Gemini 文件 API」能力的 Key
       </div>
@@ -314,7 +314,7 @@
                 <Badge
                   v-else
                   variant="outline"
-                  class="text-xs text-green-600"
+                  class="text-xs text-[#009a29]"
                 >
                   有效
                 </Badge>
@@ -355,7 +355,7 @@
                 </span>
                 <span
                   class="flex items-center gap-1"
-                  :class="{ 'text-red-500': mapping.is_expired }"
+                  :class="{ 'text-[#f53f3f]': mapping.is_expired }"
                 >
                   <Timer class="w-3 h-3" />
                   过期: {{ formatDate(mapping.expires_at) }}
@@ -367,7 +367,7 @@
               <Button
                 variant="ghost"
                 size="icon"
-                class="h-8 w-8 text-muted-foreground hover:text-red-500"
+                class="h-8 w-8 text-muted-foreground hover:text-[#f53f3f]"
                 title="删除映射"
                 @click.stop="deleteMapping(mapping)"
               >
@@ -420,23 +420,8 @@ import Card from '@/components/ui/card.vue'
 import Badge from '@/components/ui/badge.vue'
 import Button from '@/components/ui/button.vue'
 import Input from '@/components/ui/input.vue'
-import {
-  FileUp,
-  CheckCircle,
-  Clock,
-  Key,
-  RefreshCw,
-  Loader2,
-  Trash2,
-  File,
-  User,
-  Timer,
-  Video,
-  Image,
-  FileText,
-  Music,
-  Upload
-} from 'lucide-vue-next'
+import { IconUpload as FileUp, IconCheckCircle as CheckCircle, IconClockCircle as Clock, IconSafe as Key, IconRefresh as RefreshCw, IconLoading as Loader2, IconDelete as Trash2, IconFile as File, IconUser as User, IconVideoCamera as Video, IconImage as Image, IconFile as FileText, IconMusic as Music, IconUpload as Upload } from '@arco-design/web-vue/es/icon'
+import { Timer } from 'lucide-vue-next'
 import { geminiFilesApi, type FileMappingStatsResponse, type FileMappingResponse, type CapableKeyResponse } from '@/api/gemini-files'
 import { parseApiError } from '@/utils/errorParser'
 import { log } from '@/utils/logger'

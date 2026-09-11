@@ -107,7 +107,8 @@
 </template>
 
 <script setup lang="ts">
-import { FolderKanban, Plus } from 'lucide-vue-next'
+import { IconPlus as Plus } from '@arco-design/web-vue/es/icon'
+import { FolderKanban } from 'lucide-vue-next'
 import Button from '@/components/ui/button.vue'
 import RefreshButton from '@/components/ui/refresh-button.vue'
 import type { UserGroup, UserRole } from '@/api/users'

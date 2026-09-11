@@ -73,14 +73,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Button from '@/components/ui/button.vue'
-import {
-  FileQuestion,
-  Search,
-  Inbox,
-  AlertCircle,
-  PackageOpen,
-  Filter
-} from 'lucide-vue-next'
+import { IconFile as FileQuestion, IconSearch as Search, IconExclamationCircle as AlertCircle, IconArchive as PackageOpen, IconFilter as Filter } from '@arco-design/web-vue/es/icon'
+import { Inbox } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import { useI18n } from '@/i18n'
 
@@ -213,9 +207,9 @@ const iconContainerClasses = computed(() => {
 
   // 大小和颜色
   if (props.type === 'error') {
-    classes.push('bg-red-100', 'dark:bg-red-900/30')
+    classes.push('bg-[#fdcdc5]', 'dark:bg-[#4a000a]/30')
   } else if (props.type === 'search' || props.type === 'filter') {
-    classes.push('bg-blue-100', 'dark:bg-blue-900/30')
+    classes.push('bg-[#bedaff]', 'dark:bg-[#000d4d]/30')
   } else {
     classes.push('bg-muted')
   }
@@ -238,9 +232,9 @@ const iconClasses = computed(() => {
 
   // 颜色
   if (props.type === 'error') {
-    classes.push('text-red-600', 'dark:text-red-400')
+    classes.push('text-[#cb272d]', 'dark:text-[#f76560]')
   } else if (props.type === 'search' || props.type === 'filter') {
-    classes.push('text-blue-600', 'dark:text-blue-400')
+    classes.push('text-[#165dff]', 'dark:text-[#6aa1ff]')
   } else {
     classes.push('text-muted-foreground')
   }

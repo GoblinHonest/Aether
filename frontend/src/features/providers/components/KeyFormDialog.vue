@@ -65,7 +65,7 @@
               :drop-hint="legacyT('支持 .json / .txt，单文件导入')"
               :manual-placeholder="legacyT(editingKey ? '留空表示不修改，或粘贴完整的 Service Account JSON' : '粘贴完整的 Service Account JSON')"
               :manual-description="serviceAccountDescription"
-              textarea-class="min-h-[160px] font-mono text-xs break-all !rounded-xl"
+              textarea-class="min-h-[160px] font-mono text-xs break-all !rounded"
               @error="handleServiceAccountImportError"
             />
           </template>
@@ -301,7 +301,7 @@
             </p>
             <p
               v-if="showAutoFetchWarning"
-              class="text-xs text-amber-600 dark:text-amber-400"
+              class="text-xs text-[#d25f00] dark:text-[#ffb357]"
             >
               {{ autoFetchWarningMessage }}
             </p>
@@ -370,7 +370,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui'
-import { Key, SquarePen, CircleHelp } from 'lucide-vue-next'
+import { IconSafe as Key, IconEdit as SquarePen, IconQuestionCircle as CircleHelp } from '@arco-design/web-vue/es/icon'
 import { useToast } from '@/composables/useToast'
 import { useFormDialog } from '@/composables/useFormDialog'
 import { useI18n } from '@/i18n'

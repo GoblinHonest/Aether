@@ -1,5 +1,5 @@
 <template>
-  <div :class="mobile ? 'rounded-xl border border-border/60 bg-muted/40 p-3.5' : 'space-y-1.5'">
+  <div :class="mobile ? 'rounded border border-border/60 bg-muted/40 p-3.5' : 'space-y-1.5'">
     <div :class="mobile ? 'flex items-start justify-between gap-3' : ''">
       <div class="space-y-1">
         <p :class="mobile ? 'text-[11px] text-muted-foreground' : 'flex items-center gap-1 text-[11px] text-muted-foreground'">
@@ -16,7 +16,7 @@
             class="font-semibold tabular-nums"
             :class="[
               mobile ? 'text-base leading-none' : 'text-sm',
-              row.isNegativeBalance ? 'text-rose-600' : 'text-foreground',
+              row.isNegativeBalance ? 'text-[#cb272d]' : 'text-foreground',
             ]"
           >
             {{ row.totalBalanceLabel }}

@@ -26,7 +26,7 @@
           <div
             v-for="item in healthToggleCards"
             :key="item.key"
-            class="flex flex-col gap-3 rounded-xl border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between lg:items-center"
+            class="flex flex-col gap-3 rounded border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between lg:items-center"
           >
             <div class="min-w-0 flex-1 space-y-1">
               <div class="flex items-center gap-1.5">
@@ -69,7 +69,7 @@
 
         <div
           v-if="form.account_self_check_enabled"
-          class="space-y-3 rounded-xl border border-dashed border-primary/25 bg-primary/5 p-4"
+          class="space-y-3 rounded border border-dashed border-primary/25 bg-primary/5 p-4"
         >
           <div class="grid gap-3 sm:grid-cols-2">
             <div class="space-y-1.5">
@@ -152,7 +152,7 @@
           </p>
         </div>
 
-        <div class="grid gap-3 rounded-xl bg-muted/30 p-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="grid gap-3 rounded bg-muted/30 p-4 sm:grid-cols-2 xl:grid-cols-4">
           <div class="space-y-1.5">
             <Label>
               并发数
@@ -385,7 +385,7 @@
         </div>
 
         <div class="grid gap-3 lg:grid-cols-2">
-          <div class="flex flex-col gap-3 rounded-xl border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex flex-col gap-3 rounded border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between">
             <div class="space-y-1">
               <span class="text-sm font-medium">Session ID 伪装</span>
               <p class="text-xs leading-5 text-muted-foreground">
@@ -399,7 +399,7 @@
             />
           </div>
 
-          <div class="flex flex-col gap-3 rounded-xl border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex flex-col gap-3 rounded border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between">
             <div class="space-y-1">
               <span class="text-sm font-medium">仅限 CLI 客户端</span>
               <p class="text-xs leading-5 text-muted-foreground">
@@ -413,7 +413,7 @@
             />
           </div>
 
-          <div class="flex flex-col gap-3 rounded-xl border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex flex-col gap-3 rounded border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between">
             <div class="space-y-1">
               <span class="text-sm font-medium">Cache TTL 统一</span>
               <p class="text-xs leading-5 text-muted-foreground">
@@ -427,7 +427,7 @@
             />
           </div>
 
-          <div class="flex flex-col gap-3 rounded-xl border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex flex-col gap-3 rounded border border-border/60 bg-muted/30 p-4 sm:flex-row sm:items-start sm:justify-between">
             <div class="space-y-1">
               <span class="text-sm font-medium">会话数量控制</span>
               <p class="text-xs leading-5 text-muted-foreground">
@@ -444,7 +444,7 @@
 
         <div
           v-if="claudeForm.cache_ttl_override_enabled"
-          class="rounded-xl border border-dashed border-primary/25 bg-primary/5 p-4"
+          class="rounded border border-dashed border-primary/25 bg-primary/5 p-4"
         >
           <div class="space-y-1.5">
             <Label>TTL 类型</Label>
@@ -469,7 +469,7 @@
 
         <div
           v-if="claudeForm.session_control_enabled"
-          class="rounded-xl border border-dashed border-primary/25 bg-primary/5 p-4"
+          class="rounded border border-dashed border-primary/25 bg-primary/5 p-4"
         >
           <div class="grid gap-3 sm:grid-cols-2">
             <div class="space-y-1.5">
@@ -526,7 +526,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { CircleHelp } from 'lucide-vue-next'
+import { IconQuestionCircle as CircleHelp } from '@arco-design/web-vue/es/icon'
 import { Dialog, Button, Input, Label, Switch, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui'
 import { useToast } from '@/composables/useToast'
 import { parseApiError } from '@/utils/errorParser'

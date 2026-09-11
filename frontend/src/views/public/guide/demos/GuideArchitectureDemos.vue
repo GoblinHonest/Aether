@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ArrowLeft } from 'lucide-vue-next'
+import { IconArrowLeft as ArrowLeft } from '@arco-design/web-vue/es/icon'
 
 const activeDemo = ref<number>(1)
 
@@ -25,7 +25,7 @@ const demos = [
           架构布局草案演示
         </h1>
       </div>
-      <div class="flex gap-2 bg-[#f5f5f0] dark:bg-[#232324] p-1 rounded-xl border border-[#e5e6eb] dark:border-white/5">
+      <div class="flex gap-2 bg-[#f5f5f0] dark:bg-[#232324] p-1 rounded border border-[#e5e6eb] dark:border-white/5">
         <button
           v-for="demo in demos"
           :key="demo.id"
@@ -47,20 +47,20 @@ const demos = [
       <!-- Variant 1: Vertical -->
       <div
         v-if="activeDemo === 1"
-        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-xl relative flex flex-col items-center justify-between p-12"
+        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded relative flex flex-col items-center justify-between p-12"
       >
         <div class="absolute top-4 left-6 text-sm font-mono text-[#2a2a2b]/50">
           Layout Variant: Vertical Pipeline
         </div>
         <!-- Ingress row -->
         <div class="flex gap-12 w-full justify-center">
-          <div class="w-48 h-16 bg-white dark:bg-[#232324] border border-[#e5e6eb] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
+          <div class="w-48 h-16 bg-white dark:bg-[#232324] border border-[#e5e6eb] dark:border-white/10 rounded flex items-center justify-center font-mono font-bold">
             Claude API Request
           </div>
-          <div class="w-48 h-16 bg-white dark:bg-[#232324] border border-[#e5e6eb] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
+          <div class="w-48 h-16 bg-white dark:bg-[#232324] border border-[#e5e6eb] dark:border-white/10 rounded flex items-center justify-center font-mono font-bold">
             OpenAI API Request
           </div>
-          <div class="w-48 h-16 bg-white dark:bg-[#232324] border border-[#e5e6eb] dark:border-white/10 rounded-xl flex items-center justify-center font-mono font-bold">
+          <div class="w-48 h-16 bg-white dark:bg-[#232324] border border-[#e5e6eb] dark:border-white/10 rounded flex items-center justify-center font-mono font-bold">
             Gemini API Request
           </div>
         </div>
@@ -98,13 +98,13 @@ const demos = [
 
         <!-- Egress Processing -->
         <div class="flex gap-24 w-full justify-center">
-          <div class="w-72 h-32 bg-[#a855f7]/10 border-2 border-[#a855f7] rounded-xl flex flex-col items-center justify-center text-[#a855f7]">
+          <div class="w-72 h-32 bg-[#a855f7]/10 border-2 border-[#a855f7] rounded flex flex-col items-center justify-center text-[#a855f7]">
             <h3 class="font-bold text-lg mb-2">
               3. 格式转换引擎
             </h3>
             <span class="text-xs font-mono">Protocols Translate</span>
           </div>
-          <div class="w-72 h-32 bg-[#3b82f6]/10 border-2 border-[#3b82f6] rounded-xl flex flex-col items-center justify-center text-[#3b82f6]">
+          <div class="w-72 h-32 bg-[#3b82f6]/10 border-2 border-[#3b82f6] rounded flex flex-col items-center justify-center text-[#3b82f6]">
             <h3 class="font-bold text-lg mb-2">
               4. 原生双向透传
             </h3>
@@ -116,20 +116,20 @@ const demos = [
         <div class="w-1 h-12 bg-[#e5e6eb] dark:bg-white/20 mx-auto my-4" />
 
         <!-- Upstream -->
-        <div class="w-full max-w-4xl h-24 border-2 border-dashed border-[#e5e6eb] dark:border-white/20 rounded-xl flex items-center justify-around">
+        <div class="w-full max-w-4xl h-24 border-2 border-dashed border-[#e5e6eb] dark:border-white/20 rounded flex items-center justify-around">
           <div class="font-bold text-[#4e5969] dark:text-[#a3a094]">
             Upstream:
           </div>
-          <div class="px-6 py-2 bg-emerald-500/10 text-emerald-600 rounded-lg font-bold">
+          <div class="px-6 py-2 bg-[#00b42a]/10 text-[#009a29] rounded-lg font-bold">
             Claude
           </div>
-          <div class="px-6 py-2 bg-emerald-500/10 text-emerald-600 rounded-lg font-bold">
+          <div class="px-6 py-2 bg-[#00b42a]/10 text-[#009a29] rounded-lg font-bold">
             OpenAI
           </div>
-          <div class="px-6 py-2 bg-emerald-500/10 text-emerald-600 rounded-lg font-bold">
+          <div class="px-6 py-2 bg-[#00b42a]/10 text-[#009a29] rounded-lg font-bold">
             Gemini
           </div>
-          <div class="px-6 py-2 bg-amber-500/10 text-amber-600 rounded-lg font-bold">
+          <div class="px-6 py-2 bg-[#ff7d00]/10 text-[#d25f00] rounded-lg font-bold">
             Custom Reverse Proxies (Codex, Kiro...)
           </div>
         </div>
@@ -138,7 +138,7 @@ const demos = [
       <!-- Variant 2: Central Hub -->
       <div
         v-if="activeDemo === 2"
-        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-xl relative flex items-center justify-center p-12"
+        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded relative flex items-center justify-center p-12"
       >
         <div class="absolute top-4 left-6 text-sm font-mono text-[#2a2a2b]/50">
           Layout Variant: Central Star/Hub
@@ -172,7 +172,7 @@ const demos = [
 
         <!-- Engines Top/Bottom -->
         <div class="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
-          <div class="w-48 h-16 bg-[#a855f7]/10 border-2 border-[#a855f7] rounded-xl flex items-center justify-center text-sm font-bold text-[#a855f7]">
+          <div class="w-48 h-16 bg-[#a855f7]/10 border-2 border-[#a855f7] rounded flex items-center justify-center text-sm font-bold text-[#a855f7]">
             格式转换引擎
           </div>
           <div class="w-[1px] h-12 bg-[#a855f7]" />
@@ -180,19 +180,19 @@ const demos = [
 
         <div class="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
           <div class="w-[1px] h-12 bg-[#3b82f6]" />
-          <div class="w-48 h-16 bg-[#3b82f6]/10 border-2 border-[#3b82f6] rounded-xl flex items-center justify-center text-sm font-bold text-[#3b82f6]">
+          <div class="w-48 h-16 bg-[#3b82f6]/10 border-2 border-[#3b82f6] rounded flex items-center justify-center text-sm font-bold text-[#3b82f6]">
             原生直通管道
           </div>
         </div>
 
         <!-- Egress Right Arc -->
         <div class="absolute right-24 top-1/2 -translate-y-1/2 flex flex-col gap-4">
-          <div class="w-48 h-12 border border-dashed border-emerald-500 rounded flex items-center justify-center relative bg-emerald-500/5 text-emerald-600 font-bold">
-            <div class="absolute left-[-60px] top-1/2 h-[1px] w-14 bg-emerald-500/50" />
+          <div class="w-48 h-12 border border-dashed border-[#00b42a] rounded flex items-center justify-center relative bg-[#00b42a]/5 text-[#009a29] font-bold">
+            <div class="absolute left-[-60px] top-1/2 h-[1px] w-14 bg-[#00b42a]/50" />
             Standard Providers
           </div>
-          <div class="w-48 h-12 border border-dashed border-amber-500 rounded flex items-center justify-center relative bg-amber-500/5 text-amber-600 font-bold">
-            <div class="absolute left-[-60px] top-1/2 h-[1px] w-14 bg-amber-500/50" />
+          <div class="w-48 h-12 border border-dashed border-[#ff7d00] rounded flex items-center justify-center relative bg-[#ff7d00]/5 text-[#d25f00] font-bold">
+            <div class="absolute left-[-60px] top-1/2 h-[1px] w-14 bg-[#ff7d00]/50" />
             Reverse Proxies
           </div>
         </div>
@@ -201,7 +201,7 @@ const demos = [
       <!-- Variant 3: 2.5D Stacked -->
       <div
         v-if="activeDemo === 3"
-        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded-xl relative pt-32 pb-12 flex justify-center perspective-[1000px]"
+        class="w-full h-[800px] border border-dashed border-[#2a2a2b]/30 rounded relative pt-32 pb-12 flex justify-center perspective-[1000px]"
       >
         <div class="absolute top-4 left-6 text-sm font-mono text-[#2a2a2b]/50">
           Layout Variant: 2.5D Stacked Layers (AWS Style)
@@ -212,7 +212,7 @@ const demos = [
           style="transform: rotateX(55deg) rotateZ(-45deg);"
         >
           <!-- Layer 1: Ingress (Top) -->
-          <div class="absolute inset-x-0 top-0 h-40 bg-white/40 dark:bg-black/40 border border-white/50 dark:border-white/10 rounded-tr-3xl rounded-bl-3xl shadow-md flex flex-col justify-center px-12 transform translate-z-[120px]">
+          <div class="absolute inset-x-0 top-0 h-40 bg-white/40 dark:bg-black/40 border border-white/50 dark:border-white/10 rounded-tr rounded-bl shadow-md flex flex-col justify-center px-12 transform translate-z-[120px]">
             <h3 class="text-sm font-bold text-[#2a2a2b] absolute top-4 left-4 tracking-normal">
               LAYER 1: INGRESS CLIENTS
             </h3>
@@ -249,7 +249,7 @@ const demos = [
           </div>
 
           <!-- Layer 3: Egress & Providers (Bottom) -->
-          <div class="absolute inset-x-0 bottom-[-50px] h-60 bg-[#f5f5f0]/50 dark:bg-[#1a1815]/50 border border-[#e5e6eb] dark:border-white/10 rounded-br-3xl rounded-tl-3xl shadow-xl flex flex-col p-8 transform translate-z-[0px]">
+          <div class="absolute inset-x-0 bottom-[-50px] h-60 bg-[#f5f5f0]/50 dark:bg-[#1a1815]/50 border border-[#e5e6eb] dark:border-white/10 rounded-br rounded-tl shadow-xl flex flex-col p-8 transform translate-z-[0px]">
             <h3 class="text-sm font-bold text-[#4e5969] dark:text-[#a3a094] mb-4">
               LAYER 3: EGRESS & UPSTREAM
             </h3>
@@ -264,10 +264,10 @@ const demos = [
             </div>
 
             <div class="w-full flex gap-4 h-16">
-              <div class="w-full border border-dashed border-emerald-500 rounded bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold">
+              <div class="w-full border border-dashed border-[#00b42a] rounded bg-[#00b42a]/10 flex items-center justify-center text-[#009a29] font-bold">
                 Providers (Claude, OpenAI)
               </div>
-              <div class="w-full border border-dashed border-amber-500 rounded bg-amber-500/10 flex items-center justify-center text-amber-600 font-bold">
+              <div class="w-full border border-dashed border-[#ff7d00] rounded bg-[#ff7d00]/10 flex items-center justify-center text-[#d25f00] font-bold">
                 Reverse Proxies
               </div>
             </div>

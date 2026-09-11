@@ -37,7 +37,7 @@
 
     <div
       v-if="loadWarning"
-      class="rounded-lg border border-yellow-300/70 bg-yellow-50/80 px-3 py-2 text-xs text-yellow-900 dark:border-yellow-900/60 dark:bg-yellow-950/30 dark:text-yellow-100"
+      class="rounded-lg border border-[#ffcf8b]/70 bg-[#fff7e8]/80 px-3 py-2 text-xs text-[#4a2000] dark:border-[#4a2000]/60 dark:bg-[#4a2000]/30 dark:text-[#ffefcf]"
     >
       {{ loadWarning }}
     </div>
@@ -1023,19 +1023,8 @@ import { getI18nLocale } from '@/i18n'
 import { computed, defineComponent, h, onMounted, onUnmounted, ref, watch, type Component } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { ChartData, ChartOptions } from 'chart.js'
-import {
-  Activity,
-  AlertTriangle,
-  BarChart3,
-  CircleDollarSign,
-  Database,
-  Gauge,
-  ListChecks,
-  RefreshCw,
-  ShieldCheck,
-  Timer,
-  Zap,
-} from 'lucide-vue-next'
+import { IconExclamationCircle as AlertTriangle, IconBarChart as BarChart3, IconStorage as Database, IconDashboard as Gauge, IconList as ListChecks, IconRefresh as RefreshCw, IconSafe as ShieldCheck, IconThunderbolt as Zap } from '@arco-design/web-vue/es/icon'
+import { Activity, CircleDollarSign, Timer } from 'lucide-vue-next'
 import { Badge, Button, Card, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui'
 import { LoadingState, TimeRangePicker } from '@/components/common'
 import LineChart from '@/components/charts/LineChart.vue'
@@ -1255,9 +1244,9 @@ function formatDurationSeconds(value: number | null | undefined): string {
 
 function resourceToneClass(value: number | null | undefined, warning: number, critical: number): string {
   if (value == null || Number.isNaN(value)) return ''
-  if (value >= critical) return 'text-red-600 dark:text-red-400'
-  if (value >= warning) return 'text-amber-600 dark:text-amber-400'
-  return 'text-green-600 dark:text-green-400'
+  if (value >= critical) return 'text-[#cb272d] dark:text-[#f76560]'
+  if (value >= warning) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#009a29] dark:text-[#23c343]'
 }
 
 function capacityPercentClass(value: number | null | undefined): string {
@@ -1266,13 +1255,13 @@ function capacityPercentClass(value: number | null | undefined): string {
 
 function counterRiskClass(value: number | null | undefined): string {
   if (value == null || Number.isNaN(value)) return ''
-  return value > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-green-600 dark:text-green-400'
+  return value > 0 ? 'text-[#d25f00] dark:text-[#ffb357]' : 'text-[#009a29] dark:text-[#23c343]'
 }
 
 function latencyToneClass(value: number | null | undefined): string {
   if (value == null || Number.isNaN(value)) return ''
-  if (value >= 5_000) return 'text-red-600 dark:text-red-400'
-  if (value >= 1_000) return 'text-amber-600 dark:text-amber-400'
+  if (value >= 5_000) return 'text-[#cb272d] dark:text-[#f76560]'
+  if (value >= 1_000) return 'text-[#d25f00] dark:text-[#ffb357]'
   return ''
 }
 
@@ -1313,9 +1302,9 @@ function formatShortDate(value?: string | null): string {
 function successRateClass(value: number | null | undefined): string {
   if (value == null || Number.isNaN(value)) return ''
   const rate = value <= 1 ? value * 100 : value
-  if (rate >= 95) return 'text-green-600 dark:text-green-400'
-  if (rate >= 80) return 'text-amber-600 dark:text-amber-400'
-  return 'text-red-600 dark:text-red-400'
+  if (rate >= 95) return 'text-[#009a29] dark:text-[#23c343]'
+  if (rate >= 80) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#cb272d] dark:text-[#f76560]'
 }
 
 function average(values: Array<number | null | undefined>): number | null {
@@ -1563,21 +1552,21 @@ const kpiCards = computed<Array<{
     value: qps.value.toFixed(qps.value < 10 ? 2 : 1),
     hint: `RPM ${rpm.value.toFixed(rpm.value < 100 ? 1 : 0)} · 请求 ${formatMetricNumber(totalRequests.value)}`,
     icon: Activity,
-    iconClass: 'text-sky-500',
+    iconClass: 'text-[#165dff]',
   },
   {
     title: '趋势 Tokens',
     value: formatTokens(totalTokens.value),
     hint: `趋势聚合 · ${formatMetricNumber(tokensPerMinute.value)} TPM`,
     icon: Zap,
-    iconClass: 'text-amber-500',
+    iconClass: 'text-[#ff7d00]',
   },
   {
     title: 'SLA',
     value: formatPercent(slaRate.value),
     hint: `错误率 ${formatErrorRate(slaRate.value)}`,
     icon: ShieldCheck,
-    iconClass: 'text-emerald-500',
+    iconClass: 'text-[#00b42a]',
     valueClass: successRateClass(slaRate.value),
   },
   {
@@ -1585,14 +1574,14 @@ const kpiCards = computed<Array<{
     value: formatMs(avgResponseMs.value),
     hint: `P99 ${formatMs(providerPerformance.value?.summary.p99_response_time_ms)}`,
     icon: Gauge,
-    iconClass: 'text-violet-500',
+    iconClass: 'text-[#722ed1]',
   },
   {
     title: 'TTFT',
     value: formatMs(avgFirstByteMs.value),
     hint: `P99 首字 ${formatMs(providerPerformance.value?.summary.p99_first_byte_time_ms)}`,
     icon: Timer,
-    iconClass: 'text-blue-500',
+    iconClass: 'text-[#4080ff]',
   },
   {
     title: '输出 TPS',
@@ -1606,14 +1595,14 @@ const kpiCards = computed<Array<{
     value: formatMetricNumber(resilienceStatus.value?.error_statistics.total_errors),
     hint: `打开熔断 ${formatMetricNumber(resilienceStatus.value?.error_statistics.open_circuit_breakers)}`,
     icon: AlertTriangle,
-    iconClass: 'text-red-500',
+    iconClass: 'text-[#f53f3f]',
   },
   {
     title: '费用',
     value: formatCurrency(totalCost.value),
     hint: `缓存读 ${formatTokens(cacheStats.value?.affinity_stats.cache_hits ?? 0)} 次`,
     icon: CircleDollarSign,
-    iconClass: 'text-green-500',
+    iconClass: 'text-[#00b42a]',
   },
 ])
 
@@ -1786,9 +1775,9 @@ const postgresCacheHitText = computed(() => formatBasisPointsPercent(
 const postgresCacheHitClass = computed(() => {
   const value = postgresCacheHitPercent.value
   if (value == null || Number.isNaN(value)) return ''
-  if (value < 90) return 'text-red-600 dark:text-red-400'
-  if (value < 95) return 'text-amber-600 dark:text-amber-400'
-  return 'text-green-600 dark:text-green-400'
+  if (value < 90) return 'text-[#cb272d] dark:text-[#f76560]'
+  if (value < 95) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#009a29] dark:text-[#23c343]'
 })
 function postgresOptionalText(
   available: boolean | null | undefined,
@@ -1808,7 +1797,7 @@ const postgresWalText = computed(() => {
   )
 })
 const postgresWalClass = computed(() => (
-  gatewayMetrics.value?.postgres.walUnavailable ? 'text-red-600 dark:text-red-400' : ''
+  gatewayMetrics.value?.postgres.walUnavailable ? 'text-[#cb272d] dark:text-[#f76560]' : ''
 ))
 const postgresCheckpointText = computed(() => {
   const postgres = gatewayMetrics.value?.postgres
@@ -1816,7 +1805,7 @@ const postgresCheckpointText = computed(() => {
   return postgresOptionalText(postgres?.checkpointAvailable, postgres?.checkpointUnavailable, value)
 })
 const postgresCheckpointClass = computed(() => (
-  gatewayMetrics.value?.postgres.checkpointUnavailable ? 'text-red-600 dark:text-red-400' : ''
+  gatewayMetrics.value?.postgres.checkpointUnavailable ? 'text-[#cb272d] dark:text-[#f76560]' : ''
 ))
 const postgresTopStatementText = computed(() => {
   const postgres = gatewayMetrics.value?.postgres
@@ -1828,7 +1817,7 @@ const postgresTopStatementText = computed(() => {
 })
 const postgresStatementClass = computed(() => {
   const postgres = gatewayMetrics.value?.postgres
-  if (postgres?.statementUnavailable) return 'text-red-600 dark:text-red-400'
+  if (postgres?.statementUnavailable) return 'text-[#cb272d] dark:text-[#f76560]'
   return latencyToneClass(postgres?.statementTopMaxExecTimeMs)
 })
 const databasePoolStatusVariant = computed<'success' | 'warning' | 'destructive' | 'outline'>(() => {
@@ -1992,9 +1981,9 @@ const usageCounterOldestPendingAgeText = computed(() => (
 const usageCounterOldestPendingAgeClass = computed(() => {
   const age = gatewayMetrics.value?.usageCounter.oldestPendingAgeSeconds
   if (age == null || Number.isNaN(age)) return ''
-  if (age >= 60) return 'text-red-600 dark:text-red-400'
-  if (age > 0) return 'text-amber-600 dark:text-amber-400'
-  return 'text-green-600 dark:text-green-400'
+  if (age >= 60) return 'text-[#cb272d] dark:text-[#f76560]'
+  if (age > 0) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#009a29] dark:text-[#23c343]'
 })
 const usageCounterHealthText = computed(() => {
   const counter = gatewayMetrics.value?.usageCounter
@@ -2120,9 +2109,9 @@ const errorRateValueClass = computed(() => {
   if (rate == null) return ''
   const successPercent = rate <= 1 ? rate * 100 : rate
   const errorPercent = Math.max(0, 100 - successPercent)
-  if (errorPercent <= 5) return 'text-green-600 dark:text-green-400'
-  if (errorPercent <= 20) return 'text-amber-600 dark:text-amber-400'
-  return 'text-red-600 dark:text-red-400'
+  if (errorPercent <= 5) return 'text-[#009a29] dark:text-[#23c343]'
+  if (errorPercent <= 20) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#cb272d] dark:text-[#f76560]'
 })
 
 const providerRows = computed(() => providerPerformance.value?.providers.slice(0, 8) ?? [])
@@ -2136,21 +2125,21 @@ const redisStatusText = computed(() => {
 })
 const redisStatusClass = computed(() => {
   const runtime = gatewayMetrics.value?.redisRuntime
-  if (runtime?.unavailable) return 'text-red-600 dark:text-red-400'
+  if (runtime?.unavailable) return 'text-[#cb272d] dark:text-[#f76560]'
   if (
     (redisRuntimeCommandFaults.value ?? 0) > 0
     || (redisRuntimeMemoryPercent.value ?? 0) >= 90
     || (gatewayMetrics.value?.redisRuntime.nonblockingCommandLatencyMaxMs ?? 0) >= 500
   ) {
-    return 'text-red-600 dark:text-red-400'
+    return 'text-[#cb272d] dark:text-[#f76560]'
   }
   if (
     (redisRuntimeMemoryPercent.value ?? 0) >= 80
     || (gatewayMetrics.value?.redisRuntime.nonblockingCommandLatencyMaxMs ?? 0) >= 100
-  ) return 'text-amber-600 dark:text-amber-400'
-  if (runtime?.enabled) return 'text-green-600 dark:text-green-400'
+  ) return 'text-[#d25f00] dark:text-[#ffb357]'
+  if (runtime?.enabled) return 'text-[#009a29] dark:text-[#23c343]'
   if (!redisCategories.value) return ''
-  return redisCategories.value.available ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400'
+  return redisCategories.value.available ? 'text-[#009a29] dark:text-[#23c343]' : 'text-[#d25f00] dark:text-[#ffb357]'
 })
 const redisRuntimeMemoryPercent = computed(() => basisPointsPercent(gatewayMetrics.value?.redisRuntime.memoryUsageBasisPoints))
 const redisRuntimeMemoryText = computed(() => {

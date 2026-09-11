@@ -143,7 +143,7 @@
         <!-- Cookie 失效警告 -->
         <span
           v-if="getProviderCookieExpired(provider.id)"
-          class="ml-1 text-amber-600 dark:text-amber-500"
+          class="ml-1 text-[#d25f00] dark:text-[#ff7d00]"
           :title="getProviderCookieExpired(provider.id)?.message"
         >{{ legacyT('签到 Cookie 已失效') }}</span>
         <!-- 签到状态显示 -->
@@ -223,18 +223,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import {
-  Edit,
-  Eye,
-  Trash2,
-  Power,
-  KeyRound,
-  ExternalLink,
-  Pencil,
-  Check,
-  X,
-  Loader2,
-} from 'lucide-vue-next'
+import { IconEdit as Edit, IconEye as Eye, IconDelete as Trash2, IconPoweroff as Power, IconSafe as KeyRound, IconLaunch as ExternalLink, IconEdit as Pencil, IconCheck as Check, IconClose as X, IconLoading as Loader2 } from '@arco-design/web-vue/es/icon'
 import Button from '@/components/ui/button.vue'
 import Badge from '@/components/ui/badge.vue'
 import { type ProviderWithEndpointsSummary, formatApiFormatShort } from '@/api/endpoints'

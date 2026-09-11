@@ -7,8 +7,8 @@
     <template #header>
       <div class="border-b border-border px-6 py-4">
         <div class="flex items-center gap-3">
-          <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-            <CheckCircle class="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+          <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#aff0b5] dark:bg-[#003d0c]/30">
+            <CheckCircle class="h-5 w-5 text-[#009a29] dark:text-[#23c343]" />
           </div>
           <div class="min-w-0 flex-1">
             <h3 class="text-lg font-semibold leading-tight text-foreground">
@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { CheckCircle } from 'lucide-vue-next'
+import { IconCheckCircle as CheckCircle } from '@arco-design/web-vue/es/icon'
 import { Button, Dialog, Input, Label } from '@/components/ui'
 import { useI18n } from '@/i18n'
 

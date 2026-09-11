@@ -276,7 +276,7 @@
               <Badge
                 v-else-if="record.status === 'cancelled'"
                 variant="outline"
-                class="whitespace-nowrap border-amber-500/50 text-amber-600 dark:text-amber-400 text-[10px] px-1.5 h-4 leading-4 inline-flex items-center flex-shrink-0"
+                class="whitespace-nowrap border-[#ff7d00]/50 text-[#d25f00] dark:text-[#ffb357] text-[10px] px-1.5 h-4 leading-4 inline-flex items-center flex-shrink-0"
               >
                 取消
               </Badge>
@@ -285,7 +285,7 @@
                 variant="outline"
                 data-usage-transport="websocket"
                 :title="getWebSocketTransportTitle(record)"
-                class="whitespace-nowrap border-sky-500/50 text-sky-600 dark:text-sky-400 text-[10px] px-1.5 h-4 leading-4 inline-flex items-center flex-shrink-0"
+                class="whitespace-nowrap border-[#165dff]/50 text-[#0e42d2] dark:text-[#4080ff] text-[10px] px-1.5 h-4 leading-4 inline-flex items-center flex-shrink-0"
               >
                 WS
               </Badge>
@@ -787,14 +787,14 @@
               <Shuffle
                 v-if="record.has_fallback"
                 data-usage-attempt-marker="fallback"
-                class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 flex-shrink-0"
+                class="w-3.5 h-3.5 text-[#d25f00] dark:text-[#ffb357] flex-shrink-0"
                 title="此请求发生了 Provider 故障转移"
                 aria-label="发生 Provider 故障转移"
               />
               <RefreshCcw
                 v-if="record.has_retry"
                 data-usage-attempt-marker="retry"
-                class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0"
+                class="w-3.5 h-3.5 text-[#165dff] dark:text-[#6aa1ff] flex-shrink-0"
                 title="此请求发生了重试"
                 aria-label="发生重试"
               />
@@ -867,7 +867,7 @@
             <Badge
               v-else-if="record.status === 'cancelled'"
               variant="outline"
-              class="whitespace-nowrap border-amber-500/50 text-amber-600 dark:text-amber-400"
+              class="whitespace-nowrap border-[#ff7d00]/50 text-[#d25f00] dark:text-[#ffb357]"
             >
               已取消
             </Badge>
@@ -876,7 +876,7 @@
               variant="outline"
               data-usage-transport="websocket"
               :title="getWebSocketTransportTitle(record)"
-              class="whitespace-nowrap border-sky-500/50 text-sky-600 dark:text-sky-400"
+              class="whitespace-nowrap border-[#165dff]/50 text-[#0e42d2] dark:text-[#4080ff]"
             >
               WS
             </Badge>
@@ -1093,7 +1093,8 @@ import {
   SortableTableHead,
   TableFilterMenu,
 } from '@/components/ui'
-import { EyeOff, RefreshCcw, Search, Shuffle } from 'lucide-vue-next'
+import { IconEyeInvisible as EyeOff, IconRefresh as RefreshCcw, IconSearch as Search } from '@arco-design/web-vue/es/icon'
+import { Shuffle } from 'lucide-vue-next'
 import { formatTokens, formatCurrency } from '@/utils/format'
 import { getCacheCreationTokens, getCacheReadTokens, getEffectiveInputTokens } from '../token-normalization'
 import {
@@ -1681,7 +1682,7 @@ function buildServiceTierBadgePresentation(
   const title = titleLines.join('\n')
   return {
     label: 'Fast',
-    className: '!bg-transparent text-blue-500 dark:text-blue-300',
+    className: '!bg-transparent text-[#4080ff] dark:text-[#94bfff]',
     title,
     ariaLabel: titleLines.join('，'),
   }

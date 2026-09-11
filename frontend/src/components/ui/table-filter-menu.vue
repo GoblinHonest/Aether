@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next'
+import { IconCheck as Check } from '@arco-design/web-vue/es/icon'
 
 export interface TableFilterMenuOption {
   value: string

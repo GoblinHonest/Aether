@@ -429,9 +429,9 @@
                 title="关闭"
                 @click="previewDialogOpen = false"
               >
-                <div class="w-2.5 h-2.5 rounded-full bg-red-400/80 group-hover:bg-red-500" />
-                <div class="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
-                <div class="w-2.5 h-2.5 rounded-full bg-green-400/80" />
+                <div class="w-2.5 h-2.5 rounded-full bg-[#f76560]/80 group-hover:bg-[#f53f3f]" />
+                <div class="w-2.5 h-2.5 rounded-full bg-[#ffb357]/80" />
+                <div class="w-2.5 h-2.5 rounded-full bg-[#23c343]/80" />
               </button>
               <span class="text-sm font-medium text-foreground/80">邮件预览</span>
             </div>

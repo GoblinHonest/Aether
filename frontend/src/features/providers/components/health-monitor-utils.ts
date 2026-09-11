@@ -110,9 +110,9 @@ export function getHealthBadgeVariant(
 }
 
 export function getSuccessRateClass(rate: number) {
-  if (rate >= 0.95) return 'text-green-600 dark:text-green-400'
-  if (rate >= 0.8) return 'text-amber-600 dark:text-amber-400'
-  return 'text-red-600 dark:text-red-400'
+  if (rate >= 0.95) return 'text-[#009a29] dark:text-[#23c343]'
+  if (rate >= 0.8) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#cb272d] dark:text-[#f76560]'
 }
 
 export function getAvailabilityClass(item: HealthMonitorAvailability) {
@@ -237,13 +237,13 @@ export function formatTimestamp(timestamp?: string | null) {
 export function getTimelineColor(status: string) {
   switch (status) {
     case 'healthy':
-      return 'bg-green-500/80 dark:bg-green-400/90'
+      return 'bg-[#00b42a]/80 dark:bg-[#23c343]/90'
     case 'warning':
-      return 'bg-amber-400/80 dark:bg-amber-300/80'
+      return 'bg-[#ffb357]/80 dark:bg-[#ffcf8b]/80'
     case 'unhealthy':
-      return 'bg-red-500/80 dark:bg-red-400/90'
+      return 'bg-[#f53f3f]/80 dark:bg-[#f76560]/90'
     default:
-      return 'bg-gray-300 dark:bg-gray-600'
+      return 'bg-[#a9aeb8] dark:bg-[#4e5969]'
   }
 }
 

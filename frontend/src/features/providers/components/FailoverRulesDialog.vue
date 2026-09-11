@@ -273,7 +273,7 @@ import {
   Switch,
   Textarea,
 } from '@/components/ui'
-import { AlignLeft, Code2, GitBranch, Plus, Trash2 } from 'lucide-vue-next'
+import { IconAlignLeft as AlignLeft, IconCode as Code2, IconBranch as GitBranch, IconPlus as Plus, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
 import { useToast } from '@/composables/useToast'
 import { updateProvider, type ProviderWithEndpointsSummary } from '@/api/endpoints'
 import { parseApiError } from '@/utils/errorParser'

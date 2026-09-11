@@ -675,7 +675,7 @@
                     >
                       <Check
                         v-if="inspectionCopiedStates[inspectionTab]"
-                        class="w-3.5 h-3.5 text-green-500"
+                        class="w-3.5 h-3.5 text-[#00b42a]"
                       />
                       <Copy
                         v-else
@@ -784,7 +784,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Check, Code2, Copy, Loader2, Maximize2, Minimize2, RotateCcw } from 'lucide-vue-next'
+import { IconCheck as Check, IconCode as Code2, IconCopy as Copy, IconLoading as Loader2, IconExpand as Maximize2, IconShrink as Minimize2, IconUndo as RotateCcw } from '@arco-design/web-vue/es/icon'
 import {
   Badge,
   Card,
@@ -1361,9 +1361,9 @@ function statusDisplay(item: { status: string; status_code?: number | null }): s
 
 function attemptRowClass(status: string, selected = false) {
   const statusClass = (() => {
-    if (status === 'success') return 'bg-green-500/5'
-    if (status === 'failed') return 'bg-red-500/5'
-    if (status === 'cancelled') return 'bg-amber-500/5'
+    if (status === 'success') return 'bg-[#00b42a]/5'
+    if (status === 'failed') return 'bg-[#f53f3f]/5'
+    if (status === 'cancelled') return 'bg-[#ff7d00]/5'
     if (status === 'skipped') return 'bg-muted/20'
     return ''
   })()

@@ -251,7 +251,8 @@
 import { ref, computed, watch } from 'vue'
 import { useSmartPagination } from '@/composables/useSmartPagination'
 import { useModelTest } from '@/composables/useModelTest'
-import { Box, Edit, Layers, Power, Copy, Loader2, Play } from 'lucide-vue-next'
+import { IconEdit as Edit, IconLayers as Layers, IconPoweroff as Power, IconCopy as Copy, IconLoading as Loader2, IconPlayArrow as Play } from '@arco-design/web-vue/es/icon'
+import { Box } from 'lucide-vue-next'
 import Card from '@/components/ui/card.vue'
 import Button from '@/components/ui/button.vue'
 import { useToast } from '@/composables/useToast'
@@ -488,14 +489,14 @@ function getVideoPricingTooltip(model: Model): string {
 function getStatusIndicatorClass(model: Model): string {
   if (!model.is_active) {
     // 停用 - 灰色
-    return 'bg-gray-400 dark:bg-gray-600'
+    return 'bg-[#86909c] dark:bg-[#4e5969]'
   }
   if (model.is_available) {
     // 活跃且可用 - 绿色
-    return 'bg-green-500 dark:bg-green-400'
+    return 'bg-[#00b42a] dark:bg-[#23c343]'
   }
   // 活跃但不可用 - 红色
-  return 'bg-red-500 dark:bg-red-400'
+  return 'bg-[#f53f3f] dark:bg-[#f76560]'
 }
 
 // 获取状态提示文本

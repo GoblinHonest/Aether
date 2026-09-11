@@ -102,7 +102,7 @@
 
 <script setup lang="ts">
 import { computed, provide, useSlots, type Component } from 'vue'
-import { X } from 'lucide-vue-next'
+import { IconClose as X } from '@arco-design/web-vue/es/icon'
 import { useEscapeKey } from '@/composables/useEscapeKey'
 import { DIALOG_CONTEXT_KEY } from './context'
 

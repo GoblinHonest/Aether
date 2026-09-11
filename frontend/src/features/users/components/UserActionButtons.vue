@@ -74,7 +74,7 @@
     <Button
       :variant="mobile ? 'outline' : 'ghost'"
       :size="mobile ? 'sm' : 'icon'"
-      :class="mobile ? 'col-span-2 h-8 border-rose-200 text-xs text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:hover:bg-rose-950/40' : 'h-8 w-8'"
+      :class="mobile ? 'col-span-2 h-8 border-[#fbaca3] text-xs text-[#cb272d] hover:bg-[#ffece8] dark:border-[#4a000a]/60 dark:hover:bg-[#4a000a]/40' : 'h-8 w-8'"
       :title="legacyT('删除用户')"
       @click="$emit('delete')"
     >
@@ -86,16 +86,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import {
-  DollarSign,
-  Key,
-  MonitorSmartphone,
-  PackageCheck,
-  PauseCircle,
-  PlayCircle,
-  SquarePen,
-  Trash2,
-} from 'lucide-vue-next'
+import { IconSafe as Key, IconPauseCircle as PauseCircle, IconPlayCircle as PlayCircle, IconEdit as SquarePen, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
+import { DollarSign, MonitorSmartphone, PackageCheck } from 'lucide-vue-next'
 import Button from '@/components/ui/button.vue'
 import { useI18n } from '@/i18n'
 

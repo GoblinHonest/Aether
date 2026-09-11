@@ -16,7 +16,7 @@
         variant="ghost"
         size="icon"
         class="h-10 w-10"
-        :class="isDefault ? 'text-emerald-500 hover:text-emerald-500' : ''"
+        :class="isDefault ? 'text-[#00b42a] hover:text-[#00b42a]' : ''"
         :disabled="saving || isDefault"
         :title="legacyT(isDefault ? '默认注册组' : '设为默认注册组')"
         @click="$emit('setDefault')"
@@ -38,7 +38,8 @@
 </template>
 
 <script setup lang="ts">
-import { BadgeCheck, Trash2 } from 'lucide-vue-next'
+import { IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
+import { BadgeCheck } from 'lucide-vue-next'
 import { Button } from '@/components/ui'
 import { useI18n } from '@/i18n'
 

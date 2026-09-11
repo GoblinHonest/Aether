@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { CheckCircle2, XCircle, AlertTriangle, Info, X } from 'lucide-vue-next'
+import { IconCheckCircle as CheckCircle2, IconCloseCircle as XCircle, IconExclamationCircle as AlertTriangle, IconInfo as Info, IconClose as X } from '@arco-design/web-vue/es/icon'
 
 interface Toast {
   id: string

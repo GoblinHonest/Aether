@@ -120,7 +120,7 @@
                   <input
                     v-model="form.auto_delete_on_expiry"
                     type="checkbox"
-                    class="h-3.5 w-3.5 rounded border-gray-300 cursor-pointer"
+                    class="h-3.5 w-3.5 rounded border-[#a9aeb8] cursor-pointer"
                     :disabled="!form.expires_at"
                   >
                   到期删除
@@ -359,7 +359,7 @@ import {
   Label,
   Switch,
 } from '@/components/ui'
-import { ChevronDown, Plus, SquarePen, X } from 'lucide-vue-next'
+import { IconDown as ChevronDown, IconPlus as Plus, IconEdit as SquarePen, IconClose as X } from '@arco-design/web-vue/es/icon'
 import { useFormDialog } from '@/composables/useFormDialog'
 import { MultiSelect } from '@/components/common'
 import { getProvidersSummary } from '@/api/endpoints/providers'

@@ -1,11 +1,12 @@
-import { Mail, Shield, AlertTriangle, BellRing } from 'lucide-vue-next'
-import type { LucideIcon } from 'lucide-vue-next'
+import { IconEmail as Mail, IconSafe as Shield, IconExclamationCircle as AlertTriangle } from '@arco-design/web-vue/es/icon'
+import { BellRing } from 'lucide-vue-next'
+import type { Component } from 'vue'
 
 export interface BuiltinTool {
   name: string
   description: string
   href: string
-  icon: LucideIcon
+  icon: Component
 }
 
 export const BUILTIN_TOOLS: BuiltinTool[] = [

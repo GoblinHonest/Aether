@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="result"
-    class="rounded-xl border bg-muted/20 px-3 py-2 text-xs text-muted-foreground"
+    class="rounded border bg-muted/20 px-3 py-2 text-xs text-muted-foreground"
   >
     {{ label }}
     <span v-if="failuresLabel">

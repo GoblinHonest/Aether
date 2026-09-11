@@ -270,7 +270,8 @@
 </template>
 
 <script setup lang="ts">
-import { Activity, ChevronDown, ChevronRight, History, Loader2, Settings, SquarePen, Trash2 } from 'lucide-vue-next'
+import { IconDown as ChevronDown, IconRight as ChevronRight, IconHistory as History, IconLoading as Loader2, IconSettings as Settings, IconEdit as SquarePen, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
+import { Activity } from 'lucide-vue-next'
 import { Badge, Button, Pagination, SortableTableHead, Table, TableBody, TableCell, TableFilterMenu, TableHead, TableHeader, TableRow } from '@/components/ui'
 import type { ProxyNode } from '@/api/proxy-nodes'
 import { useI18n } from '@/i18n'

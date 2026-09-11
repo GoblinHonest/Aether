@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Settings } from 'lucide-vue-next'
+import { IconSettings as Settings } from '@arco-design/web-vue/es/icon'
 </script>
 
 <template>

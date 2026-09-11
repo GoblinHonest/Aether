@@ -103,7 +103,7 @@
 
               <div
                 v-if="replacementNotice(plan)"
-                class="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-5 text-amber-200"
+                class="mt-4 rounded-lg border border-[#ff7d00]/30 bg-[#ff7d00]/10 px-3 py-2 text-xs leading-5 text-[#ffe4ba]"
               >
                 {{ replacementNotice(plan) }}
               </div>

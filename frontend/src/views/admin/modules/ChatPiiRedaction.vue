@@ -46,7 +46,7 @@
               当前支持 OpenAI Chat Completions、OpenAI Responses、Claude Messages；同格式转发和已支持的跨格式转换都会在发送给供应商前替换占位符。
             </p>
           </div>
-          <div class="flex items-center gap-3 rounded-xl border border-border bg-muted/40 px-4 py-3">
+          <div class="flex items-center gap-3 rounded border border-border bg-muted/40 px-4 py-3">
             <div class="text-right">
               <p class="text-sm font-medium text-foreground">
                 启用敏感信息保护
@@ -79,7 +79,7 @@
             </Button>
           </div>
 
-          <div class="overflow-x-auto rounded-xl border border-border">
+          <div class="overflow-x-auto rounded border border-border">
             <table class="min-w-[920px] w-full text-sm">
               <thead class="bg-muted/50 text-left text-xs font-medium text-muted-foreground">
                 <tr>
@@ -176,7 +176,7 @@
               仅支持字母、数字、下划线，保存后统一转为大写。
             </p>
           </div>
-          <div class="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm">
+          <div class="rounded border border-border bg-muted/40 px-4 py-3 text-sm">
             <span class="text-muted-foreground">示例：</span>
             <code class="ml-2 rounded bg-background px-2 py-1 font-mono text-xs text-foreground">
               &lt;{{ redactionConfig.placeholder_prefix || 'AETHER' }}:EMAIL:ABCDEFGHIJKLMNOPQRST&gt;
@@ -194,7 +194,7 @@
             v-for="option in ttlOptions"
             :key="option.value"
             type="button"
-            class="rounded-xl border p-4 text-left transition-all duration-200"
+            class="rounded border p-4 text-left transition-all duration-200"
             :class="redactionConfig.cache_ttl_seconds === option.value
               ? 'border-primary bg-primary/10 text-primary'
               : 'border-border bg-card/70 text-muted-foreground hover:border-primary/50 hover:text-foreground'"
@@ -213,7 +213,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { Plus, RefreshCw, RotateCcw, ShieldCheck, Trash2 } from 'lucide-vue-next'
+import { IconPlus as Plus, IconRefresh as RefreshCw, IconUndo as RotateCcw, IconSafe as ShieldCheck, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
 import { PageContainer, PageHeader, CardSection } from '@/components/layout'
 import Button from '@/components/ui/button.vue'
 import Input from '@/components/ui/input.vue'

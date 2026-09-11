@@ -79,7 +79,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { User, Bot, ChevronRight, ChevronDown } from 'lucide-vue-next'
+import { IconUser as User, IconRight as ChevronRight, IconDown as ChevronDown } from '@arco-design/web-vue/es/icon'
+import { Bot } from 'lucide-vue-next'
 import BlockRenderer from './BlockRenderer.vue'
 import TurnBadges from './TurnBadges.vue'
 import type { ConversationTurn } from '../../conversation/types'

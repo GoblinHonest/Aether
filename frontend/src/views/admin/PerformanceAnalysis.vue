@@ -60,7 +60,7 @@
 
         <div
           v-else-if="!liveReady"
-          class="rounded-xl border border-dashed border-border/70 bg-muted/15 px-4 py-6 text-sm text-muted-foreground"
+          class="rounded border border-dashed border-border/70 bg-muted/15 px-4 py-6 text-sm text-muted-foreground"
         >
           实时性能数据暂不可用，请稍后重试。
         </div>
@@ -71,7 +71,7 @@
         >
           <div
             v-if="liveLoadError"
-            class="rounded-lg border border-yellow-300/70 bg-yellow-50/80 px-3 py-2 text-xs text-yellow-900 dark:border-yellow-900/60 dark:bg-yellow-950/30 dark:text-yellow-100"
+            class="rounded-lg border border-[#ffcf8b]/70 bg-[#fff7e8]/80 px-3 py-2 text-xs text-[#4a2000] dark:border-[#4a2000]/60 dark:bg-[#4a2000]/30 dark:text-[#ffefcf]"
           >
             {{ liveLoadError }}
           </div>
@@ -80,7 +80,7 @@
             <div
               v-for="card in liveSummaryCards"
               :key="card.title"
-              class="rounded-xl border border-border/70 bg-card/70 px-4 py-3"
+              class="rounded border border-border/70 bg-card/70 px-4 py-3"
             >
               <div class="flex items-center justify-between gap-3">
                 <span class="text-xs text-muted-foreground">{{ card.title }}</span>
@@ -101,7 +101,7 @@
 
           <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:col-span-2">
-              <section class="rounded-xl border border-border/70 bg-card/60 p-4 lg:col-span-2">
+              <section class="rounded border border-border/70 bg-card/60 p-4 lg:col-span-2">
                 <div class="flex items-center justify-between gap-3">
                   <h3 class="text-sm font-semibold">
                     并发保护
@@ -204,13 +204,13 @@
                 </div>
                 <p
                   v-if="gatewayMetrics?.distributed.unavailable"
-                  class="mt-3 text-xs text-yellow-700 dark:text-yellow-300"
+                  class="mt-3 text-xs text-[#a64b00] dark:text-[#ffcf8b]"
                 >
                   全局并发保护暂不可用，请检查 Redis 连接。
                 </p>
               </section>
 
-              <section class="rounded-xl border border-border/70 bg-card/60 p-4">
+              <section class="rounded border border-border/70 bg-card/60 p-4">
                 <div class="flex items-center justify-between gap-3">
                   <h3 class="text-sm font-semibold">
                     代理通道
@@ -255,7 +255,7 @@
                 </div>
               </section>
 
-              <section class="rounded-xl border border-border/70 bg-card/60 p-4">
+              <section class="rounded border border-border/70 bg-card/60 p-4">
                 <div class="flex items-center justify-between gap-3">
                   <h3 class="text-sm font-semibold">
                     代理通道压力
@@ -301,7 +301,7 @@
               </section>
             </div>
 
-            <section class="rounded-xl border border-border/70 bg-card/60 p-4">
+            <section class="rounded border border-border/70 bg-card/60 p-4">
               <div class="flex items-center justify-between gap-3">
                 <h3 class="text-sm font-semibold">
                   降级切换统计
@@ -343,7 +343,7 @@
           </div>
 
           <div class="grid grid-cols-1 items-stretch gap-4 xl:grid-cols-2">
-            <section class="flex h-full flex-col rounded-xl border border-border/70 bg-card/60 p-4">
+            <section class="flex h-full flex-col rounded border border-border/70 bg-card/60 p-4">
               <div class="flex items-center justify-between gap-3">
                 <h3 class="text-sm font-semibold">
                   最近错误
@@ -423,7 +423,7 @@
               </div>
             </section>
 
-            <section class="flex h-full flex-col rounded-xl border border-border/70 bg-card/60 p-4">
+            <section class="flex h-full flex-col rounded border border-border/70 bg-card/60 p-4">
               <div class="flex items-center justify-between gap-3">
                 <h3 class="text-sm font-semibold">
                   熔断历史与建议
@@ -611,7 +611,7 @@
           <div
             v-for="card in providerPerformanceSummaryCards"
             :key="card.title"
-            class="rounded-xl border border-border/70 bg-card/70 px-4 py-3"
+            class="rounded border border-border/70 bg-card/70 px-4 py-3"
           >
             <div class="flex items-center justify-between gap-3">
               <span class="text-xs text-muted-foreground">{{ card.title }}</span>
@@ -828,21 +828,8 @@
 <script setup lang="ts">
 import { useI18n } from '@/i18n'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import {
-  Activity,
-  AlertTriangle,
-  Cable,
-  CheckCircle2,
-  ChevronDown,
-  ChevronUp,
-  FilterX,
-  GitBranch,
-  Gauge,
-  ShieldCheck,
-  Timer,
-  Workflow,
-  Zap,
-} from 'lucide-vue-next'
+import { IconExclamationCircle as AlertTriangle, IconCheckCircle as CheckCircle2, IconDown as ChevronDown, IconUp as ChevronUp, IconBranch as GitBranch, IconDashboard as Gauge, IconSafe as ShieldCheck, IconThunderbolt as Zap } from '@arco-design/web-vue/es/icon'
+import { Activity, Cable, FilterX, Timer, Workflow } from 'lucide-vue-next'
 import {
   adminApi,
   type ErrorDistributionResponse,
@@ -1362,56 +1349,56 @@ const providerPerformanceSummaryCards = computed(() => {
       value: formatMetricNumber(summary?.request_count),
       hint: `${formatMetricNumber(providerPerformanceRows.value.length)} 个上游服务`,
       icon: Activity,
-      iconClass: 'text-blue-500',
+      iconClass: 'text-[#4080ff]',
     },
     {
       title: '成功率',
       value: formatProviderPerformanceMetric(summary?.success_rate, '%'),
       hint: `错误率 ${formatErrorRate(summary?.success_rate)}`,
       icon: CheckCircle2,
-      iconClass: 'text-emerald-500',
+      iconClass: 'text-[#00b42a]',
     },
     {
       title: 'P99 响应',
       value: formatProviderPerformanceMetric(summary?.p99_response_time_ms, 'ms', 0),
       hint: `P90 ${formatProviderPerformanceMetric(summary?.p90_response_time_ms, 'ms', 0)}`,
       icon: Gauge,
-      iconClass: 'text-violet-500',
+      iconClass: 'text-[#722ed1]',
     },
     {
       title: 'P99 首字',
       value: formatProviderPerformanceMetric(summary?.p99_first_byte_time_ms, 'ms', 0),
       hint: `P90 ${formatProviderPerformanceMetric(summary?.p90_first_byte_time_ms, 'ms', 0)}`,
       icon: Timer,
-      iconClass: 'text-sky-500',
+      iconClass: 'text-[#165dff]',
     },
     {
       title: '输出 TPS',
       value: formatProviderPerformanceMetric(summary?.avg_output_tps, ' tps'),
       hint: `TPS 样本 ${formatMetricNumber(summary?.tps_sample_count)}`,
       icon: Zap,
-      iconClass: 'text-amber-500',
+      iconClass: 'text-[#ff7d00]',
     },
     {
       title: '平均首字',
       value: formatProviderPerformanceMetric(summary?.avg_first_byte_time_ms, 'ms'),
       hint: `首字样本 ${formatMetricNumber(summary?.first_byte_sample_count)}`,
       icon: Timer,
-      iconClass: 'text-sky-500',
+      iconClass: 'text-[#165dff]',
     },
     {
       title: '平均响应',
       value: formatProviderPerformanceMetric(summary?.avg_response_time_ms, 'ms'),
       hint: `响应样本 ${formatMetricNumber(summary?.response_time_sample_count)}`,
       icon: Gauge,
-      iconClass: 'text-violet-500',
+      iconClass: 'text-[#722ed1]',
     },
     {
       title: '慢请求',
       value: formatMetricNumber(summary?.slow_request_count),
       hint: `响应耗时 >= ${providerPerformanceSlowThresholdLabel.value}`,
       icon: AlertTriangle,
-      iconClass: 'text-yellow-500',
+      iconClass: 'text-[#ff7d00]',
     },
   ]
 })
@@ -1458,28 +1445,28 @@ const liveSummaryCards = computed(() => [
     value: resilienceStatus.value ? `${resilienceStatus.value.health_score}/100` : '-',
     hint: `${healthStatusText.value} · 熔断打开 ${formatMetricNumber(resilienceStatus.value?.error_statistics.open_circuit_breakers)}`,
     icon: ShieldCheck,
-    iconClass: 'text-emerald-500',
+    iconClass: 'text-[#00b42a]',
   },
   {
     title: '最近 1 小时错误',
     value: formatMetricNumber(systemStatus.value?.recent_errors),
     hint: `24h 总错误 ${formatMetricNumber(resilienceStatus.value?.error_statistics.total_errors)}`,
     icon: AlertTriangle,
-    iconClass: 'text-yellow-500',
+    iconClass: 'text-[#ff7d00]',
   },
   {
     title: '代理活跃流',
     value: formatMetricNumber(currentActiveStreams.value),
     hint: `代理连接 ${formatMetricNumber(currentProxyConnections.value)}`,
     icon: Cable,
-    iconClass: 'text-sky-500',
+    iconClass: 'text-[#165dff]',
   },
   {
     title: '当前节点处理中',
     value: formatMetricNumber(gatewayMetrics.value?.local.inFlight),
     hint: `可接入 ${formatMetricNumber(gatewayMetrics.value?.local.availablePermits)}`,
     icon: Activity,
-    iconClass: 'text-blue-500',
+    iconClass: 'text-[#4080ff]',
   },
   {
     title: '全局处理中',
@@ -1490,14 +1477,14 @@ const liveSummaryCards = computed(() => [
       ? '检查 Redis 连接'
       : `可接入 ${formatMetricNumber(gatewayMetrics.value?.distributed.availablePermits)}`,
     icon: Workflow,
-    iconClass: 'text-violet-500',
+    iconClass: 'text-[#722ed1]',
   },
   {
     title: '降级切换',
     value: formatMetricNumber(gatewayMetrics.value?.fallbackTotal),
     hint: '当前进程累计',
     icon: GitBranch,
-    iconClass: 'text-rose-500',
+    iconClass: 'text-[#f53f3f]',
   },
 ])
 

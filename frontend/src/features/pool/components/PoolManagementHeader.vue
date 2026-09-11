@@ -44,7 +44,7 @@
               <span class="text-muted-foreground ml-1">({{ item.total_keys }})</span>
               <span
                 v-if="!item.pool_enabled"
-                class="ml-1 text-[10px] text-amber-600"
+                class="ml-1 text-[10px] text-[#d25f00]"
               >{{ legacyT('未启用') }}</span>
             </SelectItem>
           </SelectContent>
@@ -199,7 +199,7 @@
               <span class="text-muted-foreground ml-1">({{ item.total_keys }})</span>
               <span
                 v-if="!item.pool_enabled"
-                class="ml-1 text-[10px] text-amber-600"
+                class="ml-1 text-[10px] text-[#d25f00]"
               >{{ legacyT('未启用') }}</span>
             </SelectItem>
           </SelectContent>
@@ -324,17 +324,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import {
-  Activity,
-  ChevronDown,
-  Eye,
-  ListChecks,
-  Search,
-  Settings2,
-  SlidersHorizontal,
-  SquareCheckBig,
-  Upload,
-} from 'lucide-vue-next'
+import { IconDown as ChevronDown, IconEye as Eye, IconList as ListChecks, IconSearch as Search, IconSettings as Settings2, IconSettings as SlidersHorizontal, IconUpload as Upload } from '@arco-design/web-vue/es/icon'
+import { Activity, SquareCheckBig } from 'lucide-vue-next'
 import {
   Button,
   DropdownMenu,

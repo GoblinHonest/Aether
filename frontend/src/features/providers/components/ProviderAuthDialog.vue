@@ -325,7 +325,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
-import { KeyRound } from 'lucide-vue-next'
+import { IconSafe as KeyRound } from '@arco-design/web-vue/es/icon'
 import {
   Dialog,
   Button,

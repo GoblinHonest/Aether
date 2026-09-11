@@ -52,7 +52,7 @@
                   <Badge
                     v-if="apiKey.is_standalone"
                     variant="default"
-                    class="bg-purple-500 text-xs"
+                    class="bg-[#722ed1] text-xs"
                   >
                     {{ legacyT('独立余额') }}
                   </Badge>
@@ -91,7 +91,7 @@
                 <div class="text-muted-foreground">
                   {{ (apiKey.total_requests || 0).toLocaleString() }} {{ legacyT('次') }}
                 </div>
-                <div class="font-semibold text-rose-600">
+                <div class="font-semibold text-[#cb272d]">
                   ${{ (apiKey.total_cost_usd || 0).toFixed(4) }}
                 </div>
               </div>
@@ -173,7 +173,8 @@
 </template>
 
 <script setup lang="ts">
-import { Copy, Key, Lock, LockOpen, SquarePen, Trash2 } from 'lucide-vue-next'
+import { IconCopy as Copy, IconSafe as Key, IconLock as Lock, IconEdit as SquarePen, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
+import { LockOpen } from 'lucide-vue-next'
 import { Badge, Button, Dialog } from '@/components/ui'
 import { useI18n } from '@/i18n'
 import type { ApiKey } from '@/api/users'

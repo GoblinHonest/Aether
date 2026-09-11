@@ -38,7 +38,7 @@
         <div
           v-for="(monitor, index) in visibleMonitors"
           :key="`${monitor.api_format}-${index}`"
-          class="relative overflow-hidden rounded-xl border border-border/60 bg-card/60 p-4 transition-colors hover:border-primary/50"
+          class="relative overflow-hidden rounded border border-border/60 bg-card/60 p-4 transition-colors hover:border-primary/50"
         >
           <div
             class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
@@ -46,7 +46,7 @@
           <div class="flex items-start justify-between gap-3">
             <div class="flex min-w-0 items-center gap-3">
               <div
-                class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50"
+                class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded border border-border/60 bg-muted/50"
               >
                 <Activity class="h-5 w-5 text-muted-foreground" />
               </div>
@@ -106,7 +106,8 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from 'vue'
-import { Activity, Loader2 } from 'lucide-vue-next'
+import { IconLoading as Loader2 } from '@arco-design/web-vue/es/icon'
+import { Activity } from 'lucide-vue-next'
 import Card from '@/components/ui/card.vue'
 import Badge from '@/components/ui/badge.vue'
 import Button from '@/components/ui/button.vue'

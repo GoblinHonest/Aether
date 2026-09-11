@@ -26,7 +26,7 @@ import { panelClasses } from './guide-config'
         :class="[panelClasses.card]"
         class="p-6 scroll-mt-24 lg:scroll-mt-20 flex flex-col"
       >
-        <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
+        <div class="w-12 h-12 rounded bg-[#722ed1]/10 text-[#551db0] dark:text-[#914dd9] flex items-center justify-center mb-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -59,7 +59,7 @@ import { panelClasses } from './guide-config'
         :class="[panelClasses.card]"
         class="p-6 scroll-mt-24 lg:scroll-mt-20 flex flex-col"
       >
-        <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
+        <div class="w-12 h-12 rounded bg-[#4080ff]/10 text-[#165dff] dark:text-[#6aa1ff] flex items-center justify-center mb-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -93,7 +93,7 @@ import { panelClasses } from './guide-config'
         :class="[panelClasses.card]"
         class="p-6 scroll-mt-24 lg:scroll-mt-20 flex flex-col"
       >
-        <div class="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-4">
+        <div class="w-12 h-12 rounded bg-[#ff7d00]/10 text-[#d25f00] dark:text-[#ffb357] flex items-center justify-center mb-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -125,7 +125,7 @@ import { panelClasses } from './guide-config'
         :class="[panelClasses.card]"
         class="p-6 scroll-mt-24 lg:scroll-mt-20 flex flex-col"
       >
-        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
+        <div class="w-12 h-12 rounded bg-[#00b42a]/10 text-[#009a29] dark:text-[#23c343] flex items-center justify-center mb-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

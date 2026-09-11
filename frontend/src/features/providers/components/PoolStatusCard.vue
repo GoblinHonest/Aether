@@ -113,7 +113,7 @@
               v-if="key.cooldown_reason"
               variant="ghost"
               size="icon"
-              class="h-7 w-7 text-muted-foreground hover:text-green-600"
+              class="h-7 w-7 text-muted-foreground hover:text-[#009a29]"
               title="清除冷却"
               :disabled="actionLoading === key.key_id"
               @click="handleClearCooldown(key.key_id)"
@@ -200,7 +200,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { RefreshCw, RotateCcw } from 'lucide-vue-next'
+import { IconRefresh as RefreshCw, IconUndo as RotateCcw } from '@arco-design/web-vue/es/icon'
 
 import { getPoolStatus, clearPoolCooldown, resetPoolCost } from '@/api/endpoints/pool'
 import type { PoolStatusResponse } from '@/api/endpoints/pool'
@@ -295,9 +295,9 @@ function formatEmaHeat(value: number): string {
 
 function getCostBarColor(usage: number, limit: number): string {
   const ratio = usage / limit
-  if (ratio >= 0.9) return 'bg-red-500'
-  if (ratio >= 0.7) return 'bg-yellow-500'
-  return 'bg-green-500'
+  if (ratio >= 0.9) return 'bg-[#f53f3f]'
+  if (ratio >= 0.7) return 'bg-[#ff7d00]'
+  return 'bg-[#00b42a]'
 }
 
 function formatLruScore(score: number): string {

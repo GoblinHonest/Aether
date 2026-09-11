@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui'
-import { RefreshCcw } from 'lucide-vue-next'
+import { IconRefresh as RefreshCcw } from '@arco-design/web-vue/es/icon'
 
 interface Props {
   loading?: boolean

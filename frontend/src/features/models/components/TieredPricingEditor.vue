@@ -571,7 +571,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, reactive } from 'vue'
-import { Plus, Repeat2, Trash2, X } from 'lucide-vue-next'
+import { IconPlus as Plus, IconRefresh as Repeat2, IconDelete as Trash2, IconClose as X } from '@arco-design/web-vue/es/icon'
 import { Button, Checkbox, Input, Label } from '@/components/ui'
 import { formatTokens } from '@/utils/format'
 import type {

@@ -21,11 +21,11 @@
         <template #default="{ chunk, index }">
           <div
             v-if="chunk.parseError && index === 0"
-            class="p-3 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800"
+            class="p-3 bg-[#fff7e8] dark:bg-[#4a2000]/20 border-b border-[#ffe4ba] dark:border-[#783400]"
           >
             <div class="flex items-start gap-2">
-              <span class="text-amber-600 dark:text-amber-400 text-sm font-medium">Warning: 响应解析失败</span>
-              <span class="text-xs text-amber-700 dark:text-amber-300">{{ chunk.parseError }}</span>
+              <span class="text-[#d25f00] dark:text-[#ffb357] text-sm font-medium">Warning: 响应解析失败</span>
+              <span class="text-xs text-[#a64b00] dark:text-[#ffcf8b]">{{ chunk.parseError }}</span>
             </div>
           </div>
           <div
@@ -97,7 +97,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { ChevronRight, ChevronDown } from 'lucide-vue-next'
+import { IconRight as ChevronRight, IconDown as ChevronDown } from '@arco-design/web-vue/es/icon'
 import Card from '@/components/ui/card.vue'
 import VirtualBodyContent from './VirtualBodyContent.vue'
 import { getRawTextChunk, JsonPageReader, JSON_SCROLL_CHUNK_SIZE, JSON_TEXT_CHUNK_SIZE, type JsonDisplayLine } from '../../utils/json-viewer'

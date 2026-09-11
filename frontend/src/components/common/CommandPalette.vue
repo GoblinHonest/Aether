@@ -34,7 +34,7 @@
               @keydown.up.prevent="move(-1)"
               @keydown.enter.prevent="run(filtered[active])"
               @keydown.esc.prevent="close"
-            />
+            >
             <kbd class="hidden shrink-0 rounded-sm border border-[#e5e6eb] bg-[#f2f3f5] px-1.5 py-0.5 text-[10px] text-[#86909c] sm:block dark:border-[#484849] dark:bg-[#2a2a2b]">ESC</kbd>
           </div>
 
@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
-import { Search } from 'lucide-vue-next'
+import { IconSearch as Search } from '@arco-design/web-vue/es/icon'
 import type { Component } from 'vue'
 import { useI18n } from '@/i18n'
 

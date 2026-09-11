@@ -8,12 +8,12 @@
       <div class="flex flex-col items-center text-center">
         <div class="mb-4">
           <img
-            :src="'/IMG_20260619_184826.png'"
+            src="/IMG_20260619_184826.png"
             alt="Logo"
             class="h-12 w-auto"
           >
         </div>
-        <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">
+        <h2 class="text-2xl font-semibold text-[#1d2129] dark:text-white">
           {{ registerUi.title }}
         </h2>
         <p class="mt-1 text-sm text-muted-foreground">
@@ -272,7 +272,7 @@
       <Button
         type="button"
         variant="outline"
-        class="w-full sm:w-auto border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary/50 hover:bg-primary/5 dark:hover:text-primary dark:hover:border-primary/50 dark:hover:bg-primary/10"
+        class="w-full sm:w-auto border-[#e5e6eb] dark:border-[#4e5969] text-[#6b7785] dark:text-[#86909c] hover:text-primary hover:border-primary/50 hover:bg-primary/5 dark:hover:text-primary dark:hover:border-primary/50 dark:hover:bg-primary/10"
         :disabled="isLoading"
         @click="handleCancel"
       >

@@ -31,7 +31,7 @@
         >
           <Check
             v-if="panelCopied"
-            class="w-3.5 h-3.5 text-green-500"
+            class="w-3.5 h-3.5 text-[#00b42a]"
           />
           <Copy
             v-else
@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Check, Copy, Maximize2, Minimize2 } from 'lucide-vue-next'
+import { IconCheck as Check, IconCopy as Copy, IconExpand as Maximize2, IconShrink as Minimize2 } from '@arco-design/web-vue/es/icon'
 import { useClipboard } from '@/composables/useClipboard'
 import JsonContent from './RequestDetailDrawer/JsonContent.vue'
 

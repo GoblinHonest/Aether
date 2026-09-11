@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Check, Languages } from 'lucide-vue-next'
+import { IconCheck as Check, IconLanguage as Languages } from '@arco-design/web-vue/es/icon'
 import {
   DropdownMenu,
   DropdownMenuContent,

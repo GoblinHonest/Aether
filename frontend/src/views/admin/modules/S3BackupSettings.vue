@@ -424,14 +424,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
-import {
-  ChevronDown,
-  ChevronRight,
-  CloudUpload,
-  KeyRound,
-  Play,
-  Save,
-} from 'lucide-vue-next'
+import { IconDown as ChevronDown, IconRight as ChevronRight, IconUpload as CloudUpload, IconSafe as KeyRound, IconPlayArrow as Play, IconSave as Save } from '@arco-design/web-vue/es/icon'
 import Button from '@/components/ui/button.vue'
 import Input from '@/components/ui/input.vue'
 import Label from '@/components/ui/label.vue'

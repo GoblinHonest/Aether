@@ -45,7 +45,7 @@
           :variant="page === current ? 'default' : 'outline'"
           size="sm"
           class="h-9 min-w-[36px] px-2"
-:class="page === current ? '' : ''"
+          :class="page === current ? '' : ''"
           :aria-label="t('pagination.pageNumber', { page: formatNumber(page) })"
           :aria-current="page === current ? 'page' : undefined"
           @click="handlePageChange(page)"

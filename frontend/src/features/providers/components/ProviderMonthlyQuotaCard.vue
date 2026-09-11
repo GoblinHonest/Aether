@@ -67,8 +67,8 @@ const usedPercent = computed(() => quota.value > 0 ? (used.value / quota.value) 
 const cappedUsedPercent = computed(() => Math.min(Math.max(usedPercent.value, 0), 100))
 const barClass = computed(() => {
   const ratio = quota.value > 0 ? used.value / quota.value : 0
-  if (ratio >= 0.9) return 'bg-red-500'
-  if (ratio >= 0.7) return 'bg-yellow-500'
-  return 'bg-green-500'
+  if (ratio >= 0.9) return 'bg-[#f53f3f]'
+  if (ratio >= 0.7) return 'bg-[#ff7d00]'
+  return 'bg-[#00b42a]'
 })
 </script>

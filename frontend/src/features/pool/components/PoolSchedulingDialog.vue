@@ -23,7 +23,7 @@
             v-for="{ index, item } in distributionItems"
             :key="item.preset"
             type="button"
-            class="min-h-11 rounded-xl border px-3 py-2.5 text-sm font-medium leading-tight transition-all duration-200"
+            class="min-h-11 rounded border px-3 py-2.5 text-sm font-medium leading-tight transition-all duration-200"
             :disabled="!item.applicable"
             :class="[
               activeDistributionPreset === item.preset
@@ -40,7 +40,7 @@
 
         <div
           v-if="activeDistributionLabel || activeDistributionDesc"
-          class="rounded-xl border border-primary/15 bg-primary/5 px-3 py-2.5"
+          class="rounded border border-primary/15 bg-primary/5 px-3 py-2.5"
         >
           <p
             v-if="activeDistributionDesc"
@@ -95,7 +95,7 @@
           <div
             v-for="{ index, item } in strategyItems"
             :key="item.preset"
-            class="group rounded-xl border px-3 py-2.5 transition-all duration-200"
+            class="group rounded border px-3 py-2.5 transition-all duration-200"
             :class="[
               !item.applicable
                 ? 'border-border/40 bg-muted/20 opacity-80'
@@ -235,7 +235,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { GripVertical } from 'lucide-vue-next'
+import { IconDragDotVertical as GripVertical } from '@arco-design/web-vue/es/icon'
 import { Dialog, Button, Switch } from '@/components/ui'
 import { useToast } from '@/composables/useToast'
 import { parseApiError } from '@/utils/errorParser'

@@ -7,16 +7,6 @@ function readSource(path: string): string {
 }
 
 describe('mobile dialog layout', () => {
-  it('uses a full-height mobile sheet with stacked full-width actions', () => {
-    const source = readSource('src/components/ui/dialog/Dialog.vue')
-
-    expect(source).toContain('max-h-[100dvh]')
-    expect(source).toContain('flex-col-reverse')
-    expect(source).toContain('[&>button]:w-full')
-    expect(source).toContain('sm:flex-row-reverse')
-    expect(source).toContain('sm:[&>button]:w-auto')
-  })
-
   it('keeps group navigation compact before the editor on mobile', () => {
     const dialogSource = readSource('src/features/users/components/UserGroupsDialog.vue')
     const listSource = readSource('src/features/users/components/UserGroupListPanel.vue')

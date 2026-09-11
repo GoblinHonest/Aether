@@ -222,7 +222,8 @@
 <script setup lang="ts">
 import { ref, watch, onUnmounted, computed } from 'vue'
 import { Card, Button, Input, Badge } from '@/components/ui'
-import { Plus, Trash2, GitMerge, RefreshCw, ChevronRight, Save, AlertCircle, Link } from 'lucide-vue-next'
+import { IconPlus as Plus, IconDelete as Trash2, IconRefresh as RefreshCw, IconRight as ChevronRight, IconSave as Save, IconExclamationCircle as AlertCircle, IconLink as Link } from '@arco-design/web-vue/es/icon'
+import { GitMerge } from 'lucide-vue-next'
 import { updateGlobalModel, getGlobalModel, getGlobalModelRoutingPreview } from '@/api/global-models'
 import type { ModelRoutingPreviewResponse } from '@/api/endpoints/types'
 import { log } from '@/utils/logger'

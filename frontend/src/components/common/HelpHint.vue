@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { CircleHelp } from 'lucide-vue-next'
+import { IconQuestionCircle as CircleHelp } from '@arco-design/web-vue/es/icon'
 
 const props = defineProps<{
   label: string

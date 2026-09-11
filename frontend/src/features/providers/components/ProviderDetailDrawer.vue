@@ -518,7 +518,7 @@
                     <div
                       v-if="provider.provider_type === 'windsurf' && (hasWindsurfQuotaDisplayData(key) || isWindsurfUnavailableKey(key) || isWindsurfExhaustedKey(key))"
                       class="mt-2 p-2 rounded-md"
-                      :class="isWindsurfUnavailableKey(key) ? 'bg-destructive/10 border border-destructive/30' : (isWindsurfExhaustedKey(key) ? 'bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50' : 'bg-muted/30')"
+                      :class="isWindsurfUnavailableKey(key) ? 'bg-destructive/10 border border-destructive/30' : (isWindsurfExhaustedKey(key) ? 'bg-[#fff7e8] dark:bg-[#4a2000]/20 border border-[#ffe4ba] dark:border-[#4a2000]/50' : 'bg-muted/30')"
                     >
                       <div
                         v-if="isWindsurfUnavailableKey(key)"
@@ -541,7 +541,7 @@
                       <template v-else>
                         <div
                           v-if="isWindsurfExhaustedKey(key)"
-                          class="mb-2 flex items-center gap-2 text-amber-700 dark:text-amber-300"
+                          class="mb-2 flex items-center gap-2 text-[#a64b00] dark:text-[#ffcf8b]"
                         >
                           <ShieldX class="w-4 h-4 shrink-0" />
                           <div class="flex-1 min-w-0">
@@ -550,7 +550,7 @@
                             </div>
                             <div
                               v-if="getWindsurfQuotaDisplay(key)?.last_error"
-                              class="text-[10px] text-amber-700/80 dark:text-amber-300/80 truncate"
+                              class="text-[10px] text-[#a64b00]/80 dark:text-[#ffcf8b]/80 truncate"
                               :title="getWindsurfQuotaDisplay(key)?.last_error || ''"
                             >
                               {{ getWindsurfQuotaDisplay(key)?.last_error }}
@@ -673,7 +673,7 @@
                         <span class="text-muted-foreground/40">|</span>
                         <span
                           class="cursor-help"
-                          :class="key.last_models_fetch_error ? 'text-amber-600 dark:text-amber-400' : ''"
+                          :class="key.last_models_fetch_error ? 'text-[#d25f00] dark:text-[#ffb357]' : ''"
                           :title="getAutoFetchStatusTitle(key)"
                         >
                           {{ legacyT(key.last_models_fetch_error ? '同步失败' : '自动同步') }}
@@ -930,14 +930,8 @@
 
 <script setup lang="ts">
 import { ref, watch, computed, nextTick } from 'vue'
-import {
-  Plus,
-  Key,
-  ListPlus,
-  Loader2,
-  GripVertical,
-  ShieldX,
-} from 'lucide-vue-next'
+import { IconPlus as Plus, IconSafe as Key, IconLoading as Loader2, IconDragDotVertical as GripVertical } from '@arco-design/web-vue/es/icon'
+import { ListPlus, ShieldX } from 'lucide-vue-next'
 import { parseApiError } from '@/utils/errorParser'
 import { useEscapeKey } from '@/composables/useEscapeKey'
 import { getI18nLocale, useI18n } from '@/i18n'
@@ -3365,17 +3359,17 @@ function formatOAuthPlanType(planType: string): string {
 // Codex 剩余额度样式（基于已用百分比计算剩余）
 function getQuotaRemainingClass(usedPercent: number): string {
   const remaining = 100 - usedPercent
-  if (remaining <= 10) return 'text-red-600 dark:text-red-400'
-  if (remaining <= 30) return 'text-yellow-600 dark:text-yellow-400'
-  return 'text-green-600 dark:text-green-400'
+  if (remaining <= 10) return 'text-[#cb272d] dark:text-[#f76560]'
+  if (remaining <= 30) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#009a29] dark:text-[#23c343]'
 }
 
 // Codex 剩余额度进度条颜色
 function getQuotaRemainingBarColor(usedPercent: number): string {
   const remaining = 100 - usedPercent
-  if (remaining <= 10) return 'bg-red-500 dark:bg-red-400'
-  if (remaining <= 30) return 'bg-yellow-500 dark:bg-yellow-400'
-  return 'bg-green-500 dark:bg-green-400'
+  if (remaining <= 10) return 'bg-[#f53f3f] dark:bg-[#f76560]'
+  if (remaining <= 30) return 'bg-[#ff7d00] dark:bg-[#ffb357]'
+  return 'bg-[#00b42a] dark:bg-[#23c343]'
 }
 
 // 判断是否为 Codex Team/Plus/Enterprise 账号（有 5H 限额，显示 3 列）
@@ -3555,7 +3549,7 @@ function getResetCountdownClass(
   )
   if (!status || status.isExpired) return 'text-muted-foreground/70'
   if (status.isCritical) return 'text-destructive font-medium animate-pulse'
-  if (status.isUrgent) return 'text-amber-500 dark:text-amber-400'
+  if (status.isUrgent) return 'text-[#ff7d00] dark:text-[#ffb357]'
   return 'text-muted-foreground/70'
 }
 
@@ -3590,18 +3584,18 @@ function formatResetTime(seconds: number): string {
 // OAuth 订阅类型样式
 function getOAuthPlanTypeClass(planType: string): string {
   const classes: Record<string, string> = {
-    plus: 'border-green-500/50 text-green-600 dark:text-green-400',
-    pro: 'border-blue-500/50 text-blue-600 dark:text-blue-400',
+    plus: 'border-[#00b42a]/50 text-[#009a29] dark:text-[#23c343]',
+    pro: 'border-[#4080ff]/50 text-[#165dff] dark:text-[#6aa1ff]',
     free: 'border-primary/50 text-primary',
-    paid: 'border-blue-500/50 text-blue-600 dark:text-blue-400',
-    team: 'border-purple-500/50 text-purple-600 dark:text-purple-400',
-    enterprise: 'border-amber-500/50 text-amber-600 dark:text-amber-400',
-    ultra: 'border-amber-500/50 text-amber-600 dark:text-amber-400',
-    'pro+': 'border-purple-500/50 text-purple-600 dark:text-purple-400',
-    power: 'border-amber-500/50 text-amber-600 dark:text-amber-400',
+    paid: 'border-[#4080ff]/50 text-[#165dff] dark:text-[#6aa1ff]',
+    team: 'border-[#722ed1]/50 text-[#551db0] dark:text-[#914dd9]',
+    enterprise: 'border-[#ff7d00]/50 text-[#d25f00] dark:text-[#ffb357]',
+    ultra: 'border-[#ff7d00]/50 text-[#d25f00] dark:text-[#ffb357]',
+    'pro+': 'border-[#722ed1]/50 text-[#551db0] dark:text-[#914dd9]',
+    power: 'border-[#ff7d00]/50 text-[#d25f00] dark:text-[#ffb357]',
     basic: 'border-primary/50 text-primary',
-    super: 'border-green-500/50 text-green-600 dark:text-green-400',
-    heavy: 'border-amber-500/50 text-amber-600 dark:text-amber-400',
+    super: 'border-[#00b42a]/50 text-[#009a29] dark:text-[#23c343]',
+    heavy: 'border-[#ff7d00]/50 text-[#d25f00] dark:text-[#ffb357]',
   }
   return classes[planType.toLowerCase()] || ''
 }
@@ -3626,15 +3620,15 @@ function getOAuthStatusTitle(key: EndpointAPIKey): string {
 
 // 健康度颜色
 function getHealthScoreColor(score: number): string {
-  if (score >= 0.8) return 'text-green-600 dark:text-green-400'
-  if (score >= 0.5) return 'text-yellow-600 dark:text-yellow-400'
-  return 'text-red-600 dark:text-red-400'
+  if (score >= 0.8) return 'text-[#009a29] dark:text-[#23c343]'
+  if (score >= 0.5) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#cb272d] dark:text-[#f76560]'
 }
 
 function getHealthScoreBarColor(score: number): string {
-  if (score >= 0.8) return 'bg-green-500 dark:bg-green-400'
-  if (score >= 0.5) return 'bg-yellow-500 dark:bg-yellow-400'
-  return 'bg-red-500 dark:bg-red-400'
+  if (score >= 0.8) return 'bg-[#00b42a] dark:bg-[#23c343]'
+  if (score >= 0.5) return 'bg-[#ff7d00] dark:bg-[#ffb357]'
+  return 'bg-[#f53f3f] dark:bg-[#f76560]'
 }
 
 function isKeyRecoverable(key: EndpointAPIKey): boolean {

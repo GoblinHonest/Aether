@@ -28,7 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import { Brain, Wrench, Image as ImageIcon, AlertCircle } from 'lucide-vue-next'
+import { IconTool as Wrench, IconImage as ImageIcon, IconExclamationCircle as AlertCircle } from '@arco-design/web-vue/es/icon'
+import { Brain } from 'lucide-vue-next'
 import type { TurnStats } from '../../conversation/types'
 
 type BadgeType = 'thinking' | 'tool' | 'image' | 'error'

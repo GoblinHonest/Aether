@@ -275,7 +275,8 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui'
-import { UserPlus, SquarePen } from 'lucide-vue-next'
+import { IconEdit as SquarePen } from '@arco-design/web-vue/es/icon'
+import { UserPlus } from 'lucide-vue-next'
 import { useFormDialog } from '@/composables/useFormDialog'
 import { MultiSelect } from '@/components/common'
 import { adminApi } from '@/api/admin'

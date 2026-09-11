@@ -7,7 +7,7 @@
   >
     <!-- GLOBAL TEXTURE (removed for MiMo clean design) -->
     <template #notice>
-      <div class="flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 rounded-xl bg-orange-500 px-6 py-3 text-white shadow-md ring-1 ring-white/30">
+      <div class="flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 rounded bg-[#ff7d00] px-6 py-3 text-white shadow-md ring-1 ring-white/30">
         <div class="flex min-w-0 items-center gap-3">
           <AlertTriangle class="h-5 w-5 shrink-0" />
           <span class="break-words">{{ t('auth.expired') }}</span>
@@ -128,7 +128,7 @@
           >
             <div
               class="flex items-center"
-              :class="sidebarCollapsed ? 'flex-col gap-2 rounded-lg p-1' : 'justify-between rounded-xl p-2'"
+              :class="sidebarCollapsed ? 'flex-col gap-2 rounded-lg p-1' : 'justify-between rounded p-2'"
             >
               <div
                 class="flex min-w-0 items-center"
@@ -162,7 +162,7 @@
                   <Settings class="h-4 w-4" />
                 </RouterLink>
                 <button
-                  class="rounded-md p-1.5 text-muted-foreground transition-colors hover:text-red-500"
+                  class="rounded-md p-1.5 text-muted-foreground transition-colors hover:text-[#f53f3f]"
                   :aria-label="t('common.logout')"
                   :title="t('common.logout')"
                   @click="handleLogout"
@@ -188,7 +188,7 @@
             >
               <HeaderLogo
                 size="h-9 w-9"
-class-name="shrink-0 text-[#2a2a2b] dark:text-white"
+                class-name="shrink-0 text-[#2a2a2b] dark:text-white"
               />
               <div class="flex min-w-0 flex-col justify-center">
                 <h1 class="truncate text-sm font-semibold text-[#2a2a2b] dark:text-white leading-none">
@@ -273,7 +273,7 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
                       v-for="item in group.items"
                       :key="item.href"
                       :to="item.href"
-                      class="flex min-w-0 items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+                      class="flex min-w-0 items-center gap-2.5 px-3 py-2.5 rounded text-sm font-medium transition-all"
                       :class="isNavActive(item.href)
                         ? 'bg-[#2a2a2b]/8 dark:bg-white/8 text-[#2a2a2b] dark:text-[#e5e5e5]'
                         : 'text-[#666666] dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#2a2a2b] dark:hover:text-white'"
@@ -315,7 +315,7 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
                       <Settings class="w-4 h-4" />
                     </RouterLink>
                     <button
-                      class="p-2 rounded-lg text-muted-foreground hover:text-red-500 transition-colors"
+                      class="p-2 rounded-lg text-muted-foreground hover:text-[#f53f3f] transition-colors"
                       :title="t('common.logout')"
                       :aria-label="t('common.logout')"
                       @click="handleLogout"
@@ -331,7 +331,7 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
       </header>
 
       <!-- Desktop Page Header -->
-<header class="hidden lg:flex min-h-16 gap-4 px-8 py-3 items-center justify-between shrink-0 border-b border-[#000]/5 dark:border-white/8 sticky top-0 z-40 bg-white dark:bg-[#17171a]">
+      <header class="hidden lg:flex min-h-16 gap-4 px-8 py-3 items-center justify-between shrink-0 border-b border-[#000]/5 dark:border-white/8 sticky top-0 z-40 bg-white dark:bg-[#17171a]">
         <div class="flex min-w-0 flex-col gap-0.5">
           <div class="flex min-w-0 flex-wrap items-center gap-2 text-sm text-muted-foreground">
             <template
@@ -364,7 +364,7 @@ class-name="shrink-0 text-[#2a2a2b] dark:text-white"
         <!-- Demo Mode Badge (center) -->
         <div
           v-if="isDemo"
-          class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium"
+          class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full bg-[#ffefcf] dark:bg-[#4a2000]/30 text-[#a64b00] dark:text-[#ffb357] text-xs font-medium"
         >
           <AlertTriangle class="w-3.5 h-3.5" />
           <span>{{ t('demo.mode') }}</span>
@@ -474,17 +474,8 @@ import type { PaletteItem } from '@/components/common/CommandPalette.vue'
 import VersionButton from '@/components/common/VersionButton.vue'
 import { buildUpdateErrorStatus } from '@/utils/updateStatus'
 import { safeExternalHttpsUrl } from '@/utils/navigationSecurity'
-import {
-  Settings,
-  AlertTriangle,
-  LogOut,
-  ChevronRight,
-  Menu,
-  X,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Search,
-} from 'lucide-vue-next'
+import { IconSettings as Settings, IconExclamationCircle as AlertTriangle, IconRight as ChevronRight, IconMenu as Menu, IconClose as X, IconSearch as Search } from '@arco-design/web-vue/es/icon'
+import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next'
 
 import { prefetchNavigationTarget } from '@/utils/adminNavigationPrefetch'
 import { sanitizeMarkdown } from '@/utils/sanitize'

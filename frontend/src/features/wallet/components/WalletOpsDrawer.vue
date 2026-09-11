@@ -15,7 +15,7 @@
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-xl shrink-0"
+                  class="flex h-10 w-10 items-center justify-center rounded shrink-0"
                   :class="accentClasses"
                 >
                   <Wallet class="h-5 w-5" />
@@ -52,18 +52,18 @@
           <div class="p-4 sm:p-6 space-y-5">
             <div class="rounded-lg border border-border/60 bg-muted/30 p-4">
               <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                <div class="rounded-xl bg-background/80 p-3">
+                <div class="rounded bg-background/80 p-3">
                   <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     总可用额度
                   </div>
                   <div
                     class="mt-1 text-lg font-semibold"
-                    :class="totalAvailableAmount !== null && totalAvailableAmount < 0 ? 'text-rose-600' : 'text-foreground'"
+                    :class="totalAvailableAmount !== null && totalAvailableAmount < 0 ? 'text-[#cb272d]' : 'text-foreground'"
                   >
                     {{ totalAvailableAmount === null ? '不限额' : `$${formatFixed(totalAvailableAmount, 2)}` }}
                   </div>
                 </div>
-                <div class="rounded-xl bg-background/80 p-3">
+                <div class="rounded bg-background/80 p-3">
                   <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     套餐今日额度
                   </div>
@@ -77,18 +77,18 @@
                     已用 ${{ formatFixed(dailyQuota.used_usd, 2) }} / ${{ formatFixed(dailyQuota.total_usd, 2) }}
                   </div>
                 </div>
-                <div class="rounded-xl bg-background/80 p-3">
+                <div class="rounded bg-background/80 p-3">
                   <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     钱包余额
                   </div>
                   <div
                     class="mt-1 text-lg font-semibold"
-                    :class="walletBalanceAmount < 0 ? 'text-rose-600' : 'text-foreground'"
+                    :class="walletBalanceAmount < 0 ? 'text-[#cb272d]' : 'text-foreground'"
                   >
                     ${{ formatFixed(walletBalanceAmount, 2) }}
                   </div>
                 </div>
-                <div class="rounded-xl bg-background/80 p-3">
+                <div class="rounded bg-background/80 p-3">
                   <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     充值余额
                   </div>
@@ -96,7 +96,7 @@
                     ${{ formatFixed(localWallet.recharge_balance, 2) }}
                   </div>
                 </div>
-                <div class="rounded-xl bg-background/80 p-3">
+                <div class="rounded bg-background/80 p-3">
                   <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     赠款余额
                   </div>
@@ -104,7 +104,7 @@
                     {{ isApiKeyWallet ? '不支持' : `$${formatFixed(localWallet.gift_balance, 2)}` }}
                   </div>
                 </div>
-                <div class="rounded-xl bg-background/80 p-3">
+                <div class="rounded bg-background/80 p-3">
                   <div class="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     累计消费
                   </div>
@@ -227,7 +227,7 @@
 
                 <div
                   v-if="!isApiKeyWallet"
-                  class="rounded-xl border border-border/60 p-3 text-xs text-muted-foreground"
+                  class="rounded border border-border/60 p-3 text-xs text-muted-foreground"
                 >
                   人工充值等同于用户充值余额，会产生充值订单和记录；调帐为后台调整，无充值订单。赠款余额不可退款。
                 </div>
@@ -299,7 +299,7 @@
                           </TableCell>
                           <TableCell
                             class="tabular-nums"
-                            :class="toFiniteNumber(tx.amount) >= 0 ? 'text-emerald-600' : 'text-rose-600'"
+                            :class="toFiniteNumber(tx.amount) >= 0 ? 'text-[#009a29]' : 'text-[#cb272d]'"
                           >
                             {{ toFiniteNumber(tx.amount) >= 0 ? '+' : '' }}{{ formatFixed(tx.amount, 4) }}
                           </TableCell>
@@ -359,7 +359,7 @@
 
                 <div
                   v-if="refundActionType && actionRefund"
-                  class="rounded-xl border border-border/60 p-4 space-y-3"
+                  class="rounded border border-border/60 p-4 space-y-3"
                 >
                   <div class="text-sm font-semibold">
                     {{ refundActionType === 'fail' ? '驳回退款' : '完成退款' }} - {{ actionRefund.refund_no }}
@@ -553,7 +553,8 @@ import {
 } from '@/utils/walletDisplay'
 import { useToast } from '@/composables/useToast'
 import { useConfirm } from '@/composables/useConfirm'
-import { Wallet, X } from 'lucide-vue-next'
+import { IconClose as X } from '@arco-design/web-vue/es/icon'
+import { Wallet } from 'lucide-vue-next'
 import { log } from '@/utils/logger'
 
 const props = withDefaults(
@@ -612,7 +613,7 @@ const refundGatewayRefundId = ref('')
 const refundPayoutReference = ref('')
 
 const accentClasses = computed(() => {
-  return props.accent === 'blue' ? 'bg-blue-500/10 text-blue-600' : 'bg-emerald-500/10 text-emerald-600'
+  return props.accent === 'blue' ? 'bg-[#4080ff]/10 text-[#165dff]' : 'bg-[#00b42a]/10 text-[#009a29]'
 })
 const isApiKeyWallet = computed(() => localWallet.value?.owner_type === 'api_key')
 const dailyQuota = computed(() => localWallet.value?.daily_quota ?? null)

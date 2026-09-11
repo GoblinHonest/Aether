@@ -16,7 +16,7 @@
         @select="selectGroup"
       />
 
-      <div class="min-w-0 bg-background sm:rounded-xl sm:border sm:border-border/70 sm:p-4">
+      <div class="min-w-0 bg-background sm:rounded sm:border sm:border-border/70 sm:p-4">
         <UserGroupEditorHeader
           :editing="Boolean(editingGroupId)"
           :is-default="Boolean(selectedGroup?.is_default)"

@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4 rounded-lg border bg-background p-4 shadow-sm">
     <div class="flex items-start gap-3">
-      <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+      <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-primary/10 text-primary">
         <ShieldCheck class="h-4 w-4" />
       </div>
       <div class="min-w-0 space-y-1">
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="rounded-xl border border-border/70 bg-muted/20 p-3">
+    <div class="rounded border border-border/70 bg-muted/20 p-3">
       <div class="space-y-2">
         <div>
           <Label class="text-sm font-medium">{{ legacyT('额度') }}</Label>
@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
-import { ShieldCheck } from 'lucide-vue-next'
+import { IconSafe as ShieldCheck } from '@arco-design/web-vue/es/icon'
 import { useI18n } from '@/i18n'
 import type { UserBatchQuotaMode } from './user-management-types'
 

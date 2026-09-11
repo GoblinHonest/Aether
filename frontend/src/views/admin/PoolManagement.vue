@@ -379,7 +379,7 @@
                       </PopoverTrigger>
                       <PopoverContent
                         v-if="scoreDesktopPopoverOpenKeyId === key.key_id"
-                        class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
+                        class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
                         side="bottom"
                         align="end"
                         :side-offset="8"
@@ -431,7 +431,7 @@
                       v-if="key.cooldown_reason"
                       variant="ghost"
                       size="icon"
-                      class="h-7 w-7 text-muted-foreground hover:text-green-600"
+                      class="h-7 w-7 text-muted-foreground hover:text-[#009a29]"
                       title="清除冷却"
                       @click="clearCooldown(key.key_id)"
                     >
@@ -470,7 +470,7 @@
                           variant="ghost"
                           size="icon"
                           class="h-7 w-7"
-                          :class="key.proxy?.node_id ? 'text-blue-500' : ''"
+                          :class="key.proxy?.node_id ? 'text-[#4080ff]' : ''"
                           :disabled="savingProxyKeyId === key.key_id"
                           :title="key.proxy?.node_id ? `代理: ${getKeyProxyNodeName(key)}` : '设置代理节点'"
                           @click.stop
@@ -582,7 +582,7 @@
                 </Badge>
                 <span
                   v-if="key.cooldown_ttl_seconds"
-                  class="inline-flex items-center rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[10px] font-medium leading-4 text-red-700 dark:text-red-300"
+                  class="inline-flex items-center rounded-full border border-[#f53f3f]/30 bg-[#f53f3f]/10 px-2 py-0.5 text-[10px] font-medium leading-4 text-[#a1151e] dark:text-[#f98981]"
                 >
                   冷却 {{ formatTTL(key.cooldown_ttl_seconds) }}
                 </span>
@@ -627,7 +627,7 @@
                 </template>
               </div>
 
-              <div class="overflow-x-auto rounded-xl border border-border/50 bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground">
+              <div class="overflow-x-auto rounded border border-border/50 bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground">
                 <div class="space-y-1 text-center">
                   <PoolKeyStatsPanel
                     :cycle="isPoolKeyCycleStatsDisplay(key)"
@@ -668,7 +668,7 @@
                         </PopoverTrigger>
                         <PopoverContent
                           v-if="scoreMobilePopoverOpenKeyId === key.key_id"
-                          class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
+                          class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
                           side="bottom"
                           align="end"
                           :side-offset="8"
@@ -766,7 +766,7 @@
                     v-else-if="actionId === 'clear_cooldown'"
                     variant="ghost"
                     size="icon"
-                    class="h-7 w-7 shrink-0 text-muted-foreground hover:text-green-600"
+                    class="h-7 w-7 shrink-0 text-muted-foreground hover:text-[#009a29]"
                     title="清除冷却"
                     @click="clearCooldown(key.key_id)"
                   >
@@ -792,7 +792,7 @@
                         variant="ghost"
                         size="icon"
                         class="h-7 w-7 shrink-0"
-                        :class="key.proxy?.node_id ? 'text-blue-500' : ''"
+                        :class="key.proxy?.node_id ? 'text-[#4080ff]' : ''"
                         :disabled="savingProxyKeyId === key.key_id"
                         :title="key.proxy?.node_id ? `代理: ${getKeyProxyNodeName(key)}` : '设置代理节点'"
                         @click.stop
@@ -1030,21 +1030,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue'
-import {
-  Upload,
-  RefreshCw,
-  Power,
-  Database,
-  KeyRound,
-  Download,
-  Copy,
-  Shield,
-  Globe,
-  RotateCcw,
-  SquarePen,
-  Trash2,
-  CircleHelp,
-} from 'lucide-vue-next'
+import { IconUpload as Upload, IconRefresh as RefreshCw, IconPoweroff as Power, IconStorage as Database, IconSafe as KeyRound, IconDownload as Download, IconCopy as Copy, IconSafe as Shield, IconUndo as RotateCcw, IconEdit as SquarePen, IconDelete as Trash2, IconQuestionCircle as CircleHelp } from '@arco-design/web-vue/es/icon'
+import { Globe } from 'lucide-vue-next'
 
 import {
   Card,
@@ -3388,13 +3375,13 @@ function getMobileTagItems(key: PoolKeyDetail): PoolMobileTagItem[] {
 
 function getMobileTagClass(item: PoolMobileTagItem): string {
   if (item.tone === 'danger') {
-    return 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300'
+    return 'border-[#f53f3f]/30 bg-[#f53f3f]/10 text-[#a1151e] dark:text-[#f98981]'
   }
   if (item.tone === 'warning') {
-    return 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300'
+    return 'border-[#ff7d00]/30 bg-[#ff7d00]/10 text-[#a64b00] dark:text-[#ffcf8b]'
   }
   if (item.tone === 'accent') {
-    return 'border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-300'
+    return 'border-[#4080ff]/30 bg-[#4080ff]/10 text-[#0e42d2] dark:text-[#94bfff]'
   }
   if (item.tone === 'muted') {
     return 'border-border/60 bg-background/70 text-muted-foreground'
@@ -4055,15 +4042,15 @@ function parseQuotaProgressItems(key: PoolKeyDetail): QuotaProgressItem[] {
 }
 
 function getQuotaRemainingClassByRemaining(remaining: number): string {
-  if (remaining <= 10) return 'text-red-600 dark:text-red-400'
-  if (remaining <= 30) return 'text-yellow-600 dark:text-yellow-400'
-  return 'text-green-600 dark:text-green-400'
+  if (remaining <= 10) return 'text-[#cb272d] dark:text-[#f76560]'
+  if (remaining <= 30) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#009a29] dark:text-[#23c343]'
 }
 
 function getQuotaRemainingBarColorByRemaining(remaining: number): string {
-  if (remaining <= 10) return 'bg-red-500 dark:bg-red-400'
-  if (remaining <= 30) return 'bg-yellow-500 dark:bg-yellow-400'
-  return 'bg-green-500 dark:bg-green-400'
+  if (remaining <= 10) return 'bg-[#f53f3f] dark:bg-[#f76560]'
+  if (remaining <= 30) return 'bg-[#ff7d00] dark:bg-[#ffb357]'
+  return 'bg-[#00b42a] dark:bg-[#23c343]'
 }
 
 function getQuotaTextClass(quotaText: string): string {

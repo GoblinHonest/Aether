@@ -321,8 +321,8 @@ export function useProviderBalance() {
     const quota = provider.monthly_quota_usd ?? 0
     if (quota <= 0) return 'text-foreground'
     const ratio = used / quota
-    if (ratio >= 0.9) return 'text-red-600 dark:text-red-400'
-    if (ratio >= 0.7) return 'text-amber-600 dark:text-amber-400'
+    if (ratio >= 0.9) return 'text-[#cb272d] dark:text-[#f76560]'
+    if (ratio >= 0.7) return 'text-[#d25f00] dark:text-[#ffb357]'
     return 'text-foreground'
   }
 

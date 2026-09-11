@@ -18,7 +18,8 @@ import SelectContent from '@/components/ui/select-content.vue'
 import SelectItem from '@/components/ui/select-item.vue'
 import SelectValue from '@/components/ui/select-value.vue'
 import ScatterChart from '@/components/charts/ScatterChart.vue'
-import { Trash2, Eraser, Search, X, BarChart3, ChevronDown, ChevronRight, Database, ArrowRight, HardDrive } from 'lucide-vue-next'
+import { IconDelete as Trash2, IconEraser as Eraser, IconSearch as Search, IconClose as X, IconBarChart as BarChart3, IconDown as ChevronDown, IconRight as ChevronRight, IconStorage as Database, IconArrowRight as ArrowRight } from '@arco-design/web-vue/es/icon'
+import { HardDrive } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
 import { useConfirm } from '@/composables/useConfirm'
 import { cacheApi, modelMappingCacheApi, redisCacheApi, type CacheStats, type CacheConfig, type UserAffinity, type ModelMappingCacheStats, type RedisCacheCategoriesResponse } from '@/api/cache'
@@ -1559,11 +1560,11 @@ onBeforeUnmount(() => {
                       请求间隔时间线
                     </h4>
                     <div class="flex items-center gap-3 text-xs text-muted-foreground">
-                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500" /> 0-5分钟</span>
-                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500" /> 5-15分钟</span>
-                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-500" /> 15-30分钟</span>
-                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-orange-500" /> 30-60分钟</span>
-                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500" /> >60分钟</span>
+                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#00b42a]" /> 0-5分钟</span>
+                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#4080ff]" /> 5-15分钟</span>
+                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#722ed1]" /> 15-30分钟</span>
+                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#ff7d00]" /> 30-60分钟</span>
+                      <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#f53f3f]" /> >60分钟</span>
                       <span
                         v-if="userTimelineData"
                         class="ml-2"

@@ -49,7 +49,7 @@ const { legacyT } = useI18n()
 
 function actionCardClass(action: UserBatchAction): string {
   return cn(
-    'rounded-xl border p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:bg-primary/5 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30',
+    'rounded border p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:bg-primary/5 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30',
     props.modelValue === action
       ? 'border-primary/60 bg-primary/10 shadow-sm ring-1 ring-primary/20'
       : 'border-border/70 bg-background',

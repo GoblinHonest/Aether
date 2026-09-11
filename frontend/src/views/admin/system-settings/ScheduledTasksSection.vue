@@ -9,7 +9,7 @@
         :key="task.id"
       >
         <div
-          class="group relative rounded-xl border transition-all duration-300"
+          class="group relative rounded border transition-all duration-300"
           :class="task.enabled
             ? 'border-primary/30 bg-primary/[0.02]'
             : 'border-border bg-card hover:border-border/80'"
@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import { Clock, Check, Loader2, X } from 'lucide-vue-next'
+import { IconClockCircle as Clock, IconCheck as Check, IconLoading as Loader2, IconClose as X } from '@arco-design/web-vue/es/icon'
 import Button from '@/components/ui/button.vue'
 import Switch from '@/components/ui/switch.vue'
 import Select from '@/components/ui/select.vue'

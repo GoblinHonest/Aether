@@ -93,7 +93,7 @@
           </Button>
           <RouterLink
             to="/admin/notification-service"
-            class="inline-flex h-11 items-center rounded-xl px-3 text-sm text-primary hover:underline"
+            class="inline-flex h-11 items-center rounded px-3 text-sm text-primary hover:underline"
           >
             打开通知服务
           </RouterLink>
@@ -109,7 +109,7 @@
             class="flex items-center justify-between gap-4 rounded-md border border-border px-3 py-2 text-sm"
           >
             <span>{{ formatChannel(item.channel) }}</span>
-            <span :class="item.success ? 'text-green-600 dark:text-green-400' : 'text-destructive'">
+            <span :class="item.success ? 'text-[#009a29] dark:text-[#23c343]' : 'text-destructive'">
               {{ item.message }}
             </span>
           </div>

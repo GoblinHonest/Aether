@@ -150,7 +150,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { Tag, Plus, X, Loader2, GripVertical, Info } from 'lucide-vue-next'
+import { IconTags as Tag, IconPlus as Plus, IconClose as X, IconLoading as Loader2, IconDragDotVertical as GripVertical, IconInfo as Info } from '@arco-design/web-vue/es/icon'
 import { Dialog, Button, Input, Label } from '@/components/ui'
 import { useToast } from '@/composables/useToast'
 import { parseApiError } from '@/utils/errorParser'

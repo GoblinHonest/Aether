@@ -193,7 +193,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { Box, Layers, Loader2, RefreshCw, AlertCircle } from 'lucide-vue-next'
+import { IconLayers as Layers, IconLoading as Loader2, IconRefresh as RefreshCw, IconExclamationCircle as AlertCircle } from '@arco-design/web-vue/es/icon'
+import { Box } from 'lucide-vue-next'
 import { Dialog } from '@/components/ui'
 import Button from '@/components/ui/button.vue'
 import Badge from '@/components/ui/badge.vue'

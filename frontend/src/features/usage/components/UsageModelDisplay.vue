@@ -138,7 +138,7 @@ const modelBadges = computed<ModelBadgePresentation[]>(() => {
       key: 'compact',
       label: '会话压缩',
       variant: 'outline',
-      className: 'border-sky-500/30 bg-sky-500/5 text-sky-700 dark:text-sky-300',
+      className: 'border-[#165dff]/30 bg-[#165dff]/5 text-[#072ca6] dark:text-[#6aa1ff]',
       title: '会话压缩',
       ariaLabel: '会话压缩',
     })
@@ -159,7 +159,7 @@ const modelBadges = computed<ModelBadgePresentation[]>(() => {
       key: 'fast',
       label: 'Fast',
       variant: 'outline-transparent',
-      className: 'text-blue-500 dark:text-blue-300',
+      className: 'text-[#4080ff] dark:text-[#94bfff]',
       title: '上游请求档位：Fast\n计费档位：Fast',
       ariaLabel: '上游请求档位：Fast，计费档位：Fast',
     })
@@ -170,7 +170,7 @@ const modelBadges = computed<ModelBadgePresentation[]>(() => {
       key: 'cyber',
       label: 'Cyber',
       variant: 'outline',
-      className: 'border-primary/30 bg-primary/5 text-rose-500 dark:text-rose-300',
+      className: 'border-primary/30 bg-primary/5 text-[#f53f3f] dark:text-[#f98981]',
       title: '上游 Cyber Policy 拒绝',
       ariaLabel: '上游 Cyber Policy 拒绝',
     })

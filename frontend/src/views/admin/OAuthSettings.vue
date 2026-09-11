@@ -97,7 +97,7 @@
             />
             <span
               v-else
-              class="w-1.5 h-1.5 rounded-full shrink-0 bg-gray-200"
+              class="w-1.5 h-1.5 rounded-full shrink-0 bg-[#e5e6eb]"
             />
           </button>
         </div>
@@ -345,21 +345,21 @@
               <div class="flex items-center gap-2">
                 <span
                   class="w-2 h-2 rounded-full"
-                  :class="lastTestResult.authorization_url_reachable ? 'bg-green-500' : 'bg-red-500'"
+                  :class="lastTestResult.authorization_url_reachable ? 'bg-[#00b42a]' : 'bg-[#f53f3f]'"
                 />
                 <span class="text-muted-foreground">Authorization URL</span>
               </div>
               <div class="flex items-center gap-2">
                 <span
                   class="w-2 h-2 rounded-full"
-                  :class="lastTestResult.token_url_reachable ? 'bg-green-500' : 'bg-red-500'"
+                  :class="lastTestResult.token_url_reachable ? 'bg-[#00b42a]' : 'bg-[#f53f3f]'"
                 />
                 <span class="text-muted-foreground">Token URL</span>
               </div>
               <div class="flex items-center gap-2">
                 <span
                   class="w-2 h-2 rounded-full"
-                  :class="lastTestResult.secret_status === 'likely_valid' ? 'bg-green-500' : lastTestResult.secret_status === 'invalid' ? 'bg-red-500' : 'bg-yellow-500'"
+                  :class="lastTestResult.secret_status === 'likely_valid' ? 'bg-[#00b42a]' : lastTestResult.secret_status === 'invalid' ? 'bg-[#f53f3f]' : 'bg-[#ff7d00]'"
                 />
                 <span class="text-muted-foreground">Secret: {{ lastTestResult.secret_status }}</span>
               </div>
@@ -379,7 +379,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { IconPlus as Plus } from '@arco-design/web-vue/es/icon'
 import { oauthApi, type OAuthProviderAdminConfig, type OAuthProviderTestResponse, type SupportedOAuthType } from '@/api/oauth'
 import { PageContainer, PageHeader, CardSection } from '@/components/layout'
 import Button from '@/components/ui/button.vue'

@@ -135,7 +135,7 @@
             >
               <Check
                 v-if="codeCopied"
-                class="h-4 w-4 text-emerald-600"
+                class="h-4 w-4 text-[#009a29]"
               />
               <Copy
                 v-else
@@ -262,16 +262,8 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import {
-  AlertCircle,
-  Check,
-  Copy,
-  Link2,
-  Loader2,
-  RefreshCcw,
-  SquareTerminal,
-  Trash2,
-} from 'lucide-vue-next'
+import { IconExclamationCircle as AlertCircle, IconCheck as Check, IconCopy as Copy, IconLink as Link2, IconLoading as Loader2, IconRefresh as RefreshCcw, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
+import { SquareTerminal } from 'lucide-vue-next'
 import { vscodexApi, type VscodexDevice, type VscodexDeviceStatus, type VscodexPairing } from '@/api/vscodex'
 import { LoadingState } from '@/components/common'
 import { Button } from '@/components/ui'
@@ -331,8 +323,8 @@ function statusLabel(status: VscodexDeviceStatus): string {
 }
 
 function statusDotClass(status: VscodexDeviceStatus): string {
-  if (status === 'online') return 'bg-emerald-500'
-  if (status === 'connecting') return 'bg-amber-500'
+  if (status === 'online') return 'bg-[#00b42a]'
+  if (status === 'connecting') return 'bg-[#ff7d00]'
   return 'bg-muted-foreground/50'
 }
 

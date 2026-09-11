@@ -111,7 +111,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Settings } from 'lucide-vue-next'
+import { IconSettings as Settings } from '@arco-design/web-vue/es/icon'
 import { Button, Dialog, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
 import type { ProxyNode, ProxyNodeSchedulingState } from '@/api/proxy-nodes'
 import { useI18n } from '@/i18n'

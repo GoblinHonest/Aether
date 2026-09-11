@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { RefreshCw } from 'lucide-vue-next'
+import { IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
 import Button from '@/components/ui/button.vue'
 import Card from '@/components/ui/card.vue'
 import Switch from '@/components/ui/switch.vue'

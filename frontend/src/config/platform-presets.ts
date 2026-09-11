@@ -1,4 +1,5 @@
-import { Apple, Box, Monitor, Terminal } from 'lucide-vue-next'
+import { IconDesktop as Monitor, IconCodeBlock as Terminal } from '@arco-design/web-vue/es/icon'
+import { Apple, Box } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import type { MessageKey } from '@/i18n'
 

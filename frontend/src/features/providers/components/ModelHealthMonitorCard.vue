@@ -38,7 +38,7 @@
         <div
           v-for="monitor in monitors"
           :key="monitor.model"
-          class="relative overflow-hidden rounded-xl border border-border/60 bg-card/60 p-4 transition-colors hover:border-primary/50"
+          class="relative overflow-hidden rounded border border-border/60 bg-card/60 p-4 transition-colors hover:border-primary/50"
         >
           <div
             class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
@@ -46,7 +46,7 @@
           <div class="flex items-start justify-between gap-3">
             <div class="flex min-w-0 items-center gap-3">
               <div
-                class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted/50"
+                class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded border border-border/60 bg-muted/50"
               >
                 <Bot class="h-5 w-5 text-muted-foreground" />
               </div>

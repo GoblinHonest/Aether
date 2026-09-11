@@ -134,16 +134,16 @@ export const layout = {
  */
 export const colors = {
   status: {
-    success: 'text-green-600 dark:text-green-400',
-    warning: 'text-amber-600 dark:text-amber-400',
+    success: 'text-[#009a29] dark:text-[#23c343]',
+    warning: 'text-[#d25f00] dark:text-[#ffb357]',
     error: 'text-destructive',
-    info: 'text-blue-600 dark:text-blue-400',
+    info: 'text-[#165dff] dark:text-[#6aa1ff]',
   },
   badge: {
-    success: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-    warning: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-    error: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-    info: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    success: 'bg-[#aff0b5] text-[#007d20] dark:bg-[#003d0c]/30 dark:text-[#23c343]',
+    warning: 'bg-[#ffefcf] text-[#a64b00] dark:bg-[#4a2000]/30 dark:text-[#ffb357]',
+    error: 'bg-[#fdcdc5] text-[#a1151e] dark:bg-[#4a000a]/30 dark:text-[#f76560]',
+    info: 'bg-[#bedaff] text-[#0e42d2] dark:bg-[#000d4d]/30 dark:text-[#6aa1ff]',
     neutral: 'bg-muted text-muted-foreground',
   },
 } as const

@@ -34,7 +34,7 @@
       v-if="recoverable"
       variant="ghost"
       size="icon"
-      class="h-7 w-7 text-green-600"
+      class="h-7 w-7 text-[#009a29]"
       :title="recoverTitle"
       @click="$emit('recover')"
     >
@@ -60,7 +60,7 @@
           variant="ghost"
           size="icon"
           class="h-7 w-7"
-          :class="apiKey.proxy?.node_id ? 'text-blue-500' : ''"
+          :class="apiKey.proxy?.node_id ? 'text-[#4080ff]' : ''"
           :disabled="savingProxy"
           :title="apiKey.proxy?.node_id ? `${legacyT('代理')}: ${proxyNodeName}` : legacyT('设置代理节点')"
           @click.stop
@@ -147,15 +147,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import {
-  BarChart3,
-  Edit,
-  Globe,
-  Power,
-  RefreshCw,
-  Shield,
-  Trash2,
-} from 'lucide-vue-next'
+import { IconBarChart as BarChart3, IconEdit as Edit, IconPoweroff as Power, IconRefresh as RefreshCw, IconSafe as Shield, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
+import { Globe } from 'lucide-vue-next'
 import Button from '@/components/ui/button.vue'
 import Badge from '@/components/ui/badge.vue'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui'

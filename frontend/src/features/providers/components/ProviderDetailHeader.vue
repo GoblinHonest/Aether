@@ -39,7 +39,7 @@
           <Button
             variant="ghost"
             size="icon"
-            :class="hasFailoverRules ? 'text-orange-500 dark:text-orange-400' : ''"
+            :class="hasFailoverRules ? 'text-[#ff7d00] dark:text-[#ffb357]' : ''"
             @click="$emit('openFailoverRules')"
           >
             <GitBranch class="w-4 h-4" />
@@ -53,7 +53,7 @@
             <Button
               variant="ghost"
               size="icon"
-              :class="provider.proxy?.node_id ? 'text-blue-500' : ''"
+              :class="provider.proxy?.node_id ? 'text-[#4080ff]' : ''"
               :disabled="savingProviderProxy"
               :title="provider.proxy?.node_id ? `${legacyT('代理')}: ${providerProxyNodeName}` : legacyT('设置代理节点')"
             >
@@ -174,7 +174,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Edit, GitBranch, Globe, Layers, Loader2, Plus, Power, Shuffle, X } from 'lucide-vue-next'
+import { IconEdit as Edit, IconBranch as GitBranch, IconLayers as Layers, IconLoading as Loader2, IconPlus as Plus, IconPoweroff as Power, IconClose as X } from '@arco-design/web-vue/es/icon'
+import { Globe, Shuffle } from 'lucide-vue-next'
 import Button from '@/components/ui/button.vue'
 import Badge from '@/components/ui/badge.vue'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui'

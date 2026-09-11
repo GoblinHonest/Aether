@@ -161,7 +161,7 @@
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell :class="tx.amount >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
+                      <TableCell :class="tx.amount >= 0 ? 'text-[#009a29] dark:text-[#23c343]' : 'text-[#cb272d] dark:text-[#f76560]'">
                         {{ tx.amount >= 0 ? '+' : '' }}{{ tx.amount.toFixed(4) }}
                       </TableCell>
                       <TableCell class="text-xs tabular-nums whitespace-nowrap">
@@ -700,7 +700,7 @@
 
               <div
                 v-if="latestGeneratedRedeemBatch"
-                class="rounded-xl border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground"
+                class="rounded border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground"
               >
                 最近生成批次:
                 <span class="font-medium text-foreground">{{ latestGeneratedRedeemBatch.name }}</span>
@@ -998,7 +998,7 @@
                   </div>
                   <span
                     class="text-sm font-semibold tabular-nums"
-                    :class="currentLedger.amount >= 0 ? 'text-emerald-600' : 'text-rose-600'"
+                    :class="currentLedger.amount >= 0 ? 'text-[#009a29]' : 'text-[#cb272d]'"
                   >
                     {{ currentLedger.amount >= 0 ? '+' : '' }}{{ currentLedger.amount.toFixed(4) }}
                   </span>
@@ -1009,7 +1009,7 @@
               </div>
 
               <div class="grid gap-3 sm:grid-cols-2">
-                <div class="rounded-xl border border-border/60 p-3">
+                <div class="rounded border border-border/60 p-3">
                   <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     归属
                   </div>
@@ -1027,7 +1027,7 @@
                     </Badge>
                   </div>
                 </div>
-                <div class="rounded-xl border border-border/60 p-3">
+                <div class="rounded border border-border/60 p-3">
                   <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     余额变化
                   </div>
@@ -1045,7 +1045,7 @@
               </div>
 
               <div class="grid gap-3 sm:grid-cols-2">
-                <div class="rounded-xl border border-border/60 p-3">
+                <div class="rounded border border-border/60 p-3">
                   <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     关联类型
                   </div>
@@ -1053,7 +1053,7 @@
                     {{ walletLinkTypeLabel(currentLedger.link_type) }}
                   </div>
                 </div>
-                <div class="rounded-xl border border-border/60 p-3">
+                <div class="rounded border border-border/60 p-3">
                   <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     交易ID
                   </div>
@@ -1067,7 +1067,7 @@
                 v-if="currentLedger.link_type === 'payment_order'"
                 class="grid gap-3 sm:grid-cols-2"
               >
-                <div class="rounded-xl border border-border/60 p-3">
+                <div class="rounded border border-border/60 p-3">
                   <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     支付方式
                   </div>
@@ -1076,7 +1076,7 @@
                     <span v-else>{{ ledgerPaymentMethod ? paymentMethodLabel(ledgerPaymentMethod) : '-' }}</span>
                   </div>
                 </div>
-                <div class="rounded-xl border border-border/60 p-3">
+                <div class="rounded border border-border/60 p-3">
                   <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                     充值订单号
                   </div>
@@ -1087,7 +1087,7 @@
                 </div>
               </div>
 
-              <div class="rounded-xl border border-border/60 p-3">
+              <div class="rounded border border-border/60 p-3">
                 <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                   操作用户
                 </div>
@@ -1105,7 +1105,7 @@
                 </div>
               </div>
 
-              <div class="rounded-xl border border-border/60 p-3">
+              <div class="rounded border border-border/60 p-3">
                 <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                   说明
                 </div>
@@ -1207,7 +1207,7 @@
                     <div class="text-[11px] uppercase tracking-normal text-muted-foreground">
                       失败原因
                     </div>
-                    <div class="mt-1 text-sm text-rose-600 whitespace-pre-wrap break-words">
+                    <div class="mt-1 text-sm text-[#cb272d] whitespace-pre-wrap break-words">
                       {{ currentRefund.failure_reason }}
                     </div>
                   </div>
@@ -1216,7 +1216,7 @@
 
               <div
                 v-if="canFailRefund(currentRefund)"
-                class="rounded-xl border border-border/60 p-4 space-y-2"
+                class="rounded border border-border/60 p-4 space-y-2"
               >
                 <Label>驳回原因</Label>
                 <Input
@@ -1227,7 +1227,7 @@
 
               <div
                 v-if="canCompleteRefund(currentRefund.status)"
-                class="rounded-xl border border-border/60 p-4 space-y-3"
+                class="rounded border border-border/60 p-4 space-y-3"
               >
                 <div class="space-y-1.5">
                   <Label>网关退款号（可选）</Label>
@@ -1368,7 +1368,7 @@ import {
   Textarea,
 } from '@/components/ui'
 import { EmptyState } from '@/components/common'
-import { X } from 'lucide-vue-next'
+import { IconClose as X } from '@arco-design/web-vue/es/icon'
 import {
   adminWalletApi,
   type AdminGlobalRefund,

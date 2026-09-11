@@ -27,7 +27,7 @@ import { Target } from 'lucide-vue-next'
         在系统设置中，您可以修改请求体记录详情等级，以便于调试和审计。
       </p>
       
-      <div class="overflow-hidden rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] bg-white dark:bg-[#17171a] max-w-2xl">
+      <div class="overflow-hidden rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] bg-white dark:bg-[#17171a] max-w-2xl">
         <table class="w-full text-sm text-left">
           <thead class="bg-[#f5f5f0] dark:bg-[rgba(227,224,211,0.05)] border-b border-[#eee] dark:border-[rgba(255,255,255,0.08)]">
             <tr>
@@ -78,7 +78,7 @@ import { Target } from 'lucide-vue-next'
         loading="lazy"
         src="/guide/strategy-request-logging.webp"
         alt="请求体记录设置"
-        class="rounded-xl border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-6 w-full max-w-3xl"
+        class="rounded border border-[#eee] dark:border-[rgba(255,255,255,0.08)] mt-6 w-full max-w-3xl"
       >
     </section>
 

@@ -68,7 +68,7 @@ export function getFrequencyLabel(ttl: number): string {
  */
 export function getFrequencyClass(ttl: number): string {
   if (ttl <= 5) return 'text-success font-medium'
-  if (ttl <= 15) return 'text-blue-500 font-medium'
+  if (ttl <= 15) return 'text-[#4080ff] font-medium'
   if (ttl <= 30) return 'text-muted-foreground'
   return 'text-destructive'
 }

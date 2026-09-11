@@ -455,7 +455,7 @@
                       </div>
                       <Badge
                         :variant="provider.is_active ? 'outline' : 'secondary'"
-                        :class="provider.is_active ? 'text-green-600 border-green-500/60' : ''"
+                        :class="provider.is_active ? 'text-[#009a29] border-[#00b42a]/60' : ''"
                         class="text-xs shrink-0"
                       >
                         {{ provider.is_active ? '活跃' : '停用' }}
@@ -650,7 +650,7 @@
                       </Badge>
                       <Badge
                         :variant="model.is_active ? 'outline' : 'secondary'"
-                        :class="model.is_active ? 'text-green-600 border-green-500/60' : ''"
+                        :class="model.is_active ? 'text-[#009a29] border-[#00b42a]/60' : ''"
                         class="text-xs"
                       >
                         {{ model.is_active ? '活跃' : '停用' }}
@@ -724,21 +724,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onBeforeUnmount, watch } from 'vue'
-import {
-  Plus,
-  Edit,
-  Trash2,
-  Loader2,
-  Eye,
-  Building2,
-  Search,
-  Power,
-  Copy,
-  Server,
-  Check,
-  ListChecks,
-  RefreshCw,
-} from 'lucide-vue-next'
+import { IconPlus as Plus, IconEdit as Edit, IconDelete as Trash2, IconLoading as Loader2, IconEye as Eye, IconSearch as Search, IconPoweroff as Power, IconCopy as Copy, IconCheck as Check, IconList as ListChecks, IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
+import { Building2, Server } from 'lucide-vue-next'
 import ModelDetailDrawer from '@/features/models/components/ModelDetailDrawer.vue'
 import GlobalModelFormDialog from '@/features/models/components/GlobalModelFormDialog.vue'
 import ExternalModelsAccessControl from '@/features/models/components/ExternalModelsAccessControl.vue'
@@ -1653,19 +1640,19 @@ function getBatchPricingSourceLabel(model: GlobalModelResponse): string {
 
 function getBatchPricingStateClass(model: GlobalModelResponse): string {
   const state = getBatchPricingState(model)
-  if (state === 'syncable') return 'text-amber-700 dark:text-amber-300'
-  if (state === 'source-pending') return 'text-sky-700 dark:text-sky-300'
-  if (state === 'unchanged') return 'text-emerald-700 dark:text-emerald-300'
-  if (state === 'unsupported') return 'text-rose-700 dark:text-rose-300'
+  if (state === 'syncable') return 'text-[#a64b00] dark:text-[#ffcf8b]'
+  if (state === 'source-pending') return 'text-[#072ca6] dark:text-[#6aa1ff]'
+  if (state === 'unchanged') return 'text-[#007d20] dark:text-[#4cd263]'
+  if (state === 'unsupported') return 'text-[#a1151e] dark:text-[#f98981]'
   return 'text-muted-foreground'
 }
 
 function getBatchPricingStateDotClass(model: GlobalModelResponse): string {
   const state = getBatchPricingState(model)
-  if (state === 'syncable') return 'bg-amber-500'
-  if (state === 'source-pending') return 'bg-sky-500'
-  if (state === 'unchanged') return 'bg-emerald-500'
-  if (state === 'unsupported') return 'bg-rose-500'
+  if (state === 'syncable') return 'bg-[#ff7d00]'
+  if (state === 'source-pending') return 'bg-[#165dff]'
+  if (state === 'unchanged') return 'bg-[#00b42a]'
+  if (state === 'unsupported') return 'bg-[#f53f3f]'
   return 'bg-muted-foreground/45'
 }
 

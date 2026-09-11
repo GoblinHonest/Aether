@@ -403,7 +403,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { RefreshCw, Trash2 } from 'lucide-vue-next'
+import { IconRefresh as RefreshCw, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
 import { adminApi, type CleanupRunRecord } from '@/api/admin'
 import Button from '@/components/ui/button.vue'
 import Input from '@/components/ui/input.vue'
@@ -507,9 +507,9 @@ function cleanupStatusLabel(status: string): string {
 }
 
 function cleanupStatusClass(status: string): string {
-  if (status === 'processing') return 'text-amber-500'
+  if (status === 'processing') return 'text-[#ff7d00]'
   if (status === 'failed') return 'text-destructive'
-  return 'text-emerald-500'
+  return 'text-[#00b42a]'
 }
 
 function formatRunTime(value: number): string {

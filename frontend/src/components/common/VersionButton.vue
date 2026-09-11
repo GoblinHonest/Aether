@@ -24,7 +24,7 @@
       align="end"
       side="bottom"
       :side-offset="8"
-      class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded-xl border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
+      class="w-[22rem] max-w-[calc(100vw-1rem)] overflow-hidden rounded border-border/60 bg-card/95 p-0 text-card-foreground shadow-xl shadow-black/5 supports-[backdrop-filter]:bg-card/90"
     >
       <div class="text-left">
         <div class="flex items-center justify-between gap-3 border-b border-border/60 bg-muted/30 px-3 py-2.5">
@@ -180,11 +180,11 @@
                     >{{ $legacyT('当前') }}</span>
                     <span
                       v-else-if="release.is_newer"
-                      class="shrink-0 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400"
+                      class="shrink-0 rounded-full bg-[#00b42a]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#009a29] dark:text-[#23c343]"
                     >{{ $legacyT('新') }}</span>
                     <span
                       v-if="release.is_newer && release.updatable === false"
-                      class="shrink-0 rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-600 dark:text-amber-400"
+                      class="shrink-0 rounded-full bg-[#ff7d00]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#d25f00] dark:text-[#ffb357]"
                     >{{ $legacyT('不可在线更新') }}</span>
                   </div>
                   <div
@@ -239,7 +239,7 @@
         </span>
         <span
           v-else-if="selectedRelease.is_newer"
-          class="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400"
+          class="rounded-full bg-[#00b42a]/10 px-2 py-0.5 text-[11px] font-medium text-[#009a29] dark:text-[#23c343]"
         >
           {{ $legacyT('可升级版本') }}
         </span>
@@ -261,7 +261,7 @@
       <!-- eslint-disable vue/no-v-html -->
       <div
         v-if="selectedReleaseDisplayNotes"
-        class="max-h-[26rem] overflow-y-auto rounded-xl border border-border/60 bg-muted/25 px-4 py-3 text-sm leading-6 text-foreground/90 shadow-inner shadow-black/[0.02] max-w-none prose prose-sm dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 prose-headings:font-semibold prose-headings:text-foreground prose-h3:text-sm prose-p:my-2 prose-ul:my-2 prose-ul:list-disc prose-ul:pl-5 prose-li:my-1 prose-li:marker:text-primary prose-a:text-primary prose-strong:text-foreground prose-code:rounded prose-code:bg-muted prose-code:px-1 prose-code:py-0.5"
+        class="max-h-[26rem] overflow-y-auto rounded border border-border/60 bg-muted/25 px-4 py-3 text-sm leading-6 text-foreground/90 shadow-inner shadow-black/[0.02] max-w-none prose prose-sm dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 prose-headings:font-semibold prose-headings:text-foreground prose-h3:text-sm prose-p:my-2 prose-ul:my-2 prose-ul:list-disc prose-ul:pl-5 prose-li:my-1 prose-li:marker:text-primary prose-a:text-primary prose-strong:text-foreground prose-code:rounded prose-code:bg-muted prose-code:px-1 prose-code:py-0.5"
         v-html="selectedReleaseNotesHtml"
       />
       <!-- eslint-enable vue/no-v-html -->
@@ -295,7 +295,7 @@ import { describeUpdateStatus } from '@/utils/updateStatus'
 import { sanitizeMarkdown } from '@/utils/sanitize'
 import { useI18n } from '@/i18n'
 import { marked } from 'marked'
-import { ChevronRight, Info, RefreshCw } from 'lucide-vue-next'
+import { IconRight as ChevronRight, IconInfo as Info, IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
 
 const props = defineProps<{
   status: CheckUpdateResponse | null

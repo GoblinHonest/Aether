@@ -1,12 +1,13 @@
 /**
  * 公告类型相关工具函数
  */
-import { AlertCircle, AlertTriangle, Wrench, Info, type LucideIcon } from 'lucide-vue-next'
+import type { Component } from 'vue'
+import { IconExclamationCircle as AlertCircle, IconExclamationCircle as AlertTriangle, IconTool as Wrench, IconInfo as Info } from '@arco-design/web-vue/es/icon'
 
 export type AnnouncementType = 'important' | 'warning' | 'maintenance' | 'info'
 
 interface AnnouncementTypeConfig {
-  icon: LucideIcon
+  icon: Component
   iconColor: string
   label: string
   bgColor: string
@@ -17,27 +18,27 @@ interface AnnouncementTypeConfig {
 const announcementTypeConfigs: Record<AnnouncementType, AnnouncementTypeConfig> = {
   important: {
     icon: AlertCircle,
-    iconColor: 'text-rose-600 dark:text-rose-400',
+    iconColor: 'text-[#cb272d] dark:text-[#f76560]',
     label: '重要公告',
-    bgColor: 'bg-rose-50 dark:bg-rose-950/30',
-    borderColor: 'border-rose-200 dark:border-rose-800',
-    textColor: 'text-rose-800 dark:text-rose-200'
+    bgColor: 'bg-[#ffece8] dark:bg-[#4a000a]/30',
+    borderColor: 'border-[#fbaca3] dark:border-[#770813]',
+    textColor: 'text-[#770813] dark:text-[#fbaca3]'
   },
   warning: {
     icon: AlertTriangle,
-    iconColor: 'text-amber-600 dark:text-amber-400',
+    iconColor: 'text-[#d25f00] dark:text-[#ffb357]',
     label: '警告通知',
-    bgColor: 'bg-amber-50 dark:bg-amber-950/30',
-    borderColor: 'border-amber-200 dark:border-amber-800',
-    textColor: 'text-amber-800 dark:text-amber-200'
+    bgColor: 'bg-[#fff7e8] dark:bg-[#4a2000]/30',
+    borderColor: 'border-[#ffe4ba] dark:border-[#783400]',
+    textColor: 'text-[#783400] dark:text-[#ffe4ba]'
   },
   maintenance: {
     icon: Wrench,
-    iconColor: 'text-orange-600 dark:text-orange-400',
+    iconColor: 'text-[#d25f00] dark:text-[#ffb357]',
     label: '维护通知',
-    bgColor: 'bg-orange-50 dark:bg-orange-950/30',
-    borderColor: 'border-orange-200 dark:border-orange-800',
-    textColor: 'text-orange-800 dark:text-orange-200'
+    bgColor: 'bg-[#fff7e8] dark:bg-[#4a2000]/30',
+    borderColor: 'border-[#ffe4ba] dark:border-[#783400]',
+    textColor: 'text-[#783400] dark:text-[#ffe4ba]'
   },
   info: {
     icon: Info,
@@ -59,7 +60,7 @@ export function getAnnouncementConfig(type: string): AnnouncementTypeConfig {
 /**
  * 获取公告图标组件
  */
-export function getAnnouncementIcon(type: string): LucideIcon {
+export function getAnnouncementIcon(type: string): Component {
   return getAnnouncementConfig(type).icon
 }
 

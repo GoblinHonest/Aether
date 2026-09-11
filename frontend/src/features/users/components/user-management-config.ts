@@ -1,9 +1,5 @@
-import {
-  Ban,
-  CheckCircle2,
-  ShieldCheck,
-  UserCog,
-} from 'lucide-vue-next'
+import { IconCheckCircle as CheckCircle2, IconSafe as ShieldCheck } from '@arco-design/web-vue/es/icon'
+import { Ban, UserCog } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import type { UserBatchAction, UserRole } from '@/api/users'
 import type {

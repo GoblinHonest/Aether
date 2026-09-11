@@ -314,17 +314,8 @@
 </template>
 
 <script setup lang="ts">
-import {
-  X,
-  Eye,
-  Wrench,
-  Brain,
-  Zap,
-  Copy,
-  Layers,
-  Database,
-  Image as ImageIcon
-} from 'lucide-vue-next'
+import { IconClose as X, IconEye as Eye, IconTool as Wrench, IconThunderbolt as Zap, IconCopy as Copy, IconLayers as Layers, IconStorage as Database, IconImage as ImageIcon } from '@arco-design/web-vue/es/icon'
+import { Brain } from 'lucide-vue-next'
 import { useEscapeKey } from '@/composables/useEscapeKey'
 import { useClipboard } from '@/composables/useClipboard'
 import Card from '@/components/ui/card.vue'

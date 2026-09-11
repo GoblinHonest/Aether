@@ -11,7 +11,7 @@
           variant="ghost"
           size="icon"
           class="h-8 w-8"
-          :class="proxyNodeId ? 'text-blue-500' : ''"
+          :class="proxyNodeId ? 'text-[#4080ff]' : ''"
           :disabled="loading || !configLoaded"
           :title="t('models.externalCatalog.accessTitle')"
           :aria-label="t('models.externalCatalog.accessTitle')"

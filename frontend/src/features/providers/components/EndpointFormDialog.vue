@@ -68,7 +68,7 @@
                       variant="ghost"
                       size="icon"
                       class="h-7 w-7"
-                      :class="endpointProxyNodeId(endpoint) ? 'text-blue-500' : ''"
+                      :class="endpointProxyNodeId(endpoint) ? 'text-[#4080ff]' : ''"
                       :disabled="savingEndpointId === endpoint.id"
                       :title="getEndpointProxyTitle(endpoint)"
                     >
@@ -492,11 +492,11 @@
                       :key="`response-header-${index}`"
                     >
                       <div
-                        class="flex items-center gap-1.5 px-2 py-1.5 rounded-md border-l-4 border-sky-500/60 bg-muted/30"
+                        class="flex items-center gap-1.5 px-2 py-1.5 rounded-md border-l-4 border-[#165dff]/60 bg-muted/30"
                         :class="[
-                          !rule.enabled ? 'opacity-60 border-sky-500/25 bg-muted/20' : '',
-                          isResponseRuleDragging(endpoint.id, index) ? 'opacity-60 border-sky-500 bg-sky-500/5' : '',
-                          isResponseRuleDragOver(endpoint.id, index) ? 'ring-1 ring-sky-500/40 bg-sky-500/10' : ''
+                          !rule.enabled ? 'opacity-60 border-[#165dff]/25 bg-muted/20' : '',
+                          isResponseRuleDragging(endpoint.id, index) ? 'opacity-60 border-[#165dff] bg-[#165dff]/5' : '',
+                          isResponseRuleDragOver(endpoint.id, index) ? 'ring-1 ring-[#165dff]/40 bg-[#165dff]/10' : ''
                         ]"
                         @dragover.prevent="handleResponseRuleDragOver(endpoint.id, index)"
                         @dragleave="handleResponseRuleDragLeave(endpoint.id, index)"
@@ -513,7 +513,7 @@
                           <GripVertical class="w-3.5 h-3.5" />
                         </button>
                         <span
-                          class="text-[10px] font-semibold text-sky-600 dark:text-sky-400 shrink-0"
+                          class="text-[10px] font-semibold text-[#0e42d2] dark:text-[#4080ff] shrink-0"
                           title="响应头"
                         >R</span>
                         <Switch
@@ -785,7 +785,7 @@
                           />
                           <CheckCircle
                             class="w-4 h-4 shrink-0"
-                            :class="getBodySetValueValidation(rule) === true ? 'text-green-600' : getBodySetValueValidation(rule) === false ? 'text-destructive' : 'text-muted-foreground/40'"
+                            :class="getBodySetValueValidation(rule) === true ? 'text-[#009a29]' : getBodySetValueValidation(rule) === false ? 'text-destructive' : 'text-muted-foreground/40'"
                             :title="getBodySetValueValidationTip(rule)"
                           />
                         </template>
@@ -833,7 +833,7 @@
                           />
                           <CheckCircle
                             class="w-4 h-4 shrink-0"
-                            :class="getBodySetValueValidation(rule) === true ? 'text-green-600' : getBodySetValueValidation(rule) === false ? 'text-destructive' : 'text-muted-foreground/40'"
+                            :class="getBodySetValueValidation(rule) === true ? 'text-[#009a29]' : getBodySetValueValidation(rule) === false ? 'text-destructive' : 'text-muted-foreground/40'"
                             :title="getBodySetValueValidationTip(rule)"
                           />
                         </template>
@@ -862,7 +862,7 @@
                           />
                           <CheckCircle
                             class="w-4 h-4 shrink-0"
-                            :class="getBodySetValueValidation(rule) === true ? 'text-green-600' : getBodySetValueValidation(rule) === false ? 'text-destructive' : 'text-muted-foreground/40'"
+                            :class="getBodySetValueValidation(rule) === true ? 'text-[#009a29]' : getBodySetValueValidation(rule) === false ? 'text-destructive' : 'text-muted-foreground/40'"
                             :title="getBodySetValueValidationTip(rule)"
                           />
                         </template>
@@ -907,7 +907,7 @@
                           />
                           <CheckCircle
                             class="w-4 h-4 shrink-0"
-                            :class="getRegexPatternValidation(rule) === true ? 'text-green-600' : getRegexPatternValidation(rule) === false ? 'text-destructive' : 'text-muted-foreground/40'"
+                            :class="getRegexPatternValidation(rule) === true ? 'text-[#009a29]' : getRegexPatternValidation(rule) === false ? 'text-destructive' : 'text-muted-foreground/40'"
                             :title="getRegexPatternValidationTip(rule)"
                           />
                         </template>
@@ -1069,7 +1069,8 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui'
-import { Settings, Trash2, Check, X, Power, ChevronRight, Plus, Shuffle, RotateCcw, Radio, CheckCircle, Save, Filter, HelpCircle, GripVertical, Globe, Code2, AlignLeft, Eye } from 'lucide-vue-next'
+import { IconSettings as Settings, IconDelete as Trash2, IconCheck as Check, IconClose as X, IconPoweroff as Power, IconRight as ChevronRight, IconPlus as Plus, IconUndo as RotateCcw, IconCheckCircle as CheckCircle, IconSave as Save, IconFilter as Filter, IconQuestionCircle as HelpCircle, IconDragDotVertical as GripVertical, IconCode as Code2, IconAlignLeft as AlignLeft, IconEye as Eye } from '@arco-design/web-vue/es/icon'
+import { Shuffle, Radio, Globe } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
 import { parseApiError } from '@/utils/errorParser'
 import { log } from '@/utils/logger'

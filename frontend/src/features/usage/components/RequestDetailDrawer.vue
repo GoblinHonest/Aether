@@ -58,7 +58,7 @@
                   variant="outline"
                   data-usage-transport="websocket"
                   :title="formatUsageWebSocketTransportTitle(detail)"
-                  class="border-sky-500/50 text-xs text-sky-600 dark:text-sky-400"
+                  class="border-[#165dff]/50 text-xs text-[#0e42d2] dark:text-[#4080ff]"
                 >
                   WS
                 </Badge>
@@ -156,10 +156,10 @@
             <!-- Error State -->
             <Card
               v-else-if="error"
-              class="border-red-200 dark:border-red-800"
+              class="border-[#fbaca3] dark:border-[#770813]"
             >
               <div class="p-4">
-                <p class="text-sm text-red-600 dark:text-red-400">
+                <p class="text-sm text-[#cb272d] dark:text-[#f76560]">
                   {{ error }}
                 </p>
               </div>
@@ -182,7 +182,7 @@
                         <span class="text-muted-foreground">总费用</span>
                         <span
                           class="ml-1 font-bold"
-                          :class="detailPricingAvailable ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'"
+                          :class="detailPricingAvailable ? 'text-[#009a29] dark:text-[#23c343]' : 'text-muted-foreground'"
                           data-request-detail-total-cost
                         >
                           {{ detailPricingAvailable ? `$${detailTotalCostForDisplay.toFixed(6)}` : (detailUsageAvailable ? '未计价' : '不可用') }}
@@ -208,7 +208,7 @@
                         <span class="text-muted-foreground">总费用</span>
                         <span
                           class="ml-1 font-bold"
-                          :class="detailPricingAvailable ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'"
+                          :class="detailPricingAvailable ? 'text-[#009a29] dark:text-[#23c343]' : 'text-muted-foreground'"
                           data-request-detail-total-cost
                         >
                           {{ detailPricingAvailable ? `$${detailTotalCostForDisplay.toFixed(6)}` : (detailUsageAvailable ? '未计价' : '不可用') }}
@@ -655,7 +655,7 @@
                           >
                             <Check
                               v-if="curlCopied"
-                              class="w-3.5 h-3.5 text-green-500"
+                              class="w-3.5 h-3.5 text-[#00b42a]"
                             />
                             <Terminal
                               v-else
@@ -913,7 +913,8 @@ import Separator from '@/components/ui/separator.vue'
 import Skeleton from '@/components/ui/skeleton.vue'
 import Tabs from '@/components/ui/tabs.vue'
 import TabsContent from '@/components/ui/tabs-content.vue'
-import { AlertTriangle, Check, Columns2, RefreshCw, X, Monitor, Server, MessageSquareText, Code2, Terminal, Play } from 'lucide-vue-next'
+import { IconExclamationCircle as AlertTriangle, IconCheck as Check, IconRefresh as RefreshCw, IconClose as X, IconDesktop as Monitor, IconCode as Code2, IconCodeBlock as Terminal, IconPlayArrow as Play } from '@arco-design/web-vue/es/icon'
+import { Columns2, Server, MessageSquareText } from 'lucide-vue-next'
 import { dashboardApi, type RequestBodyField, type RequestDetail } from '@/api/dashboard'
 import { formatRequestBodyLoadError, formatStoredBodyLoadError } from '../utils/body-load-error'
 import type { ImageProgress, RequestTrace } from '@/api/requestTrace'

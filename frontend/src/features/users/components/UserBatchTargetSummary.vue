@@ -20,7 +20,7 @@
 
     <div
       v-if="loading"
-      class="mt-3 rounded-xl border border-border/60 bg-background/65 px-3 py-2 text-xs text-muted-foreground"
+      class="mt-3 rounded border border-border/60 bg-background/65 px-3 py-2 text-xs text-muted-foreground"
     >
       {{ legacyT('正在解析影响范围...') }}
     </div>

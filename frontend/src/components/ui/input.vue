@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import type { ClassValue } from 'clsx'
 import { computed, useAttrs, ref } from 'vue'
-import { Eye, EyeOff } from 'lucide-vue-next'
+import { IconEye as Eye, IconEyeInvisible as EyeOff } from '@arco-design/web-vue/es/icon'
 import { cn } from '@/lib/utils'
 
 const props = defineProps<Props>()
@@ -163,7 +163,7 @@ const sizeClasses = {
 
 const inputClass = computed(() =>
   cn(
-    'flex w-full rounded-xl border border-border/60 bg-muted/50 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary/60 text-foreground transition-all',
+    'flex w-full rounded border border-border/60 bg-muted/50 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary/60 text-foreground transition-all',
     sizeClasses[props.size || 'default'],
     props.masked && 'pr-10',
     props.class

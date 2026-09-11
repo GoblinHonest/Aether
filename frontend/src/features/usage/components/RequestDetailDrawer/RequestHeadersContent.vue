@@ -20,7 +20,7 @@
           </div>
           <div class="flex-1 px-3 py-2 text-xs text-muted-foreground flex items-center justify-between">
             <span class="font-medium">{{ providerLabel }}</span>
-            <span class="text-green-600 dark:text-green-400">+{{ headerStats.added + headerStats.modified }}</span>
+            <span class="text-[#009a29] dark:text-[#23c343]">+{{ headerStats.added + headerStats.modified }}</span>
           </div>
         </div>
 
@@ -48,9 +48,9 @@
               <!-- 修改的行 - 旧值 -->
               <div
                 v-else-if="entry.status === 'modified'"
-                class="flex items-start bg-amber-500/10 px-3 py-0.5"
+                class="flex items-start bg-[#ff7d00]/10 px-3 py-0.5"
               >
-                <span class="text-amber-600 dark:text-amber-400">
+                <span class="text-[#d25f00] dark:text-[#ffb357]">
                   "{{ entry.key }}": "{{ entry.clientValue }}"
                 </span>
               </div>
@@ -94,18 +94,18 @@
               <!-- 修改的行 - 新值 -->
               <div
                 v-else-if="entry.status === 'modified'"
-                class="flex items-start bg-amber-500/10 px-3 py-0.5"
+                class="flex items-start bg-[#ff7d00]/10 px-3 py-0.5"
               >
-                <span class="text-amber-600 dark:text-amber-400">
+                <span class="text-[#d25f00] dark:text-[#ffb357]">
                   "{{ entry.key }}": "{{ entry.providerValue }}"
                 </span>
               </div>
               <!-- 新增的行 -->
               <div
                 v-else-if="entry.status === 'added'"
-                class="flex items-start bg-green-500/10 px-3 py-0.5"
+                class="flex items-start bg-[#00b42a]/10 px-3 py-0.5"
               >
-                <span class="text-green-600 dark:text-green-400">
+                <span class="text-[#009a29] dark:text-[#23c343]">
                   "{{ entry.key }}": "{{ entry.providerValue }}"
                 </span>
               </div>

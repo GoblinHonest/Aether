@@ -132,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { Info } from 'lucide-vue-next'
+import { IconInfo as Info } from '@arco-design/web-vue/es/icon'
 import {
   Input,
   Label,

@@ -216,7 +216,7 @@
                 {{ formatUsd(item.reversed_amount_usd) }}
                 <span
                   v-if="item.pending_reversal_amount_usd > 0"
-                  class="text-xs text-amber-600 dark:text-amber-400"
+                  class="text-xs text-[#d25f00] dark:text-[#ffb357]"
                 >
                   / 待冲回 {{ formatUsd(item.pending_reversal_amount_usd) }}
                 </span>
@@ -263,7 +263,7 @@
 <script setup lang="ts">
 import { getI18nLocale } from '@/i18n'
 import { computed, onMounted, ref } from 'vue'
-import { RefreshCw } from 'lucide-vue-next'
+import { IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
 import {
   referralApi,
   type ReferralRelationshipRecord,

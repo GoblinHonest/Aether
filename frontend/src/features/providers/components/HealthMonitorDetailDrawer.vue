@@ -41,7 +41,7 @@
 
         <div
           v-if="loading"
-          class="flex items-center justify-center rounded-xl border border-dashed border-border/60 py-12 text-muted-foreground"
+          class="flex items-center justify-center rounded border border-dashed border-border/60 py-12 text-muted-foreground"
         >
           <Loader2 class="h-5 w-5 animate-spin" />
           <span class="ml-2 text-sm">加载关联健康...</span>
@@ -49,7 +49,7 @@
 
         <div
           v-else-if="errorMessage"
-          class="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
+          class="rounded border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
         >
           <div class="flex items-start gap-2">
             <AlertTriangle class="mt-0.5 h-4 w-4 flex-shrink-0" />
@@ -100,7 +100,7 @@
 
           <div
             v-if="relatedSections.length === 0"
-            class="rounded-xl border border-dashed border-border/60 py-10 text-center text-sm text-muted-foreground"
+            class="rounded border border-dashed border-border/60 py-10 text-center text-sm text-muted-foreground"
           >
             当前时间范围内暂无关联健康数据
           </div>
@@ -112,7 +112,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { AlertTriangle, Loader2 } from 'lucide-vue-next'
+import { IconExclamationCircle as AlertTriangle, IconLoading as Loader2 } from '@arco-design/web-vue/es/icon'
 import Dialog from '@/components/ui/dialog/Dialog.vue'
 import Button from '@/components/ui/button.vue'
 import {

@@ -311,7 +311,7 @@ const shadows = computed(() => {
           :style="{ border: `1.5px dashed ${colors.coreBorder}` }"
         >
           <div
-            class="w-full h-[26px] rounded-xl flex items-center justify-center font-sans text-[10px] font-semibold"
+            class="w-full h-[26px] rounded flex items-center justify-center font-sans text-[10px] font-semibold"
             :style="{ border: `1px solid ${colors.cardBorder}`, color: colors.textMain }"
           >
             统一模型规范 / 协议聚合
@@ -343,7 +343,7 @@ const shadows = computed(() => {
             </div>
           </div>
           <div
-            class="w-full h-[28px] rounded-xl flex items-center justify-center font-sans text-[10px] font-semibold"
+            class="w-full h-[28px] rounded flex items-center justify-center font-sans text-[10px] font-semibold"
             :style="{ border: `1px solid ${colors.cardBorder}`, color: colors.textMain }"
           >
             智能调度 / 故障转移

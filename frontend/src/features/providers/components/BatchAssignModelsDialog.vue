@@ -169,7 +169,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { Layers, Loader2, Search, Check, ListChecks } from 'lucide-vue-next'
+import { IconLayers as Layers, IconLoading as Loader2, IconSearch as Search, IconCheck as Check, IconList as ListChecks } from '@arco-design/web-vue/es/icon'
 import Dialog from '@/components/ui/dialog/Dialog.vue'
 import Button from '@/components/ui/button.vue'
 import Input from '@/components/ui/input.vue'

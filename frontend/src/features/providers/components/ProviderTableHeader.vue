@@ -147,7 +147,8 @@
 </template>
 
 <script setup lang="ts">
-import { Search, Plus, FilterX, Users, LayoutGrid, List } from 'lucide-vue-next'
+import { IconSearch as Search, IconPlus as Plus, IconUserGroup as Users, IconList as List } from '@arco-design/web-vue/es/icon'
+import { FilterX, LayoutGrid } from 'lucide-vue-next'
 import Button from '@/components/ui/button.vue'
 import Input from '@/components/ui/input.vue'
 import Select from '@/components/ui/select.vue'

@@ -23,7 +23,7 @@
     </template>
 
     <div class="max-h-[64vh] space-y-4 overflow-y-auto">
-      <div class="rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-100/90">
+      <div class="rounded-lg border border-[#ff7d00]/20 bg-[#ff7d00]/10 px-3 py-2.5 text-xs text-[#ffefcf]/90">
         {{ legacyT('后台发放会立即生效；新旧套餐包含同类每日额度、同类会员权益或同名互斥组时，旧套餐整包失效。') }}
       </div>
 
@@ -142,7 +142,7 @@
                 </span>
                 <span
                   v-if="!plan.enabled"
-                  class="shrink-0 text-[10px] text-amber-400"
+                  class="shrink-0 text-[10px] text-[#ffb357]"
                 >
                   {{ legacyT('已下架') }}
                 </span>

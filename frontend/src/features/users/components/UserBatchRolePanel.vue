@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4 rounded-lg border bg-background p-4 shadow-sm">
     <div class="flex items-start gap-3">
-      <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+      <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-primary/10 text-primary">
         <UserCog class="h-4 w-4" />
       </div>
       <div class="min-w-0 space-y-1">
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="grid gap-3 rounded-xl border border-border/70 bg-muted/25 p-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
+    <div class="grid gap-3 rounded border border-border/70 bg-muted/25 p-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
       <div>
         <Label class="text-sm font-medium">{{ legacyT('目标角色') }}</Label>
         <p class="mt-1 text-[11px] text-muted-foreground">
@@ -42,7 +42,7 @@
       </Select>
     </div>
 
-    <div class="rounded-xl border border-amber-200/70 bg-amber-50/70 px-3 py-2.5 text-xs leading-relaxed text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
+    <div class="rounded border border-[#ffe4ba]/70 bg-[#fff7e8]/70 px-3 py-2.5 text-xs leading-relaxed text-[#783400] dark:border-[#4a2000]/50 dark:bg-[#4a2000]/30 dark:text-[#ffe4ba]">
       {{ warningText }}
     </div>
   </div>

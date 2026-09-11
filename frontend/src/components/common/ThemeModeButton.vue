@@ -23,7 +23,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Moon, SunMedium, SunMoon } from 'lucide-vue-next'
+import { IconMoon as Moon } from '@arco-design/web-vue/es/icon'
+import { SunMedium, SunMoon } from 'lucide-vue-next'
 import { useDarkMode } from '@/composables/useDarkMode'
 import { useI18n } from '@/i18n'
 

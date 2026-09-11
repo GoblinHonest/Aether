@@ -92,7 +92,7 @@
             >
               <CheckCircle
                 v-if="installCopied"
-                class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400"
+                class="h-3.5 w-3.5 text-[#009a29] dark:text-[#23c343]"
               />
               <Copy
                 v-else
@@ -131,7 +131,7 @@
         <Label>{{ legacyT('代理地址 *') }}</Label>
         <Textarea
           v-model="batchContent"
-          class="min-h-[180px] font-mono text-xs break-all !rounded-xl"
+          class="min-h-[180px] font-mono text-xs break-all !rounded"
           placeholder="socks5://username:password@1.2.3.4:1080&#10;http://username:password@5.6.7.8:8080"
         />
       </div>
@@ -292,7 +292,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { CheckCircle, Copy, ListPlus, Plus, SquarePen, Terminal } from 'lucide-vue-next'
+import { IconCheckCircle as CheckCircle, IconCopy as Copy, IconPlus as Plus, IconEdit as SquarePen, IconCodeBlock as Terminal } from '@arco-design/web-vue/es/icon'
+import { ListPlus } from 'lucide-vue-next'
 import { Button, Dialog, Input, Label, Textarea } from '@/components/ui'
 import type { ProxyNode } from '@/api/proxy-nodes'
 import { useI18n } from '@/i18n'

@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-2 rounded-xl border border-border/70 bg-muted/20 p-3 sm:grid-cols-[9rem_minmax(0,1fr)] sm:items-start">
+  <div class="grid gap-2 rounded border border-border/70 bg-muted/20 p-3 sm:grid-cols-[9rem_minmax(0,1fr)] sm:items-start">
     <div>
       <Label class="text-sm font-medium">{{ legacyT('按分组选择') }}</Label>
       <p class="mt-1 text-[11px] text-muted-foreground">

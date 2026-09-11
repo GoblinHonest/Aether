@@ -25,9 +25,9 @@
         class="p-4"
       >
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-lg bg-[#4080ff]/10 flex items-center justify-center">
             <Loader2
-              class="w-5 h-5 text-blue-500"
+              class="w-5 h-5 text-[#4080ff]"
               :class="{ 'animate-spin': runningCount > 0 }"
             />
           </div>
@@ -46,8 +46,8 @@
         class="p-4"
       >
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-            <CheckCircle class="w-5 h-5 text-green-500" />
+          <div class="w-10 h-10 rounded-lg bg-[#00b42a]/10 flex items-center justify-center">
+            <CheckCircle class="w-5 h-5 text-[#00b42a]" />
           </div>
           <div>
             <p class="text-2xl font-bold">
@@ -64,8 +64,8 @@
         class="p-4"
       >
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-            <Calendar class="w-5 h-5 text-amber-500" />
+          <div class="w-10 h-10 rounded-lg bg-[#ff7d00]/10 flex items-center justify-center">
+            <Calendar class="w-5 h-5 text-[#ff7d00]" />
           </div>
           <div>
             <p class="text-2xl font-bold">
@@ -291,7 +291,7 @@
                 </div>
                 <div
                   v-if="finishTime(task)"
-                  class="flex items-center gap-1.5 text-green-600 dark:text-green-400"
+                  class="flex items-center gap-1.5 text-[#009a29] dark:text-[#23c343]"
                 >
                   <CheckCircle class="w-3 h-3" />
                   <span>{{ formatDate(finishTime(task)) }}</span>
@@ -417,7 +417,7 @@
               v-if="authStore.canOperateAdmin && canCancel(task.status)"
               variant="outline"
               size="sm"
-              class="h-7 text-xs text-red-500 border-red-200 hover:bg-red-50"
+              class="h-7 text-xs text-[#f53f3f] border-[#fbaca3] hover:bg-[#ffece8]"
               @click.stop="cancelTask(task)"
             >
               <XCircle class="w-3.5 h-3.5 mr-1" />
@@ -541,18 +541,18 @@
               <!-- 错误信息 -->
               <div
                 v-if="selectedTask.error_message"
-                class="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800"
+                class="p-3 bg-[#ffece8] dark:bg-[#4a000a]/20 rounded-lg border border-[#fbaca3] dark:border-[#770813]"
               >
                 <div class="flex items-start gap-2">
-                  <AlertCircle class="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  <AlertCircle class="w-4 h-4 text-[#f53f3f] shrink-0 mt-0.5" />
                   <div>
                     <p
                       v-if="selectedTask.error_code"
-                      class="text-xs font-medium text-red-600 dark:text-red-400 mb-1"
+                      class="text-xs font-medium text-[#cb272d] dark:text-[#f76560] mb-1"
                     >
                       错误码: {{ selectedTask.error_code }}
                     </p>
-                    <p class="text-sm text-red-600 dark:text-red-400">
+                    <p class="text-sm text-[#cb272d] dark:text-[#f76560]">
                       {{ selectedTask.error_message }}
                     </p>
                   </div>
@@ -601,7 +601,7 @@
                       </span>
                       <span
                         v-if="selectedTask.video_expires_at"
-                        class="text-amber-600 dark:text-amber-400"
+                        class="text-[#d25f00] dark:text-[#ffb357]"
                       >
                         过期: {{ formatDate(selectedTask.video_expires_at) }}
                       </span>
@@ -650,10 +650,10 @@
               <!-- 任务完成但无视频 -->
               <div
                 v-else-if="isSucceededStatus(selectedTask.status) && isVideoTask(selectedTask)"
-                class="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 text-center"
+                class="p-4 bg-[#fff7e8] dark:bg-[#4a2000]/20 rounded-lg border border-[#ffe4ba] dark:border-[#783400] text-center"
               >
-                <Video class="w-8 h-8 mx-auto mb-2 text-amber-500" />
-                <p class="text-sm text-amber-600 dark:text-amber-400">
+                <Video class="w-8 h-8 mx-auto mb-2 text-[#ff7d00]" />
+                <p class="text-sm text-[#d25f00] dark:text-[#ffb357]">
                   视频链接不可用或已过期
                 </p>
               </div>
@@ -880,25 +880,8 @@ import TableHead from '@/components/ui/table-head.vue'
 import TableCell from '@/components/ui/table-cell.vue'
 import Pagination from '@/components/ui/pagination.vue'
 import { RequestDetailDrawer } from '@/features/usage/components'
-import {
-  Zap,
-  Video,
-  Loader2,
-  FileJson,
-  CheckCircle,
-  Calendar,
-  RefreshCw,
-  User,
-  Server,
-  Clock,
-  Timer,
-  XCircle,
-  X,
-  AlertCircle,
-  Eye,
-  ExternalLink,
-  Copy,
-} from 'lucide-vue-next'
+import { IconThunderbolt as Zap, IconVideoCamera as Video, IconLoading as Loader2, IconFile as FileJson, IconCheckCircle as CheckCircle, IconCalendar as Calendar, IconRefresh as RefreshCw, IconUser as User, IconClockCircle as Clock, IconCloseCircle as XCircle, IconClose as X, IconExclamationCircle as AlertCircle, IconEye as Eye, IconLaunch as ExternalLink, IconCopy as Copy } from '@arco-design/web-vue/es/icon'
+import { Server, Timer } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { log } from '@/utils/logger'
 

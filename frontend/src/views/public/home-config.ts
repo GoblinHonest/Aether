@@ -1,5 +1,6 @@
 import { computed, type Ref } from 'vue'
-import { Layers, Puzzle, Users } from 'lucide-vue-next'
+import { IconLayers as Layers, IconUserGroup as Users } from '@arco-design/web-vue/es/icon'
+import { Puzzle } from 'lucide-vue-next'
 
 // Section index constants
 export const SECTIONS = {
@@ -94,8 +95,8 @@ GEMINI_MODEL=latest-model-name`)
 
 // CSS class constants
 export const panelClasses = {
-  commandPanel: 'rounded-xl border command-panel-surface',
-  configPanel: 'rounded-xl border config-panel',
+  commandPanel: 'rounded border command-panel-surface',
+  configPanel: 'rounded border config-panel',
   panelHeader: 'px-4 py-2 panel-header',
   codeBody: 'code-panel-body',
   iconButtonSmall: [

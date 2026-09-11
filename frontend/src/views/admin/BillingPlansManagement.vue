@@ -112,11 +112,11 @@
                 <TableCell class="text-center">
                   <span
                     class="inline-flex items-center gap-1.5 text-xs"
-                    :class="plan.enabled ? 'text-emerald-500' : 'text-muted-foreground'"
+                    :class="plan.enabled ? 'text-[#00b42a]' : 'text-muted-foreground'"
                   >
                     <span
                       class="h-1.5 w-1.5 rounded-full"
-                      :class="plan.enabled ? 'bg-emerald-500' : 'bg-muted-foreground/40'"
+                      :class="plan.enabled ? 'bg-[#00b42a]' : 'bg-muted-foreground/40'"
                     />
                     {{ plan.enabled ? '已启用' : '已停用' }}
                   </span>
@@ -182,7 +182,7 @@
           <Button
             variant="outline"
             size="sm"
-            class="h-12 justify-start rounded-xl px-3 text-left"
+            class="h-12 justify-start rounded px-3 text-left"
             @click="applyTemplate('daily')"
           >
             <span>
@@ -193,7 +193,7 @@
           <Button
             variant="outline"
             size="sm"
-            class="h-12 justify-start rounded-xl px-3 text-left"
+            class="h-12 justify-start rounded px-3 text-left"
             @click="applyTemplate('traffic')"
           >
             <span>
@@ -204,7 +204,7 @@
           <Button
             variant="outline"
             size="sm"
-            class="h-12 justify-start rounded-xl px-3 text-left"
+            class="h-12 justify-start rounded px-3 text-left"
             @click="applyTemplate('membership')"
           >
             <span>
@@ -215,7 +215,7 @@
           <Button
             variant="outline"
             size="sm"
-            class="h-12 justify-start rounded-xl px-3 text-left"
+            class="h-12 justify-start rounded px-3 text-left"
             @click="applyTemplate('mixed')"
           >
             <span>
@@ -225,7 +225,7 @@
           </Button>
         </div>
 
-        <div class="rounded-xl border border-border/60 bg-muted/20 px-3 py-2">
+        <div class="rounded border border-border/60 bg-muted/20 px-3 py-2">
           <div class="grid grid-cols-1 gap-2 lg:grid-cols-[1fr_auto]">
             <div class="min-w-0 space-y-1.5">
               <div class="flex flex-wrap items-center gap-2">
@@ -293,7 +293,7 @@
               <Input
                 id="plan-title"
                 v-model="form.title"
-                class="h-9 rounded-xl bg-muted/70"
+                class="h-9 rounded bg-muted/70"
                 placeholder="Pro 月卡"
               />
             </div>
@@ -329,7 +329,7 @@
                 <Input
                   id="plan-price"
                   v-model.number="form.price_amount"
-                  class="h-9 rounded-l-xl rounded-r-none border-r-0 bg-muted/70 focus-visible:z-10"
+                  class="h-9 rounded-l rounded-r-none border-r-0 bg-muted/70 focus-visible:z-10"
                   type="number"
                   inputmode="decimal"
                   min="0.01"
@@ -337,7 +337,7 @@
                   @blur="normalizePriceAmount"
                 />
                 <Select v-model="form.price_currency">
-                  <SelectTrigger class="h-9 rounded-l-none rounded-r-xl border-l-0 bg-muted/70 px-3 focus:z-10">
+                  <SelectTrigger class="h-9 rounded-l-none rounded-r border-l-0 bg-muted/70 px-3 focus:z-10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -428,7 +428,7 @@
                 <Select v-model="form.purchase_limit_scope">
                   <SelectTrigger
                     id="plan-purchase-limit-scope"
-                    class="h-9 rounded-xl bg-muted/70 px-3"
+                    class="h-9 rounded bg-muted/70 px-3"
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -480,7 +480,7 @@
                   <Input
                     id="plan-duration"
                     v-model.number="form.duration_value"
-                    class="h-9 rounded-l-xl rounded-r-none border-r-0 bg-muted/70 focus-visible:z-10"
+                    class="h-9 rounded-l rounded-r-none border-r-0 bg-muted/70 focus-visible:z-10"
                     type="number"
                     inputmode="numeric"
                     min="1"
@@ -488,7 +488,7 @@
                     @blur="normalizeDurationValue"
                   />
                   <Select v-model="form.duration_unit">
-                    <SelectTrigger class="h-9 rounded-l-none rounded-r-xl border-l-0 bg-muted/70 px-3 focus:z-10">
+                    <SelectTrigger class="h-9 rounded-l-none rounded-r border-l-0 bg-muted/70 px-3 focus:z-10">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -542,7 +542,7 @@
                 <Input
                   id="plan-max-active"
                   v-model.number="form.max_active_per_user"
-                  class="h-9 rounded-xl bg-muted/70"
+                  class="h-9 rounded bg-muted/70"
                   type="number"
                   inputmode="numeric"
                   min="1"
@@ -550,11 +550,11 @@
                   @blur="normalizeActiveLimit"
                 />
               </div>
-              <div class="xl:col-span-12 rounded-xl border border-border/60 bg-muted/20 px-3 py-2 text-xs leading-5 text-muted-foreground">
+              <div class="xl:col-span-12 rounded border border-border/60 bg-muted/20 px-3 py-2 text-xs leading-5 text-muted-foreground">
                 <span class="font-medium text-foreground/80">当前逻辑：</span>
                 {{ purchaseLimitSummaryText }}
               </div>
-              <div class="xl:col-span-12 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-5 text-amber-200">
+              <div class="xl:col-span-12 rounded border border-[#ff7d00]/30 bg-[#ff7d00]/10 px-3 py-2 text-xs leading-5 text-[#ffe4ba]">
                 每日额度和会员权益仍按类型互斥；使用限制套餐默认可同时生效，相同指标与窗口按最严格上限执行。仅同名套餐互斥组会替换旧套餐；替换时组合权益整体失效。
               </div>
             </div>
@@ -596,7 +596,7 @@
                 <Input
                   id="plan-sort"
                   v-model.number="form.sort_order"
-                  class="h-9 rounded-xl bg-muted/70"
+                  class="h-9 rounded bg-muted/70"
                   type="number"
                   step="1"
                 />
@@ -624,7 +624,7 @@
                     </Tooltip>
                   </TooltipProvider>
                 </Label>
-                <div class="flex h-9 items-center justify-between rounded-xl border border-border/60 bg-muted/70 px-3">
+                <div class="flex h-9 items-center justify-between rounded border border-border/60 bg-muted/70 px-3">
                   <span class="text-sm text-muted-foreground">
                     {{ form.enabled ? '已上架' : '未上架' }}
                   </span>
@@ -696,7 +696,7 @@
                   与新套餐的任一权益使用同名组时，旧套餐及其组合权益会整体失效。
                 </p>
               </div>
-              <p class="rounded-xl border border-border/50 bg-card/60 px-3 py-2 text-xs leading-5 text-muted-foreground md:col-span-2">
+              <p class="rounded border border-border/50 bg-card/60 px-3 py-2 text-xs leading-5 text-muted-foreground md:col-span-2">
                 {{ walletCreditDetailText }}
               </p>
             </div>
@@ -746,7 +746,7 @@
                   每日额度套餐本身已按类型互斥；填写后还可与其他权益类型的同名组整包互斥。
                 </p>
               </div>
-              <div class="flex items-center justify-between rounded-xl border border-border/60 bg-card/50 p-3">
+              <div class="flex items-center justify-between rounded border border-border/60 bg-card/50 p-3">
                 <div>
                   <Label>允许超额扣钱包</Label>
                   <p class="mt-1 text-xs text-muted-foreground">
@@ -755,7 +755,7 @@
                 </div>
                 <Switch v-model="form.allow_wallet_overage" />
               </div>
-              <div class="flex items-center justify-between rounded-xl border border-border/60 bg-card/50 p-3 opacity-70">
+              <div class="flex items-center justify-between rounded border border-border/60 bg-card/50 p-3 opacity-70">
                 <div>
                   <Label>额度结转</Label>
                   <p class="mt-1 text-xs text-muted-foreground">
@@ -767,7 +767,7 @@
                   disabled
                 />
               </div>
-              <p class="rounded-xl border border-border/50 bg-card/60 px-3 py-2 text-xs leading-5 text-muted-foreground md:col-span-2">
+              <p class="rounded border border-border/50 bg-card/60 px-3 py-2 text-xs leading-5 text-muted-foreground md:col-span-2">
                 {{ dailyQuotaDetailText }}
               </p>
             </div>
@@ -790,7 +790,7 @@
               v-if="form.membership_group_enabled"
               class="space-y-3"
             >
-              <p class="rounded-xl border border-border/50 bg-card/60 px-3 py-2 text-xs leading-5 text-muted-foreground">
+              <p class="rounded border border-border/50 bg-card/60 px-3 py-2 text-xs leading-5 text-muted-foreground">
                 {{ membershipDetailText }}
               </p>
               <MultiSelect
@@ -844,7 +844,7 @@
               <div
                 v-for="(policy, policyIndex) in form.usage_policies"
                 :key="policy.local_id"
-                class="space-y-3 rounded-xl border border-border/60 bg-card/50 p-3"
+                class="space-y-3 rounded border border-border/60 bg-card/50 p-3"
               >
                 <div class="flex items-center justify-between gap-3">
                   <div class="text-sm font-medium">
@@ -897,7 +897,7 @@
                     <div
                       v-for="(rule, ruleIndex) in policy.rules"
                       :key="rule.local_id"
-                      class="grid grid-cols-1 gap-3 rounded-xl border border-border/60 bg-background/50 p-3 lg:grid-cols-[150px_190px_minmax(260px,1fr)_110px_36px] lg:items-end lg:gap-2 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0"
+                      class="grid grid-cols-1 gap-3 rounded border border-border/60 bg-background/50 p-3 lg:grid-cols-[150px_190px_minmax(260px,1fr)_110px_36px] lg:items-end lg:gap-2 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0"
                     >
                       <div class="space-y-1.5">
                         <Label>指标</Label>
@@ -1157,7 +1157,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { CircleHelp, MoreHorizontal, Plus, Trash2 } from 'lucide-vue-next'
+import { IconQuestionCircle as CircleHelp, IconMore as MoreHorizontal, IconPlus as Plus, IconDelete as Trash2 } from '@arco-design/web-vue/es/icon'
 import {
   adminBillingPlansApi,
   type BillingDurationUnit,

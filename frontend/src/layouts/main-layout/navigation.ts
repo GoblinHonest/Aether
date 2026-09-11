@@ -1,32 +1,7 @@
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
-import type { LucideIcon } from 'lucide-vue-next'
-import {
-  Activity,
-  BarChart3,
-  Box,
-  Cog,
-  CreditCard,
-  Database,
-  FileUp,
-  FolderTree,
-  Gift,
-  Gauge,
-  Home,
-  Key,
-  KeyRound,
-  Layers,
-  Package,
-  Puzzle,
-  Send,
-  Server,
-  Shield,
-  SlidersHorizontal,
-  SquareTerminal,
-  Users,
-  Wallet,
-  Zap,
-  Megaphone,
-} from 'lucide-vue-next'
+import type { Component } from 'vue'
+import { IconBarChart as BarChart3, IconSettings as Cog, IconStorage as Database, IconUpload as FileUp, IconGift as Gift, IconDashboard as Gauge, IconHome as Home, IconSafe as Key, IconSafe as KeyRound, IconLayers as Layers, IconArchive as Package, IconSend as Send, IconSafe as Shield, IconSettings as SlidersHorizontal, IconUserGroup as Users, IconThunderbolt as Zap } from '@arco-design/web-vue/es/icon'
+import { Activity, Box, CreditCard, FolderTree, Puzzle, Server, SquareTerminal, Wallet, Megaphone } from 'lucide-vue-next'
 import type { NavigationGroup } from '@/components/layout/SidebarNav.vue'
 import type { ModuleStatus } from '@/api/modules'
 import { BUILTIN_TOOL_BREADCRUMBS } from '@/config/builtin-tools'
@@ -42,7 +17,7 @@ export interface BreadcrumbItem {
 
 type NavItem = NavigationGroup['items'][number]
 
-const moduleIconMap: Record<string, LucideIcon> = {
+const moduleIconMap: Record<string, Component> = {
   Key,
   KeyRound,
   FileUp,

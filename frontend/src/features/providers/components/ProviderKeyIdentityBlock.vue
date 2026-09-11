@@ -130,7 +130,7 @@
 
       <span
         v-if="antigravityInactive"
-        class="text-[10px] text-orange-500 dark:text-orange-400"
+        class="text-[10px] text-[#ff7d00] dark:text-[#ffb357]"
         :title="legacyT('该账号尚未完成 Gemini Code Assist 激活，无法获取配额和使用模型')"
         data-testid="provider-key-antigravity-inactive"
       >
@@ -142,7 +142,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Copy, Download, RefreshCw, ShieldX } from 'lucide-vue-next'
+import { IconCopy as Copy, IconDownload as Download, IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
+import { ShieldX } from 'lucide-vue-next'
 import Button from '@/components/ui/button.vue'
 import Badge from '@/components/ui/badge.vue'
 import { useI18n } from '@/i18n'

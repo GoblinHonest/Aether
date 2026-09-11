@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-lg border border-border/70 bg-muted/20 p-2.5 sm:rounded-xl sm:p-3">
+  <div class="rounded-lg border border-border/70 bg-muted/20 p-2.5 sm:rounded sm:p-3">
     <div class="mb-2 flex items-center justify-between gap-2 sm:mb-3">
       <Label class="text-sm font-semibold">{{ legacyT('分组') }}</Label>
       <Button
@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRight, Plus } from 'lucide-vue-next'
+import { IconRight as ChevronRight, IconPlus as Plus } from '@arco-design/web-vue/es/icon'
 import { Badge, Button, Label } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { useI18n } from '@/i18n'

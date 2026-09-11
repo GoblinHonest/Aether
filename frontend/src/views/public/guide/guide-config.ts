@@ -1,13 +1,6 @@
 import type { Component } from 'vue'
-import {
-  Rocket,
-  Network,
-  BookOpen,
-  Target,
-  Settings,
-  Blocks,
-  HelpCircle
-} from 'lucide-vue-next'
+import { IconBook as BookOpen, IconSettings as Settings, IconQuestionCircle as HelpCircle } from '@arco-design/web-vue/es/icon'
+import { Rocket, Network, Target, Blocks } from 'lucide-vue-next'
 import type { MessageKey } from '@/i18n'
 
 // 导航配置
@@ -115,18 +108,18 @@ export const guideNavItems: GuideNavItem[] = [
 
 // 样式类常量 - 使用 Literary Tech 主题
 export const panelClasses = {
-  card: 'literary-card rounded-2xl backdrop-blur-sm transition-all duration-300',
+  card: 'literary-card rounded backdrop-blur-sm transition-all duration-300',
   cardHover: 'hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[var(--book-cloth)]/10 shadow-[var(--book-cloth)]/10',
-  section: 'literary-surface-inset bg-white/40 dark:bg-black/20 backdrop-blur-md rounded-xl md:rounded-2xl p-5 md:p-8 transition-colors',
-  commandPanel: 'literary-surface-elevated rounded-xl overflow-hidden shadow-sm backdrop-blur-md',
-  configPanel: 'literary-surface-elevated rounded-xl overflow-hidden',
+  section: 'literary-surface-inset bg-white/40 dark:bg-black/20 backdrop-blur-md rounded md:rounded p-5 md:p-8 transition-colors',
+  commandPanel: 'literary-surface-elevated rounded overflow-hidden shadow-sm backdrop-blur-md',
+  configPanel: 'literary-surface-elevated rounded overflow-hidden',
   panelHeader: 'px-4 py-3 border-b literary-border bg-[var(--color-background-soft)]/50',
   codeBody: 'p-0',
   badge: 'literary-badge bg-[var(--color-background)] rounded-full px-3 py-1.5',
-  badgeBlue: 'inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 dark:bg-blue-500/20 border border-blue-500/20 dark:border-blue-500/40 px-2 py-0.5 text-xs font-medium text-blue-600 dark:text-blue-400',
-  badgeGreen: 'inline-flex items-center gap-1.5 rounded-full bg-green-500/10 dark:bg-green-500/20 border border-green-500/20 dark:border-green-500/40 px-2 py-0.5 text-xs font-medium text-green-600 dark:text-green-400',
-  badgeYellow: 'inline-flex items-center gap-1.5 rounded-full bg-yellow-500/10 dark:bg-yellow-500/20 border border-yellow-500/20 dark:border-yellow-500/40 px-2 py-0.5 text-xs font-medium text-yellow-600 dark:text-yellow-400',
-  badgePurple: 'inline-flex items-center gap-1.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20 border border-purple-500/20 dark:border-purple-500/40 px-2 py-0.5 text-xs font-medium text-purple-600 dark:text-purple-400',
+  badgeBlue: 'inline-flex items-center gap-1.5 rounded-full bg-[#4080ff]/10 dark:bg-[#4080ff]/20 border border-[#4080ff]/20 dark:border-[#4080ff]/40 px-2 py-0.5 text-xs font-medium text-[#165dff] dark:text-[#6aa1ff]',
+  badgeGreen: 'inline-flex items-center gap-1.5 rounded-full bg-[#00b42a]/10 dark:bg-[#00b42a]/20 border border-[#00b42a]/20 dark:border-[#00b42a]/40 px-2 py-0.5 text-xs font-medium text-[#009a29] dark:text-[#23c343]',
+  badgeYellow: 'inline-flex items-center gap-1.5 rounded-full bg-[#ff7d00]/10 dark:bg-[#ff7d00]/20 border border-[#ff7d00]/20 dark:border-[#ff7d00]/40 px-2 py-0.5 text-xs font-medium text-[#d25f00] dark:text-[#ffb357]',
+  badgePurple: 'inline-flex items-center gap-1.5 rounded-full bg-[#722ed1]/10 dark:bg-[#722ed1]/20 border border-[#722ed1]/20 dark:border-[#722ed1]/40 px-2 py-0.5 text-xs font-medium text-[#551db0] dark:text-[#914dd9]',
   iconButtonSmall: [
     'flex items-center justify-center rounded-lg border h-8 w-8',
     'literary-border',

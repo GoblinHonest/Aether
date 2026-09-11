@@ -80,9 +80,9 @@ describe.each([
 ] as const)('%s endpoint health', (_name, component) => {
   it.each([
     { score: null, label: '-', width: '100%', color: 'bg-muted-foreground/40' },
-    { score: 0, label: '0%', width: '5%', color: 'bg-red-500' },
-    { score: 0.8, label: '80%', width: '80%', color: 'bg-green-500' },
-    { score: 1, label: '100%', width: '100%', color: 'bg-green-500' },
+    { score: 0, label: '0%', width: '5%', color: 'bg-[#f53f3f]' },
+    { score: 0.8, label: '80%', width: '80%', color: 'bg-[#00b42a]' },
+    { score: 1, label: '100%', width: '100%', color: 'bg-[#00b42a]' },
   ])('renders $score without confusing unknown health with zero', ({ score, label, width, color }) => {
     const root = mountProvider(component, score)
     const health = root.querySelector('[title*="健康"]')

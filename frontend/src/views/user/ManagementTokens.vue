@@ -591,8 +591,8 @@
       <template #header>
         <div class="border-b border-border px-6 py-4">
           <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex-shrink-0">
-              <CheckCircle class="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#aff0b5] dark:bg-[#003d0c]/30 flex-shrink-0">
+              <CheckCircle class="h-5 w-5 text-[#009a29] dark:text-[#23c343]" />
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="text-lg font-semibold text-foreground leading-tight">
@@ -625,10 +625,10 @@
             </Button>
           </div>
         </div>
-        <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+        <div class="p-3 rounded-lg bg-[#fff7e8] dark:bg-[#4a2000]/30 border border-[#ffe4ba] dark:border-[#783400]">
           <div class="flex gap-2">
-            <AlertTriangle class="h-4 w-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-            <p class="text-sm text-amber-800 dark:text-amber-200">
+            <AlertTriangle class="h-4 w-4 text-[#d25f00] dark:text-[#ffb357] flex-shrink-0 mt-0.5" />
+            <p class="text-sm text-[#783400] dark:text-[#ffe4ba]">
               此令牌只会显示一次，关闭后将无法再次查看，请妥善保管。
             </p>
           </div>
@@ -699,17 +699,7 @@ import {
   TableRow
 } from '@/components/ui'
 import RefreshButton from '@/components/ui/refresh-button.vue'
-import {
-  Plus,
-  KeyRound,
-  Trash2,
-  Loader2,
-  CheckCircle,
-  Power,
-  Pencil,
-  RefreshCw,
-  AlertTriangle
-} from 'lucide-vue-next'
+import { IconPlus as Plus, IconSafe as KeyRound, IconDelete as Trash2, IconLoading as Loader2, IconCheckCircle as CheckCircle, IconPoweroff as Power, IconEdit as Pencil, IconRefresh as RefreshCw, IconExclamationCircle as AlertTriangle } from '@arco-design/web-vue/es/icon'
 import { useToast } from '@/composables/useToast'
 import { log } from '@/utils/logger'
 import { parseApiError } from '@/utils/errorParser'

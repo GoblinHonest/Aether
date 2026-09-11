@@ -293,7 +293,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { ArrowDown, ArrowUp, GripVertical, Key, Layers, ListChecks } from 'lucide-vue-next'
+import { IconArrowDown as ArrowDown, IconArrowUp as ArrowUp, IconDragDotVertical as GripVertical, IconSafe as Key, IconLayers as Layers, IconList as ListChecks } from '@arco-design/web-vue/es/icon'
 
 import client from '@/api/client'
 import {

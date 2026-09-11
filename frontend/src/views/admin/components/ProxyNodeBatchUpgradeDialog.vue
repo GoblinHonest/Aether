@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { Settings } from 'lucide-vue-next'
+import { IconSettings as Settings } from '@arco-design/web-vue/es/icon'
 import { Button, Dialog, Input, Label } from '@/components/ui'
 import { useI18n } from '@/i18n'
 

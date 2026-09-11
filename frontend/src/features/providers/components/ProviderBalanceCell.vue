@@ -54,8 +54,8 @@
             <div
               class="h-full rounded-full"
               :class="[
-                item.percent !== undefined && item.percent >= 50 ? 'bg-green-500' :
-                item.percent !== undefined && item.percent >= 20 ? 'bg-amber-500' : 'bg-red-500'
+                item.percent !== undefined && item.percent >= 50 ? 'bg-[#00b42a]' :
+                item.percent !== undefined && item.percent >= 20 ? 'bg-[#ff7d00]' : 'bg-[#f53f3f]'
               ]"
               :style="{ width: `${item.percent ?? 0}%` }"
             />
@@ -73,7 +73,7 @@
         class="flex items-center gap-1"
       >
         <span
-          class="text-[10px] text-amber-600 dark:text-amber-500"
+          class="text-[10px] text-[#d25f00] dark:text-[#ff7d00]"
           :title="getProviderCookieExpired(provider.id)?.message"
         >{{ legacyT('签到 Cookie 已失效') }}</span>
       </div>
@@ -128,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2 } from 'lucide-vue-next'
+import { IconLoading as Loader2 } from '@arco-design/web-vue/es/icon'
 import Badge from '@/components/ui/badge.vue'
 import type { ProviderWithEndpointsSummary } from '@/api/endpoints'
 import { formatBillingType } from '@/utils/format'

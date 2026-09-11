@@ -10,7 +10,7 @@
   >
     <div class="space-y-3.5">
       <nav
-        class="grid grid-cols-3 gap-1.5 rounded-xl bg-muted/40 p-1.5"
+        class="grid grid-cols-3 gap-1.5 rounded bg-muted/40 p-1.5"
         aria-label="批量导入步骤"
       >
         <button
@@ -34,7 +34,7 @@
 
       <section
         v-if="currentStep === 1"
-        class="overflow-hidden rounded-xl bg-background shadow-[0_0_0_1px_rgb(0_0_0/0.07),0_1px_2px_-1px_rgb(0_0_0/0.08),0_3px_8px_-3px_rgb(0_0_0/0.08)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.09)]"
+        class="overflow-hidden rounded bg-background shadow-[0_0_0_1px_rgb(0_0_0/0.07),0_1px_2px_-1px_rgb(0_0_0/0.08),0_3px_8px_-3px_rgb(0_0_0/0.08)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.09)]"
       >
         <header class="flex min-h-14 items-center justify-between gap-3 border-b border-border/60 bg-muted/15 px-4 py-3">
           <div class="flex min-w-0 items-center gap-3">
@@ -95,7 +95,7 @@
 
       <section
         v-else-if="currentStep === 2"
-        class="overflow-hidden rounded-xl bg-background shadow-[0_0_0_1px_rgb(0_0_0/0.07),0_1px_2px_-1px_rgb(0_0_0/0.08),0_3px_8px_-3px_rgb(0_0_0/0.08)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.09)]"
+        class="overflow-hidden rounded bg-background shadow-[0_0_0_1px_rgb(0_0_0/0.07),0_1px_2px_-1px_rgb(0_0_0/0.08),0_3px_8px_-3px_rgb(0_0_0/0.08)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.09)]"
       >
         <header class="flex min-h-[72px] items-center gap-3 px-4 py-3">
           <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-foreground text-xs font-semibold text-background">
@@ -134,7 +134,7 @@
 
       <section
         v-else
-        class="overflow-hidden rounded-xl bg-background shadow-[0_0_0_1px_rgb(0_0_0/0.07),0_1px_2px_-1px_rgb(0_0_0/0.08),0_3px_8px_-3px_rgb(0_0_0/0.08)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.09)]"
+        class="overflow-hidden rounded bg-background shadow-[0_0_0_1px_rgb(0_0_0/0.07),0_1px_2px_-1px_rgb(0_0_0/0.08),0_3px_8px_-3px_rgb(0_0_0/0.08)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.09)]"
       >
         <header class="flex min-h-[72px] items-center gap-3 border-b border-border/60 bg-muted/15 px-4 py-3">
           <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-foreground text-xs font-semibold text-background">3</span>
@@ -338,15 +338,8 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import {
-  ArrowLeft,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  ListPlus,
-  Loader2,
-  Pencil,
-} from 'lucide-vue-next'
+import { IconArrowLeft as ArrowLeft, IconArrowRight as ArrowRight, IconLeft as ChevronLeft, IconRight as ChevronRight, IconLoading as Loader2, IconEdit as Pencil } from '@arco-design/web-vue/es/icon'
+import { ListPlus } from 'lucide-vue-next'
 import {
   Badge,
   Button,

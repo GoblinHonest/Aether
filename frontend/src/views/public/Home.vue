@@ -20,7 +20,10 @@
               v-if="isDark"
               class="h-4 w-4"
             />
-            <Moon v-else class="h-4 w-4" />
+            <Moon
+              v-else
+              class="h-4 w-4"
+            />
           </button>
           <router-link
             v-if="authStore.isAuthenticated"
@@ -93,7 +96,7 @@
 
         <!-- Right: API call example -->
         <div class="w-full flex-1 lg:max-w-[520px]">
-          <div class="overflow-hidden rounded-xl border border-[#e5e6eb] bg-white shadow-[0_4px_10px_rgba(29,33,41,0.04)] dark:border-[#2e2e2f] dark:bg-[#1d2129]">
+          <div class="overflow-hidden rounded border border-[#e5e6eb] bg-white shadow-[0_4px_10px_rgba(29,33,41,0.04)] dark:border-[#2e2e2f] dark:bg-[#1d2129]">
             <!-- Window bar -->
             <div class="flex items-center gap-2 border-b border-[#e5e6eb] bg-[#f7f8fa] px-4 dark:border-[#2e2e2f] dark:bg-[#232324]">
               <span class="h-2.5 w-2.5 rounded-full bg-[#f76965]" />
@@ -141,7 +144,7 @@
           <div
             v-for="stat in stats"
             :key="stat.label"
-            class="flex items-start gap-4 rounded-xl border border-[#e5e6eb] bg-white p-6 transition-shadow hover:shadow-[0_4px_14px_rgba(29,33,41,0.06)] dark:border-[#2e2e2f] dark:bg-[#1d2129]"
+            class="flex items-start gap-4 rounded border border-[#e5e6eb] bg-white p-6 transition-shadow hover:shadow-[0_4px_14px_rgba(29,33,41,0.06)] dark:border-[#2e2e2f] dark:bg-[#1d2129]"
           >
             <span
               class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
@@ -182,7 +185,7 @@
           <div
             v-for="feature in features"
             :key="feature.title"
-            class="group rounded-xl border border-[#e5e6eb] bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-[#165dff]/40 hover:shadow-[0_8px_24px_rgba(22,93,255,0.08)] dark:border-[#2e2e2f] dark:bg-[#1d2129] dark:hover:border-[#4080ff]/40"
+            class="group rounded border border-[#e5e6eb] bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-[#165dff]/40 hover:shadow-[0_8px_24px_rgba(22,93,255,0.08)] dark:border-[#2e2e2f] dark:bg-[#1d2129] dark:hover:border-[#4080ff]/40"
           >
             <span
               class="flex h-10 w-10 items-center justify-center rounded-lg transition-transform group-hover:scale-105"
@@ -259,7 +262,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Sun, Moon, Copy, ShieldCheck, Gauge, Boxes, GitBranch, Shuffle, Languages } from 'lucide-vue-next'
+import { IconSun as Sun, IconMoon as Moon, IconCopy as Copy, IconSafe as ShieldCheck, IconDashboard as Gauge, IconArchive as Boxes, IconBranch as GitBranch, IconLanguage as Languages } from '@arco-design/web-vue/es/icon'
+import { Shuffle } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { useDarkMode } from '@/composables/useDarkMode'
 import { useClipboard } from '@/composables/useClipboard'

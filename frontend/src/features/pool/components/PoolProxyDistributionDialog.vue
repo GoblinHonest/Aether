@@ -234,7 +234,8 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { Loader2, RefreshCw, Shuffle } from 'lucide-vue-next'
+import { IconLoading as Loader2, IconRefresh as RefreshCw } from '@arco-design/web-vue/es/icon'
+import { Shuffle } from 'lucide-vue-next'
 import {
   Badge,
   Button,

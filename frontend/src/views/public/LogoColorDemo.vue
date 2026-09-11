@@ -4,7 +4,7 @@
       <h1 class="text-3xl font-bold text-center mb-2 text-[#2a2a2b] dark:text-white">
         Logo 颜色方案对比
       </h1>
-      <p class="text-center text-[#666666] dark:text-gray-400 mb-8">
+      <p class="text-center text-[#666666] dark:text-[#86909c] mb-8">
         点击任意方案可以放大预览
       </p>
 
@@ -84,19 +84,19 @@
                 class="w-8 h-8 rounded-full border-2 border-white shadow"
                 :style="{ backgroundColor: scheme.primary }"
               />
-              <span class="text-xs text-[#666666] dark:text-gray-400 mt-1">{{ scheme.primary }}</span>
+              <span class="text-xs text-[#666666] dark:text-[#86909c] mt-1">{{ scheme.primary }}</span>
             </div>
             <div class="flex flex-col items-center">
               <div
                 class="w-8 h-8 rounded-full border-2 border-white shadow"
                 :style="{ backgroundColor: scheme.secondary }"
               />
-              <span class="text-xs text-[#666666] dark:text-gray-400 mt-1">{{ scheme.secondary }}</span>
+              <span class="text-xs text-[#666666] dark:text-[#86909c] mt-1">{{ scheme.secondary }}</span>
             </div>
           </div>
 
           <!-- Description -->
-          <p class="text-center text-sm text-[#666666] dark:text-gray-400 mt-3">
+          <p class="text-center text-sm text-[#666666] dark:text-[#86909c] mt-3">
             {{ scheme.description }}
           </p>
         </div>
@@ -110,7 +110,7 @@
           @click="showPreview = false"
         >
           <div
-            class="bg-white dark:bg-[#262624] rounded-xl p-8 max-w-lg w-full mx-4 shadow-md"
+            class="bg-white dark:bg-[#262624] rounded p-8 max-w-lg w-full mx-4 shadow-md"
             @click.stop
           >
             <div class="flex items-center justify-between mb-6">
@@ -118,7 +118,7 @@
                 {{ colorSchemes[selectedScheme].name }}
               </h2>
               <button
-                class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                class="p-2 rounded-lg hover:bg-[#f2f3f5] dark:hover:bg-[#323a45] transition"
                 @click="showPreview = false"
               >
                 <svg
@@ -160,7 +160,7 @@
                   class="w-6 h-6 rounded-full border-2 border-white shadow"
                   :style="{ backgroundColor: colorSchemes[selectedScheme].primary }"
                 />
-                <span class="text-sm font-mono text-[#666666] dark:text-gray-400">
+                <span class="text-sm font-mono text-[#666666] dark:text-[#86909c]">
                   {{ colorSchemes[selectedScheme].primary }}
                 </span>
               </div>
@@ -169,7 +169,7 @@
                   class="w-6 h-6 rounded-full border-2 border-white shadow"
                   :style="{ backgroundColor: colorSchemes[selectedScheme].secondary }"
                 />
-                <span class="text-sm font-mono text-[#666666] dark:text-gray-400">
+                <span class="text-sm font-mono text-[#666666] dark:text-[#86909c]">
                   {{ colorSchemes[selectedScheme].secondary }}
                 </span>
               </div>
@@ -178,7 +178,7 @@
             <!-- Apply button -->
             <div class="mt-6 text-center">
               <button
-                class="px-6 py-2 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition"
+                class="px-6 py-2 bg-primary text-white rounded font-medium hover:bg-primary/90 transition"
                 @click="applyScheme"
               >
                 应用此方案
@@ -192,7 +192,7 @@
       <div class="mt-8 text-center">
         <RouterLink
           to="/"
-          class="inline-flex items-center gap-2 px-4 py-2 text-[#666666] dark:text-gray-400 hover:text-[#2a2a2b] dark:hover:text-white transition"
+          class="inline-flex items-center gap-2 px-4 py-2 text-[#666666] dark:text-[#86909c] hover:text-[#2a2a2b] dark:hover:text-white transition"
         >
           <svg
             class="w-4 h-4"

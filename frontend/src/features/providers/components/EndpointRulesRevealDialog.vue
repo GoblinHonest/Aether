@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { Loader2 } from 'lucide-vue-next'
+import { IconLoading as Loader2 } from '@arco-design/web-vue/es/icon'
 import { Button, Dialog, Textarea } from '@/components/ui'
 import { revealEndpointRules } from '@/api/endpoints'
 import { useI18n } from '@/i18n'

@@ -105,7 +105,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { BarChart3, Play, Loader2 } from 'lucide-vue-next'
+import { IconBarChart as BarChart3, IconPlayArrow as Play, IconLoading as Loader2 } from '@arco-design/web-vue/es/icon'
 import { Dialog } from '@/components/ui'
 import {
   DropdownMenu,
@@ -371,16 +371,16 @@ async function handleTestModel(modelName: string) {
 
 function getQuotaRemainingClass(usedPercent: number): string {
   const remaining = 100 - usedPercent
-  if (remaining <= 10) return 'text-red-600 dark:text-red-400'
-  if (remaining <= 30) return 'text-yellow-600 dark:text-yellow-400'
-  return 'text-green-600 dark:text-green-400'
+  if (remaining <= 10) return 'text-[#cb272d] dark:text-[#f76560]'
+  if (remaining <= 30) return 'text-[#d25f00] dark:text-[#ffb357]'
+  return 'text-[#009a29] dark:text-[#23c343]'
 }
 
 function getQuotaRemainingBarColor(usedPercent: number): string {
   const remaining = 100 - usedPercent
-  if (remaining <= 10) return 'bg-red-500 dark:bg-red-400'
-  if (remaining <= 30) return 'bg-yellow-500 dark:bg-yellow-400'
-  return 'bg-green-500 dark:bg-green-400'
+  if (remaining <= 10) return 'bg-[#f53f3f] dark:bg-[#f76560]'
+  if (remaining <= 30) return 'bg-[#ff7d00] dark:bg-[#ffb357]'
+  return 'bg-[#00b42a] dark:bg-[#23c343]'
 }
 
 function formatResetTime(seconds: number): string {

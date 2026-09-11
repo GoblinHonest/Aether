@@ -42,13 +42,13 @@ describe('endpoint health display', () => {
   })
 
   it.each([
-    [0, '0%', '5%', 'bg-red-500'],
-    [0.2, '20%', '20%', 'bg-red-500'],
-    [0.5, '50%', '50%', 'bg-amber-500'],
-    [0.8, '80%', '80%', 'bg-green-500'],
-    [1, '100%', '100%', 'bg-green-500'],
-    [-0.2, '0%', '5%', 'bg-red-500'],
-    [1.2, '100%', '100%', 'bg-green-500'],
+    [0, '0%', '5%', 'bg-[#f53f3f]'],
+    [0.2, '20%', '20%', 'bg-[#f53f3f]'],
+    [0.5, '50%', '50%', 'bg-[#ff7d00]'],
+    [0.8, '80%', '80%', 'bg-[#00b42a]'],
+    [1, '100%', '100%', 'bg-[#00b42a]'],
+    [-0.2, '0%', '5%', 'bg-[#f53f3f]'],
+    [1.2, '100%', '100%', 'bg-[#00b42a]'],
   ] as const)('renders score %s consistently across label, bar and tooltip', (score, label, width, color) => {
     const endpoint = { ...availableEndpoint, health_score: score }
 

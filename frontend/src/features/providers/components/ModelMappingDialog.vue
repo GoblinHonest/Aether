@@ -309,7 +309,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { Tag, Loader2, Plus, Search, Check, ChevronDown, RefreshCw, Zap } from 'lucide-vue-next'
+import { IconTags as Tag, IconLoading as Loader2, IconPlus as Plus, IconSearch as Search, IconCheck as Check, IconDown as ChevronDown, IconRefresh as RefreshCw, IconThunderbolt as Zap } from '@arco-design/web-vue/es/icon'
 import {
   Button,
   Input,
